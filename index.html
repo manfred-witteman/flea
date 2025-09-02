@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="nl">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Rommelwinkeltje</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+
+<body class="bg-slate-50 text-slate-900">
+  <div id="app" class="min-h-screen flex flex-col">
+
+    <!-- Login Screen -->
+    <main id="screen-login" class="flex-1 flex items-center justify-center p-6">
+      <div class="w-full max-w-sm">
+        <div class="bg-white rounded-2xl shadow-xl p-6 space-y-4">
+          <div class="flex items-center justify-center mb-4">
+            <img src="assets/logo.png" alt="Yulia's flea market logo" class="w-50 h-24 object-contain" />
+          </div>
+          <form id="login-form" class="space-y-3">
+            <div>
+              <label class="text-sm text-slate-600">E-mail</label>
+              <input type="email" name="email" required class="input border rounded-lg w-full p-2"
+                placeholder="you@example.com" />
+            </div>
+            <div>
+              <label class="text-sm text-slate-600">Wachtwoord</label>
+              <input type="password" name="password" required class="input border rounded-lg w-full p-2"
+                placeholder="••••••••" />
+            </div>
+            <button type="submit"
+              class="bg-blue-500 text-white font-semibold py-3 px-6 rounded-xl w-full mt-2 shadow-md hover:bg-blue-600 transition">
+              <i class="fa-solid fa-right-to-bracket mr-2"></i> Inloggen
+            </button>
+          </form>
+          <div id="login-error" class="hidden text-sm text-rose-600"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Main App Screen -->
+    <main id="screen-app" class="flex-1 hidden">
+      <!-- Nieuwe verkoop -->
+      <section id="view-home" class="p-4 pb-24">
+        <div class="card p-6 space-y-6 shadow-lg rounded-xl">
+          <div class="flex items-center gap-2 mb-4">
+            <i class="fa-solid fa-bolt text-indigo-600"></i>
+            <h2 class="text-2xl font-semibold">Nieuwe verkoop</h2>
+          </div>
+          <form id="sale-form" class="space-y-4">
+            <div class="flex flex-col">
+              <label class="text-sm font-medium text-gray-700 mb-1">Omschrijving</label>
+              <input name="description"
+                class="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                placeholder="Bv. Kop en schotel" required />
+            </div>
+            <div class="flex flex-col">
+              <label class="text-sm font-medium text-gray-700 mb-1">Prijs (€)</label>
+              <input name="price" type="number" step="0.01" min="0"
+                class="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="2.50"
+                required />
+            </div>
+            <div class="flex flex-col">
+              <label class="text-sm font-medium text-gray-700 mb-1">Kostprijs (€) <span
+                  class="text-gray-400">(optioneel)</span></label>
+              <input name="cost" type="number" step="0.01" min="0"
+                class="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                placeholder="0.00" />
+            </div>
+            <div class="flex flex-col">
+              <label class="text-sm font-medium text-gray-700 mb-1">Eigenaar / herkomst</label>
+              <select id="owner-select" name="owner_user_id"
+                class="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-400" required></select>
+            </div>
+            <button type="submit"
+              class="bg-blue-500 text-white font-semibold py-3 px-6 rounded-xl w-full mt-4 shadow-md hover:bg-blue-600 transition">
+              <i class="fa-solid fa-check mr-2"></i> Verkoop opslaan
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- Vandaag verkocht -->
+      <section id="view-overzicht" class="p-4 pb-24 hidden">
+        <div class="card p-6 space-y-4 shadow-lg rounded-xl">
+          <!-- Header -->
+          <div class="flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-calendar-day text-indigo-600"></i>
+            <h2 class="text-2xl font-semibold">Vandaag verkocht</h2>
+          </div>
+
+          <!-- Toggle slider (moved down) -->
+          <div class="flex justify-center items-center gap-2 mb-4 text-sm font-semibold">
+            <span>ik</span>
+            <label class="relative inline-block w-16 h-8">
+              <input type="checkbox" id="filter-mine" class="sr-only peer">
+              <div class="absolute inset-0 bg-gray-300 rounded-full transition-colors peer-checked:bg-indigo-600"></div>
+              <div
+                class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow-md transition-transform peer-checked:translate-x-8">
+              </div>
+            </label>
+            <span>iedereen</span>
+          </div>
+
+          <!-- Sales list -->
+          <ul id="today-list" class="divide-y divide-slate-100"></ul>
+          <div id="today-empty" class="text-sm text-slate-500 hidden">Nog geen verkopen vandaag.</div>
+        </div>
+      </section>
+
+      <!-- Opbrengst per gebruiker -->
+      <section id="view-breakdown" class="p-4 pb-24 hidden">
+        <div class="card p-6 space-y-4 shadow-lg rounded-xl">
+          <h2 class="text-2xl font-semibold mb-2">
+            <i class="fa-solid fa-user-group text-indigo-600 mr-2"></i>
+            Opbrengst per gebruiker
+          </h2>
+          <div class="relative text-center mb-4">
+            <button id="day-prev" class="absolute left-0 text-gray-500 hover:text-gray-700"><i
+                class="fa-solid fa-chevron-left"></i></button>
+            <span id="day-label" class="font-medium"></span>
+            <button id="day-next" class="absolute right-0 text-gray-500 hover:text-gray-700"><i
+                class="fa-solid fa-chevron-right"></i></button>
+          </div>
+          <ul id="breakdown-list" class="divide-y divide-slate-100"></ul>
+          <div class="flex justify-between mt-3 pt-3 border-t border-slate-100">
+            <span class="font-medium">Totaal</span>
+            <span id="breakdown-total" class="font-semibold"></span>
+          </div>
+          <p class="text-xs text-slate-500 mt-2">Commissie op andermans spullen staat nu op 0%. In de toekomst
+            aanpasbaar.</p>
+        </div>
+      </section>
+
+      <!-- Bottom Tab Bar -->
+      <nav class="tabbar safe-bottom flex justify-around bg-white border-t border-slate-200 p-2">
+        <button data-tab="home" class="tab active flex flex-col items-center text-sm"><i
+            class="fa-solid fa-house"></i><span>Home</span></button>
+        <button data-tab="overzicht" class="tab flex flex-col items-center text-sm"><i
+            class="fa-solid fa-list-check"></i><span>Overzicht</span></button>
+        <button data-tab="breakdown" class="tab flex flex-col items-center text-sm"><i
+            class="fa-solid fa-chart-simple"></i><span>Breakdown</span></button>
+        <button id="btn-logout" class="tab flex flex-col items-center text-sm"><i
+            class="fa-solid fa-right-from-bracket"></i><span>Uitloggen</span></button>
+      </nav>
+    </main>
+  </div>
+
+  <script src="assets/app.js"></script>
+</body>
+
+</html>
