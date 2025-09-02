@@ -31,16 +31,10 @@ function renderTodaySales(data, showAll, currentUserId) {
   const empty = $("#today-empty");
   list.innerHTML = "";
 
-  // Fixed color palette for avatars
   const colors = [
-    "bg-indigo-500",
-    "bg-emerald-500",
-    "bg-rose-500",
-    "bg-amber-500",
-    "bg-sky-500",
-    "bg-purple-500",
-    "bg-fuchsia-500",
-    "bg-teal-500",
+    "bg-indigo-500", "bg-emerald-500", "bg-rose-500",
+    "bg-amber-500", "bg-sky-500", "bg-purple-500",
+    "bg-fuchsia-500", "bg-teal-500"
   ];
 
   function colorForUser(userId) {
@@ -61,7 +55,6 @@ function renderTodaySales(data, showAll, currentUserId) {
     const li = document.createElement("li");
     li.className = "flex items-center gap-3 py-2";
 
-    // Avatar: seller initial
     const initial = sale.cashier_name.charAt(0).toUpperCase();
     const avatar = document.createElement("div");
     avatar.className = `flex items-center justify-center w-10 h-10 rounded-full text-white font-bold ${colorForUser(
@@ -69,7 +62,6 @@ function renderTodaySales(data, showAll, currentUserId) {
     )}`;
     avatar.textContent = initial;
 
-    // Text block
     const textBlock = document.createElement("div");
     textBlock.className = "flex flex-col";
 
@@ -87,7 +79,6 @@ function renderTodaySales(data, showAll, currentUserId) {
     li.appendChild(avatar);
     li.appendChild(textBlock);
 
-    // Delete button only if current user is the seller
     if (sale.cashier_user_id === currentUserId) {
       const btn = document.createElement("button");
       btn.className = "text-rose-600 hover:text-rose-700 ml-auto";
@@ -106,7 +97,6 @@ function renderTodaySales(data, showAll, currentUserId) {
     list.appendChild(li);
   });
 }
-
 
 // Global state
 let currentUserId = null;
@@ -158,6 +148,7 @@ async function populateOwnerSelect(defaultUserId) {
   if (defaultUserId) select.value = defaultUserId.toString();
 }
 
+// JS
 async function checkSession() {
   try {
     const me = await api("me");
@@ -171,21 +162,68 @@ async function checkSession() {
       await refreshToday();
       await refreshBreakdown(currentDate);
       setActiveTab("home");
+
+      // Voeg admin-tab toe alleen als user admin is
+      if (me.user.is_admin) {
+        const tabsContainer = document.getElementById("tabs");
+        const adminTab = document.createElement("button");
+        adminTab.className = "tab flex flex-col items-center text-sm";
+        adminTab.dataset.tab = "admin";
+        adminTab.textContent = "Admin";
+        tabsContainer.appendChild(adminTab);
+
+        // Voeg eventueel event listener toe voor deze tab
+        adminTab.addEventListener("click", () => setActiveTab("admin"));
+      }
+
     } else {
       $("#screen-login").classList.remove("hidden");
       $("#screen-app").classList.add("hidden");
     }
-  } catch {
+  } catch (e) {
     $("#screen-login").classList.remove("hidden");
     $("#screen-app").classList.add("hidden");
   }
 }
 
+document.addEventListener("DOMContentLoaded", async () => {
+  $("#filter-mine")?.addEventListener("change", refreshToday);
+  await checkSession();
+});
+
+
 async function refreshToday() {
   const data = await api("list_sales", { date: new Date().toISOString().slice(0, 10) });
-  const showAll = $("#filter-mine")?.checked ?? false; // true = iedereen
+  const showAll = $("#filter-mine")?.checked ?? false;
   renderTodaySales(data, showAll, currentUserId);
 }
+
+// Globale delegatie voor de verreken knop
+document.addEventListener("click", async (e) => {
+  if (e.target.closest("#btn-settle")) {
+    console.log("🔔 Verreken knop aangeklikt");
+    if (!confirm("Alle verkopen verrekenen?")) return;
+
+    try {
+      const res = await api("process_settlement");
+      console.log("🔔 Response van server:", res);
+
+      const resultDiv = $("#settlement-result");
+      resultDiv.innerHTML = "<h3 class='font-semibold mb-2'>Verrekende bedragen:</h3>";
+
+      if (res.settlements) {
+        for (const key in res.settlements) {
+          const [from, to] = key.split("_");
+          const amount = res.settlements[key].amount;
+          resultDiv.innerHTML += `<div>${from} → ${to}: €${amount.toFixed(2)}</div>`;
+        }
+      }
+    } catch (err) {
+      console.error("❌ Fout bij verrekenen:", err);
+      alert(err.message || "Fout bij verrekenen");
+    }
+  }
+});
 
 document.addEventListener("DOMContentLoaded", async () => {
   // Tab navigation
