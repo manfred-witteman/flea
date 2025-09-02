@@ -152,39 +152,61 @@ async function populateOwnerSelect(defaultUserId) {
 async function checkSession() {
   try {
     const me = await api("me");
+
     if (me?.user) {
       currentUserId = me.user.id;
+
+      // Toon app, verberg login
       $("#screen-login").classList.add("hidden");
       $("#screen-app").classList.remove("hidden");
 
+      // Owner select vullen
       await populateOwnerSelect(currentUserId);
+
+      // Datum en data refresh
       currentDate = new Date();
       await refreshToday();
       await refreshBreakdown(currentDate);
       setActiveTab("home");
 
+      // --------------------------
+      // Admin-tab management
+      // --------------------------
+      const tabsContainer = document.getElementById("tabs");
+      const logoutTab = document.getElementById("btn-logout");
+
+      // Verwijder bestaande admin-tab als die er is
+      const existingAdminTab = document.querySelector(".tab[data-tab='admin']");
+      if (existingAdminTab) existingAdminTab.remove();
+
       // Voeg admin-tab toe alleen als user admin is
-      if (me.user.is_admin) {
-        const tabsContainer = document.getElementById("tabs");
+      if (me.user.is_admin && tabsContainer && logoutTab) {
         const adminTab = document.createElement("button");
         adminTab.className = "tab flex flex-col items-center text-sm";
         adminTab.dataset.tab = "admin";
-        adminTab.textContent = "Admin";
-        tabsContainer.appendChild(adminTab);
 
-        // Voeg eventueel event listener toe voor deze tab
+        // Icoon en label
+        adminTab.innerHTML = `<i class="fa-solid fa-cash-register"></i><span>Admin</span>`;
+
+        // Plaats links van logout
+        tabsContainer.insertBefore(adminTab, logoutTab);
+
+        // Tab switch listener
         adminTab.addEventListener("click", () => setActiveTab("admin"));
       }
 
     } else {
+      // Geen user, toon login
       $("#screen-login").classList.remove("hidden");
       $("#screen-app").classList.add("hidden");
     }
   } catch (e) {
+    // Fout bij API call, toon login
     $("#screen-login").classList.remove("hidden");
     $("#screen-app").classList.add("hidden");
   }
 }
+
 
 document.addEventListener("DOMContentLoaded", async () => {
   $("#filter-mine")?.addEventListener("change", refreshToday);
@@ -252,12 +274,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // Logout
-  $("#btn-logout").addEventListener("click", async () => {
-    await api("logout");
-    $("#screen-app").classList.add("hidden");
-    $("#screen-login").classList.remove("hidden");
-  });
+$("#btn-logout").addEventListener("click", async () => {
+  await api("logout");
 
+  // Verberg app en toon login
+  $("#screen-app").classList.add("hidden");
+  $("#screen-login").classList.remove("hidden");
+
+  // Verwijder admin-tab als die bestaat
+  const adminTab = document.querySelector(".tab[data-tab='admin']");
+  if (adminTab) adminTab.remove();
+});
   // Create sale
   $("#sale-form").addEventListener("submit", async (e) => {
     e.preventDefault();
