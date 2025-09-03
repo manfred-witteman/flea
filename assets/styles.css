@@ -58,3 +58,61 @@
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 input[type=number] { -moz-appearance: textfield; }
+
+
+
+/* ====== DARK MODE ====== */
+@media (prefers-color-scheme: dark) {
+  body {
+    @apply bg-slate-900 text-slate-100;
+  }
+
+  .card {
+    @apply bg-slate-800 text-slate-100;
+  }
+
+  .input {
+    @apply bg-slate-800 border-slate-700 text-slate-100;
+  }
+
+  .label {
+    @apply text-slate-400;
+  }
+
+  .btn-primary {
+    @apply bg-indigo-600 text-white hover:bg-indigo-500;
+  }
+
+  .btn-icon {
+    @apply bg-slate-700 text-slate-200 hover:bg-slate-600;
+  }
+
+  .tabbar {
+    @apply bg-slate-800 border-slate-700;
+  }
+
+  .tab {
+    @apply text-slate-300;
+  }
+  .tab.active {
+    @apply bg-slate-700 text-indigo-400;
+  }
+
+  /* Divider kleuren in dark mode */
+  #today-list,
+  #breakdown-list,
+  #settlement-list {
+    @apply divide-slate-700;
+  }
+
+  /* Borders in cards & breakdown */
+  .card,
+  .border-slate-100 {
+    @apply border-slate-700;
+  }
+
+  /* Tekst van lege lijsten */
+  #today-empty {
+    @apply text-slate-400;
+  }
+}
