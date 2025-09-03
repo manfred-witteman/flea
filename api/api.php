@@ -144,6 +144,7 @@ if ($action === 'add_sale') {
         $date = $input['date'] ?? $_GET['date'] ?? date('Y-m-d');
         $stmt = $db->prepare('
             SELECT s.id, s.description, s.price, s.sold_at,
+                s.image_url,          -- <--- add this
                 s.owner_user_id, u_owner.name AS owner_name,
                 s.cashier_user_id, u_cashier.name AS cashier_name
             FROM sales s

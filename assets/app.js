@@ -54,10 +54,37 @@ function renderTodaySales(data, showAll, currentUserId) {
   }
   empty.classList.add("hidden");
 
+  // Modal setup (once, outside the loop)
+  let modal = document.getElementById("sale-modal");
+  let modalImg = document.getElementById("sale-modal-img");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "sale-modal";
+    modal.className = "fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center z-50";
+    modal.style.transition = "opacity 0.2s ease";
+    modal.style.opacity = 0; // start invisible
+
+    modalImg = document.createElement("img");
+    modalImg.id = "sale-modal-img";
+    modalImg.className = "max-w-full max-h-full rounded-lg shadow-lg";
+
+    modal.appendChild(modalImg);
+    document.body.appendChild(modal);
+
+    // Close modal on click outside the image
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.style.opacity = 0;
+        setTimeout(() => modal.classList.add("hidden"), 200);
+      }
+    });
+  }
+
   filteredSales.forEach(sale => {
     const li = document.createElement("li");
     li.className = "flex items-center gap-3 py-2";
 
+    // Avatar
     const initial = sale.cashier_name.charAt(0).toUpperCase();
     const avatar = document.createElement("div");
     avatar.className = `flex items-center justify-center w-10 h-10 rounded-full text-white font-bold ${colorForUser(
@@ -65,6 +92,7 @@ function renderTodaySales(data, showAll, currentUserId) {
     )}`;
     avatar.textContent = initial;
 
+    // Text block
     const textBlock = document.createElement("div");
     textBlock.className = "flex flex-col";
 
@@ -82,9 +110,34 @@ function renderTodaySales(data, showAll, currentUserId) {
     li.appendChild(avatar);
     li.appendChild(textBlock);
 
+    // Spacer
+    const spacer = document.createElement("div");
+    spacer.className = "flex-1";
+    li.appendChild(spacer);
+
+    // Thumbnail (only if image exists)
+    if (sale.image_url && sale.image_url.trim() !== "") {
+      const thumb = document.createElement("img");
+      const imagePath = sale.image_url.trim();
+      thumb.src = imagePath.startsWith("/flea") ? imagePath : "/flea" + imagePath;
+      thumb.className = "w-12 h-12 object-cover rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer";
+
+      // Open modal on click
+      thumb.addEventListener("click", () => {
+        modalImg.src = thumb.src;
+        modal.classList.remove("hidden");
+        requestAnimationFrame(() => {
+          modal.style.opacity = 1;
+        });
+      });
+
+      li.appendChild(thumb);
+    }
+
+        // Delete button
     if (sale.cashier_user_id === currentUserId) {
       const btn = document.createElement("button");
-      btn.className = "text-rose-600 hover:text-rose-700 ml-auto";
+      btn.className = "text-rose-600 hover:text-rose-700 ml-2";
       btn.title = "Verwijderen";
       btn.dataset.id = sale.id;
       btn.innerHTML = `<i class="fa-solid fa-trash"></i>`;
@@ -100,6 +153,9 @@ function renderTodaySales(data, showAll, currentUserId) {
     list.appendChild(li);
   });
 }
+
+
+
 
 // ---------------------
 // GLOBAL STATE
