@@ -7,7 +7,7 @@ const api = async (action, payload = {}, method = "POST") => {
     opts.headers["Content-Type"] = "application/json";
     opts.body = JSON.stringify({ action, ...payload });
   }
-  const res = await fetch("api/api.php", opts);
+  const res = await fetch("/flea/api/api.php", opts); // let op /flea/
   if (!res.ok) throw new Error("Serverfout");
   const data = await res.json();
   if (data.error) throw new Error(data.error);
@@ -22,10 +22,13 @@ function formatEuro(value) {
 function setActiveTab(name) {
   document.querySelectorAll("section[id^='view-']").forEach(s => s.classList.add("hidden"));
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-  $(`#view-${name}`).classList.remove("hidden");
+  $(`#view-${name}`)?.classList.remove("hidden");
   document.querySelector(`.tab[data-tab='${name}']`)?.classList.add("active");
 }
 
+// ---------------------
+// TODAY SALES
+// ---------------------
 function renderTodaySales(data, showAll, currentUserId) {
   const list = $("#today-list");
   const empty = $("#today-empty");
@@ -87,7 +90,7 @@ function renderTodaySales(data, showAll, currentUserId) {
       btn.innerHTML = `<i class="fa-solid fa-trash"></i>`;
       btn.addEventListener("click", async () => {
         if (!confirm("Verkoop verwijderen?")) return;
-        await api("delete_sale", { id: sale.id });
+        await api("delete_sale", { id: sale.id, image_url: sale.image_url });
         await refreshToday();
         await refreshBreakdown(currentDate);
       });
@@ -98,7 +101,9 @@ function renderTodaySales(data, showAll, currentUserId) {
   });
 }
 
-// Global state
+// ---------------------
+// GLOBAL STATE
+// ---------------------
 let currentUserId = null;
 let currentDate = new Date();
 
@@ -117,6 +122,9 @@ function setDayLabel(d) {
   $("#day-label").textContent = label;
 }
 
+// ---------------------
+// REFRESH FUNCTIONS
+// ---------------------
 async function refreshBreakdown(day) {
   setDayLabel(day);
   const dateStr = day.toISOString().slice(0, 10);
@@ -132,6 +140,15 @@ async function refreshBreakdown(day) {
   $("#breakdown-total").textContent = formatEuro(data.total);
 }
 
+async function refreshToday() {
+  const data = await api("list_sales", { date: new Date().toISOString().slice(0, 10) });
+  const showAll = $("#filter-mine")?.checked ?? false;
+  renderTodaySales(data, showAll, currentUserId);
+}
+
+// ---------------------
+// OWNER SELECT
+// ---------------------
 async function populateOwnerSelect(defaultUserId) {
   const select = $("#owner-select");
   if (!select) return;
@@ -148,107 +165,92 @@ async function populateOwnerSelect(defaultUserId) {
   if (defaultUserId) select.value = defaultUserId.toString();
 }
 
-// JS
+// ---------------------
+// IMAGE HANDLING
+// ---------------------
+const imageInput = document.getElementById('image-upload');
+const preview = document.getElementById('image-preview');
+const imageUrlInput = document.querySelector('input[name="image_url"]');
+
+imageInput.addEventListener('change', async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  // Preview
+  const reader = new FileReader();
+  reader.onload = e => {
+    preview.src = e.target.result;
+    preview.classList.remove('hidden');
+  };
+  reader.readAsDataURL(file);
+
+  // Upload naar API
+  const formData = new FormData();
+  formData.append('image', file);
+  formData.append('action', 'upload_image');
+
+  try {
+    const res = await fetch('/flea/api/api.php', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.success) {
+      imageUrlInput.value = data.url;
+      console.log('Upload gelukt:', data.url);
+    } else {
+      alert('Upload fout: ' + (data.error || 'Onbekend'));
+    }
+  } catch (err) {
+    console.error('Upload error', err);
+  }
+});
+
+// ---------------------
+// SESSION CHECK
+// ---------------------
 async function checkSession() {
   try {
     const me = await api("me");
 
     if (me?.user) {
       currentUserId = me.user.id;
-
-      // Toon app, verberg login
       $("#screen-login").classList.add("hidden");
       $("#screen-app").classList.remove("hidden");
 
-      // Owner select vullen
       await populateOwnerSelect(currentUserId);
 
-      // Datum en data refresh
       currentDate = new Date();
       await refreshToday();
       await refreshBreakdown(currentDate);
       setActiveTab("home");
 
-      // --------------------------
-      // Admin-tab management
-      // --------------------------
+      // Admin tab
       const tabsContainer = document.getElementById("tabs");
       const logoutTab = document.getElementById("btn-logout");
-
-      // Verwijder bestaande admin-tab als die er is
       const existingAdminTab = document.querySelector(".tab[data-tab='admin']");
       if (existingAdminTab) existingAdminTab.remove();
 
-      // Voeg admin-tab toe alleen als user admin is
       if (me.user.is_admin && tabsContainer && logoutTab) {
         const adminTab = document.createElement("button");
         adminTab.className = "tab flex flex-col items-center text-sm";
         adminTab.dataset.tab = "admin";
-
-        // Icoon en label
         adminTab.innerHTML = `<i class="fa-solid fa-cash-register"></i><span>Admin</span>`;
-
-        // Plaats links van logout
         tabsContainer.insertBefore(adminTab, logoutTab);
-
-        // Tab switch listener
         adminTab.addEventListener("click", () => setActiveTab("admin"));
       }
-
     } else {
-      // Geen user, toon login
       $("#screen-login").classList.remove("hidden");
       $("#screen-app").classList.add("hidden");
     }
-  } catch (e) {
-    // Fout bij API call, toon login
+  } catch {
     $("#screen-login").classList.remove("hidden");
     $("#screen-app").classList.add("hidden");
   }
 }
 
-
+// ---------------------
+// DOM CONTENT LOADED
+// ---------------------
 document.addEventListener("DOMContentLoaded", async () => {
-  $("#filter-mine")?.addEventListener("change", refreshToday);
-  await checkSession();
-});
-
-
-async function refreshToday() {
-  const data = await api("list_sales", { date: new Date().toISOString().slice(0, 10) });
-  const showAll = $("#filter-mine")?.checked ?? false;
-  renderTodaySales(data, showAll, currentUserId);
-}
-
-// Globale delegatie voor de verreken knop
-document.addEventListener("click", async (e) => {
-  if (e.target.closest("#btn-settle")) {
-    console.log("🔔 Verreken knop aangeklikt");
-    if (!confirm("Alle verkopen verrekenen?")) return;
-
-    try {
-      const res = await api("process_settlement");
-      console.log("🔔 Response van server:", res);
-
-      const resultDiv = $("#settlement-result");
-      resultDiv.innerHTML = "<h3 class='font-semibold mb-2'>Verrekende bedragen:</h3>";
-
-      if (res.settlements) {
-        for (const key in res.settlements) {
-          const [from, to] = key.split("_");
-          const amount = res.settlements[key].amount;
-          resultDiv.innerHTML += `<div>${from} → ${to}: €${amount.toFixed(2)}</div>`;
-        }
-      }
-    } catch (err) {
-      console.error("❌ Fout bij verrekenen:", err);
-      alert(err.message || "Fout bij verrekenen");
-    }
-  }
-});
-
-document.addEventListener("DOMContentLoaded", async () => {
-  // Tab navigation
+  // Tabs
   document.querySelectorAll(".tabbar .tab[data-tab]").forEach(btn => {
     btn.addEventListener("click", async () => {
       const tab = btn.getAttribute("data-tab");
@@ -258,7 +260,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
-  // Login form
+  // Login
   $("#login-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     $("#login-error").classList.add("hidden");
@@ -274,18 +276,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // Logout
-$("#btn-logout").addEventListener("click", async () => {
-  await api("logout");
+  $("#btn-logout").addEventListener("click", async () => {
+    await api("logout");
+    $("#screen-app").classList.add("hidden");
+    $("#screen-login").classList.remove("hidden");
+    const adminTab = document.querySelector(".tab[data-tab='admin']");
+    if (adminTab) adminTab.remove();
 
-  // Verberg app en toon login
-  $("#screen-app").classList.add("hidden");
-  $("#screen-login").classList.remove("hidden");
+    // Reset preview en hidden input
+    preview.src = "";
+    preview.classList.add("hidden");
+    imageUrlInput.value = "";
+  });
 
-  // Verwijder admin-tab als die bestaat
-  const adminTab = document.querySelector(".tab[data-tab='admin']");
-  if (adminTab) adminTab.remove();
-});
-  // Create sale
+  // Sale form
   $("#sale-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -293,7 +297,8 @@ $("#btn-logout").addEventListener("click", async () => {
       description: form.description.value.trim(),
       price: parseFloat(form.price.value),
       owner_user_id: parseInt(form.owner_user_id.value, 10),
-      cost: form.cost.value ? parseFloat(form.cost.value) : null
+      cost: form.cost.value ? parseFloat(form.cost.value) : null,
+      image_url: imageUrlInput.value || null
     };
     if (!payload.description || isNaN(payload.price) || isNaN(payload.owner_user_id)) {
       alert("Controleer je invoer.");
@@ -302,6 +307,12 @@ $("#btn-logout").addEventListener("click", async () => {
     try {
       await api("add_sale", payload);
       form.reset();
+
+      // Reset preview en hidden input
+      preview.src = "";
+      preview.classList.add("hidden");
+      imageUrlInput.value = "";
+
       if (currentUserId) form.owner_user_id.value = currentUserId;
 
       await refreshToday();
@@ -329,4 +340,27 @@ $("#btn-logout").addEventListener("click", async () => {
   $("#filter-mine")?.addEventListener("change", refreshToday);
 
   await checkSession();
+});
+
+// ---------------------
+// VERREKEN KNOP
+// ---------------------
+document.addEventListener("click", async (e) => {
+  if (e.target.closest("#btn-settle")) {
+    if (!confirm("Alle verkopen verrekenen?")) return;
+    try {
+      const res = await api("process_settlement");
+      const resultDiv = $("#settlement-result");
+      resultDiv.innerHTML = "<h3 class='font-semibold mb-2'>Verrekende bedragen:</h3>";
+      if (res.settlements) {
+        for (const key in res.settlements) {
+          const [from, to] = key.split("_");
+          const amount = res.settlements[key].amount;
+          resultDiv.innerHTML += `<div>${from} → ${to}: €${amount.toFixed(2)}</div>`;
+        }
+      }
+    } catch (err) {
+      alert(err.message || "Fout bij verrekenen");
+    }
+  }
 });

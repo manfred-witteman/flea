@@ -6,20 +6,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Flea Market</title>
 
-  <!-- Tailwind config voor dark mode -->
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      darkMode: 'media'
-    }
+      darkMode: 'media',
+      theme: {
+        extend: {
+          colors: {
+            brandBlue: '#3B82F6',
+          },
+        },
+      },
+    };
   </script>
-  <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+  <!-- Eigen styles -->
   <link rel="stylesheet" href="assets/styles.css" />
-  <link rel="apple-touch-icon" href="assets/icon.png">
+
+  <!-- App icon -->
+  <link rel="apple-touch-icon" href="assets/icon.png" />
 </head>
 
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100">
@@ -27,30 +38,28 @@
 
     <!-- Login Screen -->
     <main id="screen-login" class="flex-1 flex items-center justify-center p-6">
-      <div class="w-full max-w-sm">
-        <div class="bg-white dark:bg-slate-800 dark:text-slate-100 rounded-2xl shadow-xl p-6 space-y-4">
-          <div class="flex items-center justify-center mb-4">
-            <img src="assets/icon.png" alt="Flea market logo"
-     class="w-24 h-24 object-cover rounded-full shadow-lg mx-auto bg-white dark:bg-slate-700 p-1 border border-slate-200 dark:border-slate-500" />
-          </div>
-          <form id="login-form" class="space-y-3">
-            <div>
-              <label class="text-sm text-slate-600 dark:text-slate-400">E-mail</label>
-              <input type="email" name="email" required
-                class="input w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-400" />
-            </div>
-            <div>
-              <label class="text-sm text-slate-600 dark:text-slate-400">Wachtwoord</label>
-              <input type="password" name="password" required
-                class="input w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-400" />
-            </div>
-            <button type="submit"
-              class="bg-blue-500 text-white font-semibold py-3 px-6 rounded-xl w-full mt-2 shadow-md hover:bg-blue-600 transition">
-              <i class="fa-solid fa-right-to-bracket mr-2"></i> Inloggen
-            </button>
-          </form>
-          <div id="login-error" class="hidden text-sm text-rose-600 dark:text-rose-400"></div>
+      <div class="w-full max-w-sm bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 space-y-4">
+        <div class="flex justify-center mb-4">
+          <img src="assets/icon.png" alt="Flea Market Logo"
+            class="w-24 h-24 object-cover rounded-full shadow-lg bg-white dark:bg-slate-700 p-1 border border-slate-200 dark:border-slate-500" />
         </div>
+        <form id="login-form" class="space-y-3">
+          <div>
+            <label class="text-sm text-slate-600 dark:text-slate-400">E-mail</label>
+            <input type="email" name="email" required
+              class="input w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-400" />
+          </div>
+          <div>
+            <label class="text-sm text-slate-600 dark:text-slate-400">Wachtwoord</label>
+            <input type="password" name="password" required
+              class="input w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-400" />
+          </div>
+          <button type="submit"
+            class="bg-blue-500 text-white font-semibold py-3 px-6 rounded-xl w-full mt-2 shadow-md hover:bg-blue-600 transition">
+            <i class="fa-solid fa-right-to-bracket mr-2"></i> Inloggen
+          </button>
+        </form>
+        <div id="login-error" class="hidden text-sm text-rose-600 dark:text-rose-400"></div>
       </div>
     </main>
 
@@ -67,32 +76,39 @@
           <form id="sale-form" class="space-y-4">
             <div class="flex flex-col">
               <label class="text-sm font-medium mb-1">Omschrijving</label>
-              <input name="description"
-                class="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100"
-                placeholder="Bv. Kop en schotel" required />
+              <input name="description" placeholder="Bv. Kop en schotel" required
+                class="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100" />
             </div>
             <div class="flex flex-col">
               <label class="text-sm font-medium mb-1">Prijs (€)</label>
-              <input name="price" type="number" step="0.01" min="0"
-                class="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100"
-                placeholder="2.50" required />
+              <input name="price" type="number" step="0.01" min="0" placeholder="2.50" required
+                class="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100" />
             </div>
             <div class="flex flex-col">
-              <label class="text-sm font-medium mb-1">Kostprijs (€) <span class="text-gray-400 dark:text-slate-400">(optioneel)</span></label>
-              <input name="cost" type="number" step="0.01" min="0"
-                class="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100"
-                placeholder="0.00" />
+              <label class="text-sm font-medium mb-1">Kostprijs (€) <span
+                  class="text-gray-400 dark:text-slate-400">(optioneel)</span></label>
+              <input name="cost" type="number" step="0.01" min="0" placeholder="0.00"
+                class="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100" />
             </div>
             <div class="flex flex-col">
               <label class="text-sm font-medium mb-1">Eigenaar / herkomst</label>
-              <select id="owner-select" name="owner_user_id"
-                class="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100"
-                required></select>
+              <select id="owner-select" name="owner_user_id" required
+                class="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100"></select>
             </div>
+
             <button type="submit"
               class="bg-blue-500 text-white font-semibold py-3 px-6 rounded-xl w-full mt-4 shadow-md hover:bg-blue-600 transition">
               <i class="fa-solid fa-check mr-2"></i> Verkoop opslaan
             </button>
+
+            <!-- Floating camera button -->
+            <label for="image-upload"
+              class="fixed bottom-24 right-4 w-16 h-16 bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center justify-center shadow-xl cursor-pointer transition">
+              <i class="fa-solid fa-camera text-2xl"></i>
+            </label>
+            <input type="file" id="image-upload" accept="image/*" capture="environment" class="hidden" />
+            <img id="image-preview" class="mt-2 w-32 h-32 object-cover rounded-xl hidden" />
+            <input type="hidden" name="image_url" />
           </form>
         </div>
       </section>
@@ -107,18 +123,24 @@
           <div class="flex justify-center items-center gap-2 mb-4 text-sm font-semibold">
             <span>ik</span>
             <label class="relative inline-block w-16 h-8">
-              <input type="checkbox" id="filter-mine" class="sr-only peer">
-              <div class="absolute inset-0 bg-gray-300 rounded-full transition-colors peer-checked:bg-indigo-600 dark:bg-slate-700 dark:peer-checked:bg-indigo-500"></div>
-              <div class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow-md transition-transform peer-checked:translate-x-8 dark:bg-slate-600 dark:peer-checked:bg-indigo-400"></div>
+              <input type="checkbox" id="filter-mine" class="sr-only peer" />
+              <div
+                class="absolute inset-0 bg-gray-300 rounded-full transition-colors peer-checked:bg-indigo-600 dark:bg-slate-700 dark:peer-checked:bg-indigo-500">
+              </div>
+              <div
+                class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow-md transition-transform peer-checked:translate-x-8 dark:bg-slate-600 dark:peer-checked:bg-indigo-400">
+              </div>
             </label>
             <span>iedereen</span>
           </div>
           <ul id="today-list" class="divide-y divide-slate-100 dark:divide-slate-700"></ul>
-          <div id="today-empty" class="text-sm text-slate-500 dark:text-slate-400 hidden">Nog geen verkopen vandaag.</div>
+          <div id="today-empty" class="text-sm text-slate-500 dark:text-slate-400 hidden">
+            Nog geen verkopen vandaag.
+          </div>
         </div>
       </section>
 
-      <!-- Opbrengst per gebruiker -->
+      <!-- Breakdown -->
       <section id="view-breakdown" class="p-4 pb-24 hidden">
         <div class="card bg-white dark:bg-slate-800 dark:text-slate-100 p-6 space-y-4 shadow-lg rounded-xl">
           <h2 class="text-2xl font-semibold mb-2">
@@ -126,11 +148,15 @@
             Opbrengsten
           </h2>
           <div class="relative text-center mb-4">
-            <button id="day-prev" class="absolute left-0 text-gray-500 hover:text-gray-700 dark:text-slate-400 dark:hover:text-slate-200"><i
-                class="fa-solid fa-chevron-left"></i></button>
+            <button id="day-prev"
+              class="absolute left-0 text-gray-500 hover:text-gray-700 dark:text-slate-400 dark:hover:text-slate-200">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
             <span id="day-label" class="font-medium"></span>
-            <button id="day-next" class="absolute right-0 text-gray-500 hover:text-gray-700 dark:text-slate-400 dark:hover:text-slate-200"><i
-                class="fa-solid fa-chevron-right"></i></button>
+            <button id="day-next"
+              class="absolute right-0 text-gray-500 hover:text-gray-700 dark:text-slate-400 dark:hover:text-slate-200">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
           </div>
           <ul id="breakdown-list" class="divide-y divide-slate-100 dark:divide-slate-700"></ul>
           <div class="flex justify-between mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
@@ -141,7 +167,7 @@
         </div>
       </section>
 
-      <!-- Admin Verrekening -->
+      <!-- Admin -->
       <section id="view-admin" class="p-4 pb-24 hidden">
         <div class="card bg-white dark:bg-slate-800 dark:text-slate-100 p-6 space-y-4 shadow-lg rounded-xl">
           <div class="flex items-center gap-2 mb-4">
@@ -156,22 +182,29 @@
         </div>
       </section>
 
-      <!-- Bottom Tab Bar -->
+      <!-- Bottom Tabs -->
       <nav id="tabs"
         class="tabbar safe-bottom flex justify-around bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 p-2">
-        <button data-tab="home" class="tab active flex flex-col items-center text-sm text-slate-700 dark:text-slate-300"><i
-            class="fa-solid fa-house"></i><span>Home</span></button>
-        <button data-tab="overzicht" class="tab flex flex-col items-center text-sm text-slate-700 dark:text-slate-300"><i
-            class="fa-solid fa-list-check"></i><span>Overzicht</span></button>
-        <button data-tab="breakdown" class="tab flex flex-col items-center text-sm text-slate-700 dark:text-slate-300"><i
-            class="fa-solid fa-chart-simple"></i><span>Breakdown</span></button>
-        <button id="btn-logout" class="tab flex flex-col items-center text-sm text-slate-700 dark:text-slate-300"><i
-            class="fa-solid fa-right-from-bracket"></i><span>Uitloggen</span></button>
+        <button data-tab="home"
+          class="tab active flex flex-col items-center text-sm text-slate-700 dark:text-slate-300">
+          <i class="fa-solid fa-house"></i><span>Home</span>
+        </button>
+        <button data-tab="overzicht"
+          class="tab flex flex-col items-center text-sm text-slate-700 dark:text-slate-300">
+          <i class="fa-solid fa-list-check"></i><span>Overzicht</span>
+        </button>
+        <button data-tab="breakdown"
+          class="tab flex flex-col items-center text-sm text-slate-700 dark:text-slate-300">
+          <i class="fa-solid fa-chart-simple"></i><span>Breakdown</span>
+        </button>
+        <button id="btn-logout"
+          class="tab flex flex-col items-center text-sm text-slate-700 dark:text-slate-300">
+          <i class="fa-solid fa-right-from-bracket"></i><span>Uitloggen</span>
+        </button>
       </nav>
     </main>
   </div>
 
   <script src="assets/app.js"></script>
 </body>
-
 </html>
