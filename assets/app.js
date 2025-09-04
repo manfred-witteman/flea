@@ -62,7 +62,7 @@ function renderTodaySales(data, showAll, currentUserId) {
     modal.id = "sale-modal";
     modal.className = "fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center z-50";
     modal.style.transition = "opacity 0.2s ease";
-    modal.style.opacity = 0; // start invisible
+    modal.style.opacity = 0;
 
     modalImg = document.createElement("img");
     modalImg.id = "sale-modal-img";
@@ -71,7 +71,6 @@ function renderTodaySales(data, showAll, currentUserId) {
     modal.appendChild(modalImg);
     document.body.appendChild(modal);
 
-    // Close modal on click outside the image
     modal.addEventListener("click", (e) => {
       if (e.target === modal) {
         modal.style.opacity = 0;
@@ -115,44 +114,67 @@ function renderTodaySales(data, showAll, currentUserId) {
     spacer.className = "flex-1";
     li.appendChild(spacer);
 
-    // Thumbnail (only if image exists)
-    if (sale.image_url && sale.image_url.trim() !== "") {
-      const thumb = document.createElement("img");
-      const imagePath = sale.image_url.trim();
-      thumb.src = imagePath.startsWith("/flea") ? imagePath : "/flea" + imagePath;
-      thumb.className = "w-12 h-12 object-cover rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer";
+    // Alleen een rightBlock als er thumbnail of delete is
+    if ((sale.image_url && sale.image_url.trim() !== "") || sale.cashier_user_id === currentUserId) {
+      const rightBlock = document.createElement("div");
+      rightBlock.className = "grid grid-cols-[auto,20px] items-center gap-2";
 
-      // Open modal on click
-      thumb.addEventListener("click", () => {
-        modalImg.src = thumb.src;
-        modal.classList.remove("hidden");
-        requestAnimationFrame(() => {
-          modal.style.opacity = 1;
+     // Thumbnail (optioneel)
+      if (sale.image_url && sale.image_url.trim() !== "") {
+        const thumb = document.createElement("img");
+        const imagePath = sale.image_url.trim();
+        const fullPath = imagePath.startsWith("/flea") ? imagePath : "/flea" + imagePath;
+
+        thumb.className = "w-12 h-12 object-cover rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer transition-opacity duration-300";
+        thumb.src = "/flea/api/uploads/placeholder.png"; // transparant placeholder
+        thumb.style.opacity = 0.5; // optioneel iets zichtbaar zodat ruimte duidelijk is
+
+        // async load
+        const imgLoader = new Image();
+        imgLoader.src = fullPath;
+        imgLoader.onload = () => {
+          thumb.src = fullPath;
+          thumb.style.opacity = 1; // fade-in effect
+        };
+
+        thumb.addEventListener("click", () => {
+          modalImg.src = thumb.src;
+          modal.classList.remove("hidden");
+          requestAnimationFrame(() => {
+            modal.style.opacity = 1;
+          });
         });
-      });
 
-      li.appendChild(thumb);
-    }
+        rightBlock.appendChild(thumb);
+      }
 
-        // Delete button
-    if (sale.cashier_user_id === currentUserId) {
-      const btn = document.createElement("button");
-      btn.className = "text-rose-600 hover:text-rose-700 ml-2";
-      btn.title = "Verwijderen";
-      btn.dataset.id = sale.id;
-      btn.innerHTML = `<i class="fa-solid fa-trash"></i>`;
-      btn.addEventListener("click", async () => {
-        if (!confirm("Verkoop verwijderen?")) return;
-        await api("delete_sale", { id: sale.id, image_url: sale.image_url });
-        await refreshToday();
-        await refreshBreakdown(currentDate);
-      });
-      li.appendChild(btn);
+      // Delete button óf placeholder
+      if (sale.cashier_user_id === currentUserId) {
+        const btn = document.createElement("button");
+        btn.className = "text-rose-600 hover:text-rose-700";
+        btn.title = "Verwijderen";
+        btn.dataset.id = sale.id;
+        btn.innerHTML = `<i class="fa-solid fa-trash"></i>`;
+        btn.addEventListener("click", async () => {
+          if (!confirm("Verkoop verwijderen?")) return;
+          await api("delete_sale", { id: sale.id, image_url: sale.image_url });
+          await refreshToday();
+          await refreshBreakdown(currentDate);
+        });
+        rightBlock.appendChild(btn);
+      } else {
+        const placeholder = document.createElement("div");
+        placeholder.className = "w-5"; // zelfde breedte als prullenbak
+        rightBlock.appendChild(placeholder);
+      }
+
+      li.appendChild(rightBlock);
     }
 
     list.appendChild(li);
   });
 }
+
 
 
 
@@ -351,12 +373,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const form = e.currentTarget;
     const payload = {
       description: form.description.value.trim(),
-      price: parseFloat(form.price.value),
+      price: parseMoney(form.price.value),
       owner_user_id: parseInt(form.owner_user_id.value, 10),
-      cost: form.cost.value ? parseFloat(form.cost.value) : null,
+      cost: form.cost.value ? parseMoney(form.cost.value) : null,
       image_url: imageUrlInput.value || null
     };
-    if (!payload.description || isNaN(payload.price) || isNaN(payload.owner_user_id)) {
+    if (!payload.description || payload.price == null || isNaN(payload.owner_user_id)) {
       alert("Controleer je invoer.");
       return;
     }
@@ -420,3 +442,15 @@ document.addEventListener("click", async (e) => {
     }
   }
 });
+
+
+// ---------------------
+// HELPERS
+// ---------------------
+function parseMoney(value) {
+  if (!value) return null;
+  // verwijder spaties en vervang komma door punt
+  value = value.replace(/\s+/g, '').replace(',', '.');
+  let number = parseFloat(value);
+  return isNaN(number) ? null : number;
+}
