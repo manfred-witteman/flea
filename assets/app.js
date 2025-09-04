@@ -401,18 +401,51 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // Breakdown day nav
-  $("#day-prev").addEventListener("click", async () => {
-    currentDate = addDays(currentDate, -1);
-    await refreshBreakdown(currentDate);
-  });
-  $("#day-next").addEventListener("click", async () => {
-    const today = new Date();
-    if (currentDate.toDateString() !== today.toDateString()) {
-      currentDate = addDays(currentDate, 1);
-      await refreshBreakdown(currentDate);
+
+// Breakdown FAB toggle + menu
+const fabBtn = $("#breakdown-date-btn");
+const fabMenu = $("#breakdown-fab-menu");
+const dateInput = $("#breakdown-date-picker");
+
+// Toggle menu
+fabBtn?.addEventListener("click", () => {
+  fabMenu.classList.toggle("hidden");
+
+  // Reset date input naar huidige datum
+  dateInput.value = currentDate.toISOString().slice(0, 10);
+});
+
+// Week / Maand buttons
+fabMenu?.querySelectorAll("button[data-range]").forEach(btn => {
+  btn.addEventListener("click", async () => {
+    const range = btn.dataset.range;
+    fabMenu.classList.add("hidden");
+
+    if (range === "week") {
+      await refreshBreakdown(currentDate, "week");
+    } else if (range === "month") {
+      await refreshBreakdown(currentDate, "month");
     }
   });
+});
+
+// Dag handled via input change
+dateInput.addEventListener("change", async () => {
+  const value = dateInput.value;
+  if (!value) return;
+  const d = new Date(value);
+  if (!isNaN(d)) {
+    currentDate = d;
+    await refreshBreakdown(currentDate, "day");
+  }
+  fabMenu.classList.add("hidden"); // sluit menu pas na datum gekozen
+});
+
+// Optioneel: reset value naar huidige datum bij openen menu
+fabBtn?.addEventListener("click", () => {
+  dateInput.value = currentDate.toISOString().slice(0,10);
+});
+
 
   // Filter toggle
   $("#filter-mine")?.addEventListener("change", refreshToday);
