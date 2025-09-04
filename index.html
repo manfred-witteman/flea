@@ -13,9 +13,7 @@
       darkMode: 'media',
       theme: {
         extend: {
-          colors: {
-            brandBlue: '#3B82F6',
-          },
+          colors: { brandBlue: '#3B82F6' },
         },
       },
     };
@@ -124,12 +122,8 @@
             <span>ik</span>
             <label class="relative inline-block w-16 h-8">
               <input type="checkbox" id="filter-mine" class="sr-only peer" />
-              <div
-                class="absolute inset-0 bg-gray-300 rounded-full transition-colors peer-checked:bg-indigo-600 dark:bg-slate-700 dark:peer-checked:bg-indigo-500">
-              </div>
-              <div
-                class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow-md transition-transform peer-checked:translate-x-8 dark:bg-slate-600 dark:peer-checked:bg-indigo-400">
-              </div>
+              <div class="absolute inset-0 bg-gray-300 rounded-full transition-colors peer-checked:bg-indigo-600 dark:bg-slate-700 dark:peer-checked:bg-indigo-500"></div>
+              <div class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow-md transition-transform peer-checked:translate-x-8 dark:bg-slate-600 dark:peer-checked:bg-indigo-400"></div>
             </label>
             <span>iedereen</span>
           </div>
@@ -141,62 +135,44 @@
       </section>
 
       <!-- Breakdown -->
-<section id="view-breakdown" class="p-4 pb-24 hidden">
-  <div class="card bg-white dark:bg-slate-800 dark:text-slate-100 p-6 space-y-4 shadow-lg rounded-xl">
-    <h2 class="text-2xl font-semibold mb-2">
-      <i class="fa-solid fa-user-group text-indigo-600 mr-2"></i>
-      Opbrengsten
-    </h2>
-    <div class="text-center mb-4">
-      <span id="day-label" class="font-medium"></span>
-    </div>
-    <ul id="breakdown-list" class="divide-y divide-slate-100 dark:divide-slate-700"></ul>
-    <div class="flex justify-between mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
-      <span class="font-medium">Totaal</span>
-      <span id="breakdown-total" class="font-semibold"></span>
-    </div>
-    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
-      Commissie op andermans spullen staat nu op 0%. In de toekomst aanpasbaar.
-    </p>
-  </div>
+      <section id="view-breakdown" class="p-4 pb-24 hidden">
+        <div class="card bg-white dark:bg-slate-800 dark:text-slate-100 p-6 space-y-4 shadow-lg rounded-xl">
+          <h2 class="text-2xl font-semibold mb-2">
+            <i class="fa-solid fa-user-group text-indigo-600 mr-2"></i> Opbrengsten
+          </h2>
+          <div class="text-center mb-4">
+            <span id="day-label" class="font-medium"></span>
+          </div>
+          <ul id="breakdown-list" class="divide-y divide-slate-100 dark:divide-slate-700"></ul>
+          <div class="flex justify-between mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
+            <span class="font-medium">Totaal</span>
+            <span id="breakdown-total" class="font-semibold"></span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
+            Commissie op andermans spullen staat nu op 0%. In de toekomst aanpasbaar.
+          </p>
+        </div>
 
-  <!-- Floating button + menu -->
-  <div id="breakdown-fab" class="fixed bottom-24 right-4 flex flex-col items-end space-y-2 z-50">
-    
-    <!-- Menu -->
-    <div id="breakdown-fab-menu" 
-    class="hidden absolute bottom-full mb-2 flex flex-col items-end space-y-2">
-      <!-- Dag (trigger input) -->
-      <label for="breakdown-date-picker"
-            class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-lg rounded-xl px-4 py-3 text-left w-40 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
-        <i class="fa-solid fa-calendar-day mr-2"></i> Dag
-      </label>
-      <input type="date" id="breakdown-date-picker"
-       class="absolute opacity-0 w-0 h-0 pointer-events-none" />
-
-      <!-- Week -->
-      <button data-range="week"
-        class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-lg rounded-xl px-4 py-3 text-left w-40 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
-        <i class="fa-solid fa-calendar-week mr-2"></i> Week
-      </button>
-
-      <!-- Maand -->
-      <button data-range="month"
-         class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-lg rounded-xl px-4 py-3 text-left w-40 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
-         <i class="fa-solid fa-calendar-alt mr-2"></i> Maand
-      </button>
-    </div>
-
-   <!-- FAB itself -->
-  <button id="breakdown-date-btn"
-          class="w-16 h-16 bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center justify-center shadow-xl cursor-pointer transition">
-    <i class="fa-solid fa-calendar-days text-2xl"></i>
-  </button>
-
-    </div>
-</section>
-
-
+        <!-- Floating button + menu -->
+        <div id="breakdown-fab" class="fixed bottom-24 right-4 flex flex-col items-end space-y-2 z-50">
+          <div id="breakdown-fab-menu" class="hidden absolute bottom-full mb-2 flex flex-col items-end space-y-2">
+            <label for="breakdown-date-picker" class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-lg rounded-xl px-4 py-3 text-left w-40 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer">
+              <i class="fa-solid fa-calendar-day mr-2"></i> Dag
+            </label>
+            <input type="date" id="breakdown-date-picker" class="absolute opacity-0 w-0 h-0 pointer-events-auto" />
+            <label for="breakdown-week-picker" class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-lg rounded-xl px-4 py-3 text-left w-40 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer">
+              <i class="fa-solid fa-calendar-week mr-2"></i> Week
+            </label>
+            <input type="week" id="breakdown-week-picker" class="absolute opacity-0 w-0 h-0 pointer-events-auto" />
+            <button data-range="month" class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-lg rounded-xl px-4 py-3 text-left w-40 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+              <i class="fa-solid fa-calendar-alt mr-2"></i> Maand
+            </button>
+          </div>
+          <button id="breakdown-date-btn" class="w-16 h-16 bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center justify-center shadow-xl cursor-pointer transition">
+            <i class="fa-solid fa-calendar-days text-2xl"></i>
+          </button>
+        </div>
+      </section>
 
       <!-- Admin -->
       <section id="view-admin" class="p-4 pb-24 hidden">
@@ -214,25 +190,21 @@
       </section>
 
       <!-- Bottom Tabs -->
-      <nav id="tabs"
-        class="tabbar safe-bottom flex justify-around bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 p-2">
-        <button data-tab="home"
-          class="tab active flex flex-col items-center text-sm text-slate-700 dark:text-slate-300">
+      <nav id="tabs" class="tabbar safe-bottom flex justify-around bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 p-2">
+        <button data-tab="home" class="tab active flex flex-col items-center text-sm text-slate-700 dark:text-slate-300">
           <i class="fa-solid fa-house"></i><span>Home</span>
         </button>
-        <button data-tab="overzicht"
-          class="tab flex flex-col items-center text-sm text-slate-700 dark:text-slate-300">
+        <button data-tab="overzicht" class="tab flex flex-col items-center text-sm text-slate-700 dark:text-slate-300">
           <i class="fa-solid fa-list-check"></i><span>Overzicht</span>
         </button>
-        <button data-tab="breakdown"
-          class="tab flex flex-col items-center text-sm text-slate-700 dark:text-slate-300">
+        <button data-tab="breakdown" class="tab flex flex-col items-center text-sm text-slate-700 dark:text-slate-300">
           <i class="fa-solid fa-chart-simple"></i><span>Breakdown</span>
         </button>
-        <button id="btn-logout"
-          class="tab flex flex-col items-center text-sm text-slate-700 dark:text-slate-300">
+        <button id="btn-logout" class="tab flex flex-col items-center text-sm text-slate-700 dark:text-slate-300">
           <i class="fa-solid fa-right-from-bracket"></i><span>Uitloggen</span>
         </button>
       </nav>
+
     </main>
   </div>
 
