@@ -41,25 +41,8 @@ function parseMoney(value) {
   return isNaN(num) ? null : num;
 }
 
-// ISO Week helpers
-function getISOWeekString(date) {
-  const d = new Date(date.getTime());
-  d.setHours(0, 0, 0, 0);
-  d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
-  const week1 = new Date(d.getFullYear(), 0, 4);
-  const weekNo = 1 + Math.round(((d - week1) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
-  return `${d.getFullYear()}-W${weekNo.toString().padStart(2, "0")}`;
-}
 
-function getDateOfISOWeek(weekStr) {
-  const [year, week] = weekStr.split("-W").map(Number);
-  const simple = new Date(year, 0, 1 + (week - 1) * 7);
-  const dow = simple.getDay();
-  const monday = simple;
-  if (dow <= 4) monday.setDate(simple.getDate() - simple.getDay() + 1);
-  else monday.setDate(simple.getDate() + 8 - simple.getDay());
-  return monday;
-}
+
 
 // ---------------------
 // Global state
@@ -233,25 +216,31 @@ async function refreshToday() {
 }
 
 async function refreshBreakdown(date, type) {
-  const actionDate =
-    type === "day"
-      ? date.toISOString().slice(0, 10)
-      : type === "week"
-      ? getStartOfISOWeek(date).toISOString().slice(0, 10)
-      : date.toISOString().slice(0, 7) + "-01";
+  const response = await fetch(API_BASE, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      action: 'breakdown',
+      date: type === 'day' ? date.toISOString().slice(0, 10)
+           : type === 'week' ? getStartOfISOWeek(date).toISOString().slice(0,10)
+           : date.toISOString().slice(0,7) + '-01',
+      range: type
+    })
+  });
 
-  const data = await api("breakdown", { date: actionDate, range: type });
+  const data = await response.json();
 
-  const list = $("#breakdown-list");
-  list.innerHTML = "";
-  data.rows.forEach((row) => {
-    const li = document.createElement("li");
-    li.className = "py-2 flex justify-between";
-    li.innerHTML = `<span>${row.owner_name}</span><span>${formatEuro(row.revenue)}</span>`;
+  // update list
+  const list = document.getElementById('breakdown-list');
+  list.innerHTML = '';
+  data.rows.forEach(row => {
+    const li = document.createElement('li');
+    li.className = 'py-2 flex justify-between';
+    li.innerHTML = `<span>${row.owner_name}</span><span>€${row.revenue.toFixed(2)}</span>`;
     list.appendChild(li);
   });
 
-  $("#breakdown-total").textContent = formatEuro(data.total);
+  document.getElementById('breakdown-total').textContent = `€${data.total.toFixed(2)}`;
   updateBreakdownHeader(type, date);
 }
 
@@ -308,31 +297,21 @@ imageInput?.addEventListener("change", async (event) => {
 // Breakdown FAB Init
 // ---------------------
 function initBreakdownFAB() {
-  const fabBtn = $("#breakdown-date-btn");
-  const fabMenu = $("#breakdown-fab-menu");
-  const dateInput = $("#breakdown-date-picker");
-  const weekInput = $("#breakdown-week-picker");
-  const monthInput = $("#breakdown-month-picker");
-
-  if (!fabBtn || !fabMenu || !dateInput || !weekInput || !monthInput) {
-    // Elementen nog niet beschikbaar? Wacht even en probeer opnieuw
-    setTimeout(initBreakdownFAB, 50);
-    return;
-  }
+  const fabBtn = document.getElementById("breakdown-date-btn");
+  const fabMenu = document.getElementById("breakdown-fab-menu");
+  const dateInput = document.getElementById("breakdown-date-picker");
+  const weekInput = document.getElementById("breakdown-week-picker");
+  const monthInput = document.getElementById("breakdown-month-picker");
 
   let currentDate = new Date();
 
-  // Klik op FAB-knop toont/verbergt menu
   fabBtn.addEventListener("click", () => {
     fabMenu.classList.toggle("hidden");
-
-    // Initialiseer inputs met huidige datum
     dateInput.value = currentDate.toISOString().slice(0, 10);
-    weekInput.value = getISOWeekString(currentDate);
+    weekInput.value = getISOWeekString(currentDate); // corrigeert week input
     monthInput.value = currentDate.toISOString().slice(0, 7);
   });
 
-  // Input change handlers
   dateInput.addEventListener("change", async () => {
     if (!dateInput.value) return;
     currentDate = new Date(dateInput.value);
@@ -349,16 +328,16 @@ function initBreakdownFAB() {
 
   monthInput.addEventListener("change", async () => {
     if (!monthInput.value) return;
-    const [year, month] = weekInput.value.split("-"); // maand input: YYYY-MM
+    const [year, month] = monthInput.value.split("-");
     currentDate = new Date(year, month - 1, 1);
     await refreshBreakdown(currentDate, "month");
     fabMenu.classList.add("hidden");
   });
 
   // Labels trigger hidden inputs
-  fabMenu.querySelector("label[for='breakdown-date-picker']")?.addEventListener("click", () => dateInput.click());
-  fabMenu.querySelector("label[for='breakdown-week-picker']")?.addEventListener("click", () => weekInput.click());
-  fabMenu.querySelector("label[for='breakdown-month-picker']")?.addEventListener("click", () => monthInput.click());
+  fabMenu.querySelector("label[for='breakdown-date-picker']").addEventListener("click", () => dateInput.click());
+  fabMenu.querySelector("label[for='breakdown-week-picker']").addEventListener("click", () => weekInput.click());
+  fabMenu.querySelector("label[for='breakdown-month-picker']").addEventListener("click", () => monthInput.click());
 }
 
 
@@ -494,15 +473,49 @@ document.addEventListener("DOMContentLoaded", async () => {
   await checkSession();
 });
 
+
+
 // ----------------------
-// Helpers
+// Update header
 // ----------------------
-function getISOWeekNumber(date) {
-  const tempDate = new Date(date.getTime());
-  tempDate.setHours(0, 0, 0, 0);
-  tempDate.setDate(tempDate.getDate() + 4 - (tempDate.getDay() || 7));
-  const yearStart = new Date(tempDate.getFullYear(), 0, 1);
-  return Math.ceil((((tempDate - yearStart) / 86400000) + 1) / 7);
+function updateBreakdownHeader(type, date) {
+  const label = document.getElementById('day-label');
+  if (!label) return;
+
+  if (type === 'day') {
+    label.textContent = date.toLocaleDateString('nl-NL', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
+  } else if (type === 'week') {
+    const start = getStartOfISOWeek(date);
+    const end = getEndOfISOWeek(date);
+    const weekNumber = getISOWeekNumber(date);
+    label.textContent = `Week ${weekNumber} (${start.toLocaleDateString('nl-NL')} t/m ${end.toLocaleDateString('nl-NL')})`;
+  } else if (type === 'month') {
+    label.textContent = date.toLocaleDateString('nl-NL', { month: 'long', year: 'numeric' });
+  }
+}
+
+
+// ----------------------
+// 1. ISO-week & datum helpers
+// ----------------------
+function getISOWeekString(date) {
+  const d = new Date(date.getTime());
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7)); // verschuif naar donderdag
+  const week1 = new Date(d.getFullYear(), 0, 4);       // eerste week van het jaar
+  const weekNo =
+    1 + Math.round(((d - week1) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
+  return `${d.getFullYear()}-W${weekNo.toString().padStart(2, "0")}`;
+}
+
+function getDateOfISOWeek(weekStr) {
+  const [year, week] = weekStr.split("-W").map(Number);
+  const simple = new Date(year, 0, 1 + (week - 1) * 7);
+  const dow = simple.getDay();
+  const monday = simple;
+  if (dow <= 4) monday.setDate(simple.getDate() - simple.getDay() + 1);
+  else monday.setDate(simple.getDate() + 8 - simple.getDay());
+  return monday;
 }
 
 function getStartOfISOWeek(date) {
@@ -520,19 +533,10 @@ function getEndOfISOWeek(date) {
   return end;
 }
 
-// ----------------------
-// Update header
-// ----------------------
-function updateBreakdownHeader(type, date) {
-  const label = $("#day-label");
-  if (type === "day") {
-    label.textContent = date.toLocaleDateString("nl-NL", { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
-  } else if (type === "week") {
-    const start = getStartOfISOWeek(date);
-    const end = getEndOfISOWeek(date);
-    const weekNumber = getISOWeekNumber(date);
-    label.textContent = `Week ${weekNumber} (${start.toLocaleDateString('nl-NL')} t/m ${end.toLocaleDateString('nl-NL')})`;
-  } else if (type === "month") {
-    label.textContent = date.toLocaleDateString('nl-NL', { month: 'long', year: 'numeric' });
-  }
+function getISOWeekNumber(date) {
+  const tempDate = new Date(date.getTime());
+  tempDate.setHours(0, 0, 0, 0);
+  tempDate.setDate(tempDate.getDate() + 4 - (tempDate.getDay() || 7));
+  const yearStart = new Date(tempDate.getFullYear(), 0, 1);
+  return Math.ceil((((tempDate - yearStart) / 86400000) + 1) / 7);
 }
