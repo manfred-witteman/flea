@@ -12,29 +12,38 @@ header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Cache-Control: post-check=0, pre-check=0', false);
 header('Pragma: no-cache');
 
-
 session_start();
 
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/db.php';
 
-// Functie om JSON response te sturen
+// === Helpers ===
+
+// JSON response
 function respond($data) {
     echo json_encode($data);
     exit;
 }
 
-// Controleer of user is ingelogd
+// Inloggen verplicht
 function require_login() {
     if (!isset($_SESSION['user_id'])) {
         respond(['error' => 'Niet ingelogd']);
     }
 }
 
+// Absolute URL naar een upload-bestand
+function uploads_url(string $filename): string {
+    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
+    $host = $_SERVER['HTTP_HOST'];
+    $scriptDir = dirname($_SERVER['SCRIPT_NAME']); // meestal /api
+    return $scheme . "://" . $host . $scriptDir . "/uploads/" . ltrim($filename, '/');
+}
+
 // Lees POST JSON body
 $input = json_decode(file_get_contents('php://input'), true) ?? [];
 
-// Bepaal action
+// Actie bepalen
 $action = null;
 if (!empty($_POST['action'])) {
     $action = $_POST['action'];
@@ -104,39 +113,38 @@ try {
         respond(['users' => $users]);
     }
 
-   // ADD SALE
-if ($action === 'add_sale') {
-    require_login();
+    // ADD SALE
+    if ($action === 'add_sale') {
+        require_login();
 
-    $description = trim($input['description'] ?? '');
-    $price = $input['price'] ?? null;
-    $cost = $input['cost'] ?? null;
-    $owner_user_id = $input['owner_user_id'] ?? null;
+        $description = trim($input['description'] ?? '');
+        $price = $input['price'] ?? null;
+        $cost = $input['cost'] ?? null;
+        $owner_user_id = $input['owner_user_id'] ?? null;
 
-    if (!$description || !is_numeric($price) || !$owner_user_id) {
-        respond(['error' => 'Ongeldige invoer']);
+        if (!$description || !is_numeric($price) || !$owner_user_id) {
+            respond(['error' => 'Ongeldige invoer']);
+        }
+
+        $price = floatval($price);
+        $owner_user_id = intval($owner_user_id);
+        $cashier_user_id = intval($_SESSION['user_id']);
+        $cost_val = is_null($cost) || $cost === '' ? null : floatval($cost);
+
+        $image_url = trim((string)($input['image_url'] ?? ''));
+
+        $stmt = $db->prepare('
+            INSERT INTO sales (description, price, cost, owner_user_id, cashier_user_id, image_url, sold_at) 
+            VALUES (?, ?, ?, ?, ?, ?, NOW())
+        ');
+        $stmt->bind_param('sdsiss', $description, $price, $cost_val, $owner_user_id, $cashier_user_id, $image_url);
+
+        if (!$stmt->execute()) {
+            respond(['error' => 'Kon verkoop niet opslaan']);
+        }
+
+        respond(['ok' => true, 'id' => $db->insert_id]);
     }
-
-    $price = floatval($price);
-    $owner_user_id = intval($owner_user_id);
-    $cashier_user_id = intval($_SESSION['user_id']);
-    $cost_val = is_null($cost) || $cost === '' ? null : floatval($cost);
-
-    // ✅ Zorg dat image_url altijd een string is
-    $image_url = trim((string)($input['image_url'] ?? ''));
-
-    $stmt = $db->prepare('
-        INSERT INTO sales (description, price, cost, owner_user_id, cashier_user_id, image_url, sold_at) 
-        VALUES (?, ?, ?, ?, ?, ?, NOW())
-    ');
-    $stmt->bind_param('sdsiss', $description, $price, $cost_val, $owner_user_id, $cashier_user_id, $image_url);
-
-    if (!$stmt->execute()) {
-        respond(['error' => 'Kon verkoop niet opslaan']);
-    }
-
-    respond(['ok' => true, 'id' => $db->insert_id]);
-}
 
     // LIST SALES
     if ($action === 'list_sales') {
@@ -144,7 +152,7 @@ if ($action === 'add_sale') {
         $date = $input['date'] ?? $_GET['date'] ?? date('Y-m-d');
         $stmt = $db->prepare('
             SELECT s.id, s.description, s.price, s.sold_at,
-                s.image_url,          -- <--- add this
+                s.image_url,
                 s.owner_user_id, u_owner.name AS owner_name,
                 s.cashier_user_id, u_cashier.name AS cashier_name
             FROM sales s
@@ -166,73 +174,82 @@ if ($action === 'add_sale') {
         respond(['sales' => $sales]);
     }
 
-   
     // DELETE SALE
-if ($action === 'delete_sale') {
-    require_login();
-    $id = intval($input['id'] ?? 0);
-    $image_url = trim($input['image_url'] ?? '');
-
-    if (!$id) respond(['error' => 'Ongeldig ID']);
-
-    // 1️⃣ Haal het bijbehorende record op
-    $stmt = $db->prepare('SELECT image_url FROM sales WHERE id = ?');
-    $stmt->bind_param('i', $id);
-    $stmt->execute();
-    $res = $stmt->get_result();
-    $row = $res->fetch_assoc();
-    $filePath = '';
-    if ($row && !empty($row['image_url'])) {
-        // Map aanmaken naar file system path
-        $filePath = __DIR__ . str_replace('/flea/api', '', $row['image_url']); 
-        error_log("DELETE SALE: image_url={$row['image_url']}, filePath={$filePath}");
-    }
-
-    // 2️⃣ Markeer als deleted
-    $stmt = $db->prepare('UPDATE sales SET deleted = 1, deleted_at = NOW() WHERE id = ?');
-    $stmt->bind_param('i', $id);
-    $stmt->execute();
-
-    // 3️⃣ Verwijder bestand van server
-    if ($filePath && file_exists($filePath)) {
-        if (@unlink($filePath)) {
-            error_log("DELETE SALE: bestand verwijderd: {$filePath}");
-        } else {
-            error_log("DELETE SALE: kon bestand niet verwijderen: {$filePath}");
-        }
-    } else {
-        error_log("DELETE SALE: bestand niet gevonden of geen image_url");
-    }
-
-    respond(['ok' => true]);
-}
-
-     
-
-    // BREAKDOWN
-    if ($action === 'breakdown') {
+    if ($action === 'delete_sale') {
         require_login();
-        $date = $input['date'] ?? date('Y-m-d');
-        $stmt = $db->prepare('
-            SELECT u.id AS owner_id, u.name AS owner_name, COALESCE(SUM(s.price),0) AS revenue
-            FROM users u
-            LEFT JOIN sales s ON s.owner_user_id = u.id AND DATE(s.sold_at) = ? AND s.deleted = 0
-            WHERE u.active = 1
-            GROUP BY u.id, u.name
-            ORDER BY u.name
-        ');
-        $stmt->bind_param('s', $date);
+        $id = intval($input['id'] ?? 0);
+        if (!$id) respond(['error' => 'Ongeldig ID']);
+
+        // Ophalen uit DB
+        $stmt = $db->prepare('SELECT image_url FROM sales WHERE id = ?');
+        $stmt->bind_param('i', $id);
         $stmt->execute();
         $res = $stmt->get_result();
-        $rows = [];
-        $total = 0.0;
-        while ($row = $res->fetch_assoc()) {
-            $rev = floatval($row['revenue']);
-            $total += $rev;
-            $rows[] = ['owner_id' => (int)$row['owner_id'], 'owner_name' => $row['owner_name'], 'revenue' => round($rev, 2)];
+        $row = $res->fetch_assoc();
+
+        $filePath = '';
+        if ($row && !empty($row['image_url'])) {
+            $basename = basename($row['image_url']);
+            $filePath = __DIR__ . '/uploads/' . $basename;
         }
-        respond(['rows' => $rows, 'total' => round($total, 2)]);
+
+        // Markeer als deleted
+        $stmt = $db->prepare('UPDATE sales SET deleted = 1, deleted_at = NOW() WHERE id = ?');
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+
+        // Verwijder bestand
+        if ($filePath && file_exists($filePath)) {
+            @unlink($filePath);
+        }
+
+        respond(['ok' => true]);
     }
+
+// BREAKDOWN
+if ($action === 'breakdown') {
+    require_login();
+    $date = $input['date'] ?? date('Y-m-d');
+    $range = $input['range'] ?? 'day';
+
+    switch ($range) {
+        case 'week':
+            $start = date('Y-m-d', strtotime('monday this week', strtotime($date)));
+            $end   = date('Y-m-d', strtotime('sunday this week', strtotime($date)));
+            $dateCondition = "DATE(s.sold_at) BETWEEN '$start' AND '$end'";
+            break;
+
+        case 'month':
+            $start = date('Y-m-01', strtotime($date));
+            $end   = date('Y-m-t', strtotime($date));
+            $dateCondition = "DATE(s.sold_at) BETWEEN '$start' AND '$end'";
+            break;
+
+        default: // day
+            $dateCondition = "DATE(s.sold_at) = '$date'";
+            break;
+    }
+
+    $stmt = $db->prepare("
+        SELECT u.id AS owner_id, u.name AS owner_name, COALESCE(SUM(s.price),0) AS revenue
+        FROM users u
+        LEFT JOIN sales s ON s.owner_user_id = u.id AND $dateCondition AND s.deleted = 0
+        WHERE u.active = 1
+        GROUP BY u.id, u.name
+        ORDER BY u.name
+    ");
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $rows = [];
+    $total = 0.0;
+    while ($row = $res->fetch_assoc()) {
+        $rev = floatval($row['revenue']);
+        $total += $rev;
+        $rows[] = ['owner_id' => (int)$row['owner_id'], 'owner_name' => $row['owner_name'], 'revenue' => round($rev, 2)];
+    }
+    respond(['rows' => $rows, 'total' => round($total, 2)]);
+}
+
 
     // PROCESS SETTLEMENT
     if ($action === 'process_settlement') {
@@ -291,61 +308,60 @@ if ($action === 'delete_sale') {
         }
     }
 
-  // UPLOAD IMAGE
-if ($action === 'upload_image') {
-    require_login();
+    // UPLOAD IMAGE
+    if ($action === 'upload_image') {
+        require_login();
 
-    if (!isset($_FILES['image'])) {
-        respond(['error' => 'Geen bestand ontvangen']);
-    }
-
-    $file = $_FILES['image'];
-
-    if ($file['error'] !== UPLOAD_ERR_OK) {
-        respond(['error' => 'Fout bij upload']);
-    }
-
-    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-    $allowed = ['jpg','jpeg','png','gif','heic','heif'];
-    if (!in_array($ext, $allowed)) {
-        respond(['error' => 'Alleen JPG, PNG, GIF of HEIC toegestaan']);
-    }
-
-    $targetDir = __DIR__ . '/uploads/';
-    if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
-    if (!is_writable($targetDir)) respond(['error' => 'Uploads map niet schrijfbaar']);
-
-    $filename = time() . '_' . bin2hex(random_bytes(5)) . '.jpg'; // we slaan alles op als JPG
-    $target = $targetDir . $filename;
-
-    try {
-        if (in_array($ext, ['heic','heif'])) {
-    try {
-        $img = new Imagick($file['tmp_name']);
-        $img->setImageFormat('jpeg');
-        $ok = $img->writeImage($target);
-        $img->clear();
-        $img->destroy();
-
-        if (!$ok || !file_exists($target)) {
-            respond(['error' => 'HEIC niet ondersteund op deze server. Upload JPG of PNG.']);
+        if (!isset($_FILES['image'])) {
+            respond(['error' => 'Geen bestand ontvangen']);
         }
-    } catch (Throwable $e) {
-        respond(['error' => 'HEIC conversie mislukt: ' . $e->getMessage()]);
-    }
-} else {
-            if (!move_uploaded_file($file['tmp_name'], $target)) {
-                respond(['error' => 'Kon bestand niet opslaan']);
+
+        $file = $_FILES['image'];
+
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            respond(['error' => 'Fout bij upload']);
+        }
+
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg','jpeg','png','gif','heic','heif'];
+        if (!in_array($ext, $allowed)) {
+            respond(['error' => 'Alleen JPG, PNG, GIF of HEIC toegestaan']);
+        }
+
+        $targetDir = __DIR__ . '/uploads/';
+        if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
+        if (!is_writable($targetDir)) respond(['error' => 'Uploads map niet schrijfbaar']);
+
+        $filename = time() . '_' . bin2hex(random_bytes(5)) . '.jpg'; // alles opslaan als JPG
+        $target = $targetDir . $filename;
+
+        try {
+            if (in_array($ext, ['heic','heif'])) {
+                try {
+                    $img = new Imagick($file['tmp_name']);
+                    $img->setImageFormat('jpeg');
+                    $ok = $img->writeImage($target);
+                    $img->clear();
+                    $img->destroy();
+
+                    if (!$ok || !file_exists($target)) {
+                        respond(['error' => 'HEIC niet ondersteund op deze server. Upload JPG of PNG.']);
+                    }
+                } catch (Throwable $e) {
+                    respond(['error' => 'HEIC conversie mislukt: ' . $e->getMessage()]);
+                }
+            } else {
+                if (!move_uploaded_file($file['tmp_name'], $target)) {
+                    respond(['error' => 'Kon bestand niet opslaan']);
+                }
             }
+        } catch (Throwable $e) {
+            respond(['error' => 'Fout bij verwerken afbeelding: ' . $e->getMessage()]);
         }
-    } catch (Throwable $e) {
-        respond(['error' => 'Fout bij verwerken afbeelding: ' . $e->getMessage()]);
-    }
 
-    // URL teruggeven
-    $url = '/flea/api/uploads/' . $filename;
-    respond(['success' => true, 'url' => $url]);
-}
+        $url = uploads_url($filename);
+        respond(['success' => true, 'url' => $url]);
+    }
 
     respond(['error' => 'Onbekende actie']);
 
