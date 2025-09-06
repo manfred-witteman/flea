@@ -216,21 +216,21 @@ async function refreshToday() {
 }
 
 async function refreshBreakdown(date, type) {
+  const payloadDate = type === 'day' 
+    ? formatDateUTC(date)
+    : type === 'week' 
+      ? formatDateUTC(getStartOfISOWeekUTC(date))
+      : `${date.getUTCFullYear()}-${String(date.getUTCMonth()+1).padStart(2,'0')}-01`;
+
   const response = await fetch(API_BASE, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      action: 'breakdown',
-      date: type === 'day' ? date.toISOString().slice(0, 10)
-           : type === 'week' ? getStartOfISOWeek(date).toISOString().slice(0,10)
-           : date.toISOString().slice(0,7) + '-01',
-      range: type
-    })
+    body: JSON.stringify({ action: 'breakdown', date: payloadDate, range: type })
   });
 
   const data = await response.json();
 
-  // update list
+  // update lijst
   const list = document.getElementById('breakdown-list');
   list.innerHTML = '';
   data.rows.forEach(row => {
@@ -243,6 +243,7 @@ async function refreshBreakdown(date, type) {
   document.getElementById('breakdown-total').textContent = `€${data.total.toFixed(2)}`;
   updateBreakdownHeader(type, date);
 }
+
 
 // ---------------------
 // Owner select
@@ -320,19 +321,19 @@ function initBreakdownFAB() {
   });
 
   weekInput.addEventListener("change", async () => {
-    if (!weekInput.value) return;
-    currentDate = getDateOfISOWeek(weekInput.value);
-    await refreshBreakdown(currentDate, "week");
-    fabMenu.classList.add("hidden");
-  });
+  if (!weekInput.value) return;
+  currentDate = getDateOfISOWeekUTC(weekInput.value);
+  await refreshBreakdown(currentDate, "week");
+  fabMenu.classList.add("hidden");
+});
 
   monthInput.addEventListener("change", async () => {
-    if (!monthInput.value) return;
-    const [year, month] = monthInput.value.split("-");
-    currentDate = new Date(year, month - 1, 1);
-    await refreshBreakdown(currentDate, "month");
-    fabMenu.classList.add("hidden");
-  });
+  if (!monthInput.value) return;
+  const [year, month] = monthInput.value.split("-").map(Number);
+  currentDate = new Date(Date.UTC(year, month-1, 1)); // altijd 1e dag UTC
+  await refreshBreakdown(currentDate, "month");
+  fabMenu.classList.add("hidden");
+});
 
   // Labels trigger hidden inputs
   fabMenu.querySelector("label[for='breakdown-date-picker']").addEventListener("click", () => dateInput.click());
@@ -485,9 +486,9 @@ function updateBreakdownHeader(type, date) {
   if (type === 'day') {
     label.textContent = date.toLocaleDateString('nl-NL', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
   } else if (type === 'week') {
-    const start = getStartOfISOWeek(date);
-    const end = getEndOfISOWeek(date);
-    const weekNumber = getISOWeekNumber(date);
+    const start = getStartOfISOWeekUTC(date);
+    const end = getEndOfISOWeekUTC(date);
+    const weekNumber = getISOWeekNumberUTC(date);
     label.textContent = `Week ${weekNumber} (${start.toLocaleDateString('nl-NL')} t/m ${end.toLocaleDateString('nl-NL')})`;
   } else if (type === 'month') {
     label.textContent = date.toLocaleDateString('nl-NL', { month: 'long', year: 'numeric' });
@@ -496,47 +497,51 @@ function updateBreakdownHeader(type, date) {
 
 
 // ----------------------
-// 1. ISO-week & datum helpers
+// Datum helpers
 // ----------------------
-function getISOWeekString(date) {
-  const d = new Date(date.getTime());
-  d.setHours(0, 0, 0, 0);
-  d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7)); // verschuif naar donderdag
-  const week1 = new Date(d.getFullYear(), 0, 4);       // eerste week van het jaar
-  const weekNo =
-    1 + Math.round(((d - week1) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
-  return `${d.getFullYear()}-W${weekNo.toString().padStart(2, "0")}`;
+// Dag string in YYYY-MM-DD
+function formatDateUTC(date) {
+  return date.toISOString().slice(0,10); // altijd in UTC
 }
 
-function getDateOfISOWeek(weekStr) {
-  const [year, week] = weekStr.split("-W").map(Number);
-  const simple = new Date(year, 0, 1 + (week - 1) * 7);
-  const dow = simple.getDay();
-  const monday = simple;
-  if (dow <= 4) monday.setDate(simple.getDate() - simple.getDay() + 1);
-  else monday.setDate(simple.getDate() + 8 - simple.getDay());
-  return monday;
-}
-
-function getStartOfISOWeek(date) {
-  const d = new Date(date);
-  const day = d.getDay();
+// Begin van de ISO-week (maandag)
+function getStartOfISOWeekUTC(date) {
+  const d = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+  const day = d.getUTCDay();
   const diffToMonday = (day + 6) % 7;
-  d.setDate(d.getDate() - diffToMonday);
+  d.setUTCDate(d.getUTCDate() - diffToMonday);
   return d;
 }
 
-function getEndOfISOWeek(date) {
-  const start = getStartOfISOWeek(date);
+// Eind van ISO-week (zondag)
+function getEndOfISOWeekUTC(date) {
+  const start = getStartOfISOWeekUTC(date);
   const end = new Date(start);
-  end.setDate(start.getDate() + 6);
+  end.setUTCDate(start.getUTCDate() + 6);
   return end;
 }
 
-function getISOWeekNumber(date) {
-  const tempDate = new Date(date.getTime());
-  tempDate.setHours(0, 0, 0, 0);
-  tempDate.setDate(tempDate.getDate() + 4 - (tempDate.getDay() || 7));
-  const yearStart = new Date(tempDate.getFullYear(), 0, 1);
+// ISO-week nummer
+function getISOWeekNumberUTC(date) {
+  const tempDate = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+  tempDate.setUTCDate(tempDate.getUTCDate() + 4 - (tempDate.getUTCDay() || 7));
+  const yearStart = new Date(Date.UTC(tempDate.getUTCFullYear(), 0, 1));
   return Math.ceil((((tempDate - yearStart) / 86400000) + 1) / 7);
+}
+
+// ISO week string: YYYY-Www
+function getISOWeekStringUTC(date) {
+  const weekNo = getISOWeekNumberUTC(date);
+  return `${date.getUTCFullYear()}-W${weekNo.toString().padStart(2,"0")}`;
+}
+
+// Date van ISO week string: YYYY-Www → maandag van die week
+function getDateOfISOWeekUTC(weekStr) {
+  const [year, week] = weekStr.split("-W").map(Number);
+  const simple = new Date(Date.UTC(year,0,1 + (week-1)*7));
+  const dow = simple.getUTCDay();
+  const monday = new Date(simple);
+  if (dow <= 4) monday.setUTCDate(simple.getUTCDate() - dow + 1);
+  else monday.setUTCDate(simple.getUTCDate() + 8 - dow);
+  return monday;
 }
