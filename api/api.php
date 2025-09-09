@@ -5,6 +5,10 @@ declare(strict_types=1);
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
+// Log direct naar env/logs/php_errors.log
+ini_set('log_errors', '1');
+ini_set('error_log', dirname(__DIR__) . '/env/logs/php_errors.log');
+
 header('Content-Type: application/json; charset=utf-8');
 
 // No-cache headers om iOS standalone caching te voorkomen
@@ -14,36 +18,36 @@ header('Pragma: no-cache');
 
 session_start();
 
-require_once __DIR__ . '/config.php';
-require_once __DIR__ . '/db.php';
+// Config en database uit env/
+require_once dirname(__DIR__) . '/env/config.php';
+require_once dirname(__DIR__) . '/env/db.php';
 
 // === Helpers ===
-
-// JSON response
 function respond($data) {
     echo json_encode($data);
     exit;
 }
 
-// Inloggen verplicht
 function require_login() {
     if (!isset($_SESSION['user_id'])) {
         respond(['error' => 'Niet ingelogd']);
     }
 }
 
-// Absolute URL naar een upload-bestand
+function uploads_dir(): string {
+    return dirname(__DIR__) . '/env/uploads/';
+}
+
 function uploads_url(string $filename): string {
     $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
     $host = $_SERVER['HTTP_HOST'];
-    $scriptDir = dirname($_SERVER['SCRIPT_NAME']); // meestal /api
-    return $scheme . "://" . $host . $scriptDir . "/uploads/" . ltrim($filename, '/');
+    $basePath = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'); // meestal /api
+    return $scheme . "://" . $host . $basePath . "/../env/uploads/" . ltrim($filename, '/');
 }
 
 // Lees POST JSON body
 $input = json_decode(file_get_contents('php://input'), true) ?? [];
 
-// Actie bepalen
 $action = null;
 if (!empty($_POST['action'])) {
     $action = $_POST['action'];
@@ -133,11 +137,13 @@ try {
 
         $image_url = trim((string)($input['image_url'] ?? ''));
 
+        $is_pin = isset($input['is_pin']) ? intval($input['is_pin']) : 0;
+
         $stmt = $db->prepare('
-            INSERT INTO sales (description, price, cost, owner_user_id, cashier_user_id, image_url, sold_at) 
-            VALUES (?, ?, ?, ?, ?, ?, NOW())
+            INSERT INTO sales (description, price, cost, owner_user_id, cashier_user_id, image_url, is_pin, sold_at) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
         ');
-        $stmt->bind_param('sdsiss', $description, $price, $cost_val, $owner_user_id, $cashier_user_id, $image_url);
+        $stmt->bind_param('sdsissi', $description, $price, $cost_val, $owner_user_id, $cashier_user_id, $image_url, $is_pin);
 
         if (!$stmt->execute()) {
             respond(['error' => 'Kon verkoop niet opslaan']);
@@ -180,7 +186,6 @@ try {
         $id = intval($input['id'] ?? 0);
         if (!$id) respond(['error' => 'Ongeldig ID']);
 
-        // Ophalen uit DB
         $stmt = $db->prepare('SELECT image_url FROM sales WHERE id = ?');
         $stmt->bind_param('i', $id);
         $stmt->execute();
@@ -190,15 +195,13 @@ try {
         $filePath = '';
         if ($row && !empty($row['image_url'])) {
             $basename = basename($row['image_url']);
-            $filePath = __DIR__ . '/uploads/' . $basename;
+            $filePath = uploads_dir() . $basename;
         }
 
-        // Markeer als deleted
         $stmt = $db->prepare('UPDATE sales SET deleted = 1, deleted_at = NOW() WHERE id = ?');
         $stmt->bind_param('i', $id);
         $stmt->execute();
 
-        // Verwijder bestand
         if ($filePath && file_exists($filePath)) {
             @unlink($filePath);
         }
@@ -206,50 +209,47 @@ try {
         respond(['ok' => true]);
     }
 
-// BREAKDOWN
-if ($action === 'breakdown') {
-    require_login();
-    $date = $input['date'] ?? date('Y-m-d');
-    $range = $input['range'] ?? 'day';
+    // BREAKDOWN
+    if ($action === 'breakdown') {
+        require_login();
+        $date = $input['date'] ?? date('Y-m-d');
+        $range = $input['range'] ?? 'day';
 
-    switch ($range) {
-        case 'week':
-            $start = date('Y-m-d', strtotime('monday this week', strtotime($date)));
-            $end   = date('Y-m-d', strtotime('sunday this week', strtotime($date)));
-            $dateCondition = "DATE(s.sold_at) BETWEEN '$start' AND '$end'";
-            break;
+        switch ($range) {
+            case 'week':
+                $start = date('Y-m-d', strtotime('monday this week', strtotime($date)));
+                $end   = date('Y-m-d', strtotime('sunday this week', strtotime($date)));
+                $dateCondition = "DATE(s.sold_at) BETWEEN '$start' AND '$end'";
+                break;
+            case 'month':
+                $start = date('Y-m-01', strtotime($date));
+                $end   = date('Y-m-t', strtotime($date));
+                $dateCondition = "DATE(s.sold_at) BETWEEN '$start' AND '$end'";
+                break;
+            default: // day
+                $dateCondition = "DATE(s.sold_at) = '$date'";
+                break;
+        }
 
-        case 'month':
-            $start = date('Y-m-01', strtotime($date));
-            $end   = date('Y-m-t', strtotime($date));
-            $dateCondition = "DATE(s.sold_at) BETWEEN '$start' AND '$end'";
-            break;
-
-        default: // day
-            $dateCondition = "DATE(s.sold_at) = '$date'";
-            break;
+        $stmt = $db->prepare("
+            SELECT u.id AS owner_id, u.name AS owner_name, COALESCE(SUM(s.price),0) AS revenue
+            FROM users u
+            LEFT JOIN sales s ON s.owner_user_id = u.id AND $dateCondition AND s.deleted = 0
+            WHERE u.active = 1
+            GROUP BY u.id, u.name
+            ORDER BY u.name
+        ");
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $rows = [];
+        $total = 0.0;
+        while ($row = $res->fetch_assoc()) {
+            $rev = floatval($row['revenue']);
+            $total += $rev;
+            $rows[] = ['owner_id' => (int)$row['owner_id'], 'owner_name' => $row['owner_name'], 'revenue' => round($rev, 2)];
+        }
+        respond(['rows' => $rows, 'total' => round($total, 2)]);
     }
-
-    $stmt = $db->prepare("
-        SELECT u.id AS owner_id, u.name AS owner_name, COALESCE(SUM(s.price),0) AS revenue
-        FROM users u
-        LEFT JOIN sales s ON s.owner_user_id = u.id AND $dateCondition AND s.deleted = 0
-        WHERE u.active = 1
-        GROUP BY u.id, u.name
-        ORDER BY u.name
-    ");
-    $stmt->execute();
-    $res = $stmt->get_result();
-    $rows = [];
-    $total = 0.0;
-    while ($row = $res->fetch_assoc()) {
-        $rev = floatval($row['revenue']);
-        $total += $rev;
-        $rows[] = ['owner_id' => (int)$row['owner_id'], 'owner_name' => $row['owner_name'], 'revenue' => round($rev, 2)];
-    }
-    respond(['rows' => $rows, 'total' => round($total, 2)]);
-}
-
 
     // PROCESS SETTLEMENT
     if ($action === 'process_settlement') {
@@ -309,59 +309,39 @@ if ($action === 'breakdown') {
     }
 
     // UPLOAD IMAGE
-    if ($action === 'upload_image') {
-        require_login();
+if ($action === 'upload_image') {
+    require_login();
 
-        if (!isset($_FILES['image'])) {
-            respond(['error' => 'Geen bestand ontvangen']);
-        }
-
-        $file = $_FILES['image'];
-
-        if ($file['error'] !== UPLOAD_ERR_OK) {
-            respond(['error' => 'Fout bij upload']);
-        }
-
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $allowed = ['jpg','jpeg','png','gif','heic','heif'];
-        if (!in_array($ext, $allowed)) {
-            respond(['error' => 'Alleen JPG, PNG, GIF of HEIC toegestaan']);
-        }
-
-        $targetDir = __DIR__ . '/uploads/';
-        if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
-        if (!is_writable($targetDir)) respond(['error' => 'Uploads map niet schrijfbaar']);
-
-        $filename = time() . '_' . bin2hex(random_bytes(5)) . '.jpg'; // alles opslaan als JPG
-        $target = $targetDir . $filename;
-
-        try {
-            if (in_array($ext, ['heic','heif'])) {
-                try {
-                    $img = new Imagick($file['tmp_name']);
-                    $img->setImageFormat('jpeg');
-                    $ok = $img->writeImage($target);
-                    $img->clear();
-                    $img->destroy();
-
-                    if (!$ok || !file_exists($target)) {
-                        respond(['error' => 'HEIC niet ondersteund op deze server. Upload JPG of PNG.']);
-                    }
-                } catch (Throwable $e) {
-                    respond(['error' => 'HEIC conversie mislukt: ' . $e->getMessage()]);
-                }
-            } else {
-                if (!move_uploaded_file($file['tmp_name'], $target)) {
-                    respond(['error' => 'Kon bestand niet opslaan']);
-                }
-            }
-        } catch (Throwable $e) {
-            respond(['error' => 'Fout bij verwerken afbeelding: ' . $e->getMessage()]);
-        }
-
-        $url = uploads_url($filename);
-        respond(['success' => true, 'url' => $url]);
+    if (!isset($_FILES['image'])) {
+        respond(['error' => 'Geen bestand ontvangen']);
     }
+
+    $file = $_FILES['image'];
+
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+        respond(['error' => 'Fout bij upload']);
+    }
+
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    $allowed = ['jpg','jpeg','png','gif']; // HEIC/HEIF verwijderd
+    if (!in_array($ext, $allowed)) {
+        respond(['error' => 'Alleen JPG, PNG of GIF toegestaan']);
+    }
+
+    $targetDir = uploads_dir();
+    if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
+    if (!is_writable($targetDir)) respond(['error' => 'Uploads map niet schrijfbaar']);
+
+    $filename = time() . '_' . bin2hex(random_bytes(5)) . '.jpg';
+    $target = $targetDir . $filename;
+
+    if (!move_uploaded_file($file['tmp_name'], $target)) {
+        respond(['error' => 'Kon bestand niet opslaan']);
+    }
+
+    $url = uploads_url($filename);
+    respond(['success' => true, 'url' => $url]);
+}   
 
     respond(['error' => 'Onbekende actie']);
 

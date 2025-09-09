@@ -91,27 +91,47 @@ function renderTodaySales(data, showAll, currentUserId) {
   let modal = document.getElementById("sale-modal");
   let modalImg = document.getElementById("sale-modal-img");
 
-  if (!modal) {
-    modal = document.createElement("div");
-    modal.id = "sale-modal";
-    modal.className = "fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center z-50";
-    modal.style.transition = "opacity 0.2s ease";
+if (!modal) {
+  modal = document.createElement("div");
+  modal.id = "sale-modal";
+  modal.className = "fixed inset-0 bg-black bg-opacity-70 hidden flex items-start justify-center z-50"; // items-start i.p.v. items-center
+  modal.style.transition = "opacity 0.2s ease";
+  modal.style.opacity = 0;
+
+  // Container voor content
+  const modalContent = document.createElement("div");
+  modalContent.className = "relative max-h-[85vh] overflow-auto p-4 mt-12"; // mt-12 om van boven te schuiven
+  modalContent.style.display = "flex";
+  modalContent.style.justifyContent = "center";
+
+  // Sluit-knop
+  const closeBtn = document.createElement("button");
+  closeBtn.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
+  closeBtn.className =
+    "absolute top-2 right-2 bg-white text-slate-700 rounded-full shadow-md w-8 h-8 flex items-center justify-center hover:bg-slate-100 z-50";
+  closeBtn.addEventListener("click", () => {
     modal.style.opacity = 0;
+    setTimeout(() => modal.classList.add("hidden"), 200);
+  });
 
-    modalImg = document.createElement("img");
-    modalImg.id = "sale-modal-img";
-    modalImg.className = "max-w-full max-h-full rounded-lg shadow-lg";
+  // Modal image
+  modalImg = document.createElement("img");
+  modalImg.id = "sale-modal-img";
+  modalImg.className = "max-w-full max-h-[80vh] rounded-lg shadow-lg"; // iets kleinere max-height
 
-    modal.appendChild(modalImg);
-    document.body.appendChild(modal);
+  modalContent.appendChild(modalImg);
+  modal.appendChild(modalContent);
+  modal.appendChild(closeBtn);
+  document.body.appendChild(modal);
 
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) {
-        modal.style.opacity = 0;
-        setTimeout(() => modal.classList.add("hidden"), 200);
-      }
-    });
-  }
+  // Klik buiten content sluit modal
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.style.opacity = 0;
+      setTimeout(() => modal.classList.add("hidden"), 200);
+    }
+  });
+}
 
   filteredSales.forEach((sale) => {
     const li = document.createElement("li");
@@ -303,6 +323,18 @@ function initBreakdownFAB() {
   const dateInput = document.getElementById("breakdown-date-picker");
   const weekInput = document.getElementById("breakdown-week-picker");
   const monthInput = document.getElementById("breakdown-month-picker");
+  
+
+const paymentInput = document.getElementById("payment-method");
+const paymentIcon = document.getElementById("payment-icon");
+const paymentText = document.getElementById("payment-text");
+
+
+
+
+
+
+
 
   let currentDate = new Date();
 
@@ -312,6 +344,16 @@ function initBreakdownFAB() {
     weekInput.value = getISOWeekString(currentDate); // corrigeert week input
     monthInput.value = currentDate.toISOString().slice(0, 7);
   });
+
+  paymentInput?.addEventListener("change", () => {
+  if (paymentInput.checked) {
+    paymentIcon.className = "fa-solid fa-credit-card";
+    paymentText.textContent = "Pin";
+  } else {
+    paymentIcon.className = "fa-solid fa-money-bill";
+    paymentText.textContent = "Contant";
+  }
+});
 
   dateInput.addEventListener("change", async () => {
     if (!dateInput.value) return;
@@ -428,7 +470,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       owner_user_id: parseInt(form.owner_user_id.value, 10),
       cost: form.cost.value ? parseMoney(form.cost.value) : null,
       image_url: imageUrlInput.value || null,
+      is_pin: form.payment_method.checked ? 1 : 0 
     };
+
+
     if (!payload.description || payload.price == null || isNaN(payload.owner_user_id)) {
       alert("Controleer je invoer.");
       return;

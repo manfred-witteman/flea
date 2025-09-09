@@ -83,6 +83,21 @@
                 class="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100" />
             </div>
             <div class="flex flex-col">
+              <label class="text-sm font-medium mb-1">Betaalmethode</label>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="payment-method" name="payment_method"
+                  class="sr-only peer">
+                <div class="w-16 h-8 bg-gray-300 peer-focus:outline-none rounded-full peer
+                            peer-checked:bg-green-500 transition-colors"></div>
+                <div class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow-md
+                            transition-transform peer-checked:translate-x-8"></div>
+                <span class="ml-3 text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                  <i id="payment-icon" class="fa-solid fa-money-bill"></i>
+                  <span id="payment-text">Contant</span>
+                </span>
+              </label>
+            </div>
+            <div class="flex flex-col hidden">
               <label class="text-sm font-medium mb-1">Kostprijs (€) <span
                   class="text-gray-400 dark:text-slate-400">(optioneel)</span></label>
               <input name="cost" type="text" inputmode="decimal" placeholder="0,00"
