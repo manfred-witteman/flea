@@ -325,17 +325,6 @@ function initBreakdownFAB() {
   const monthInput = document.getElementById("breakdown-month-picker");
   
 
-const paymentInput = document.getElementById("payment-method");
-const paymentIcon = document.getElementById("payment-icon");
-const paymentText = document.getElementById("payment-text");
-
-
-
-
-
-
-
-
   let currentDate = new Date();
 
   fabBtn.addEventListener("click", () => {
@@ -344,16 +333,6 @@ const paymentText = document.getElementById("payment-text");
     weekInput.value = getISOWeekString(currentDate); // corrigeert week input
     monthInput.value = currentDate.toISOString().slice(0, 7);
   });
-
-  paymentInput?.addEventListener("change", () => {
-  if (paymentInput.checked) {
-    paymentIcon.className = "fa-solid fa-credit-card";
-    paymentText.textContent = "Pin";
-  } else {
-    paymentIcon.className = "fa-solid fa-money-bill";
-    paymentText.textContent = "Contant";
-  }
-});
 
   dateInput.addEventListener("change", async () => {
     if (!dateInput.value) return;
@@ -397,7 +376,7 @@ async function checkSession() {
       await populateOwnerSelect(currentUserId);
       currentDate = new Date();
       await refreshToday();
-      await refreshBreakdown(currentDate);
+      await refreshBreakdown(currentDate, "day");
       setActiveTab("home");
 
       const tabsContainer = $("#tabs");
@@ -428,12 +407,28 @@ async function checkSession() {
 // DOM Content Loaded
 // ---------------------
 document.addEventListener("DOMContentLoaded", async () => {
+
+  const paymentInput = document.getElementById("payment-method");
+  const paymentIcon = document.getElementById("payment-icon");
+  const paymentText = document.getElementById("payment-text");
+
+  paymentInput?.addEventListener("change", () => {
+    if (paymentInput.checked) {
+      paymentIcon.className = "fa-solid fa-credit-card";
+      paymentText.textContent = "Pin";
+    } else {
+      paymentIcon.className = "fa-solid fa-money-bill";
+      paymentText.textContent = "Contant";
+    }
+  });
+
+
   $(".tabbar")?.querySelectorAll(".tab[data-tab]")?.forEach((btn) => {
     btn.addEventListener("click", async () => {
       const tab = btn.dataset.tab;
       setActiveTab(tab);
       if (tab === "overzicht") await refreshToday();
-      if (tab === "breakdown") await refreshBreakdown(currentDate);
+      if (tab === "breakdown") await refreshBreakdown(currentDate, "day");
     });
   });
 
