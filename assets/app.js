@@ -49,6 +49,7 @@ function parseMoney(value) {
 // ---------------------
 let currentUserId = null;
 let currentDate = new Date();
+let overviewDate = new Date(); 
 
 // ---------------------
 // UI helpers
@@ -63,11 +64,20 @@ function setActiveTab(name) {
 function setDayLabel(d) {
   const todayStr = new Date().toISOString().slice(0, 10);
   const dateStr = d.toISOString().slice(0, 10);
+
   const opts = { weekday: "long", day: "numeric", month: "long" };
-  let label = d.toLocaleDateString("nl-NL", opts);
-  if (dateStr === todayStr) label += " (vandaag)";
-  $("#day-label").textContent = label;
+  let formattedDate = d.toLocaleDateString("nl-NL", opts);
+
+  const labelEl = $("#overview-label");
+  if (!labelEl) return;
+
+  if (dateStr === todayStr) {
+    labelEl.textContent = "Vandaag verkocht";
+  } else {
+    labelEl.textContent = `Verkoop van ${formattedDate}`;
+  }
 }
+
 
 // ---------------------
 // Sales rendering (met swipe gallery)
@@ -292,7 +302,8 @@ function renderTodaySales(data, showAll, currentUserId) {
 // Refresh functions
 // ---------------------
 async function refreshToday() {
-  const data = await api("list_sales", { date: new Date().toISOString().slice(0, 10) });
+  const data = await api("list_sales", { date: formatDateUTC(overviewDate) });
+  setDayLabel(overviewDate);
   const showAll = $("#filter-mine")?.checked ?? false;
   renderTodaySales(data, showAll, currentUserId);
 }
@@ -312,6 +323,8 @@ async function refreshBreakdown(date, type) {
 
   const data = await response.json();
 
+  
+
   // update lijst
   const list = document.getElementById('breakdown-list');
   list.innerHTML = '';
@@ -323,6 +336,19 @@ async function refreshBreakdown(date, type) {
   });
 
   document.getElementById('breakdown-total').textContent = `€${data.total.toFixed(2)}`;
+
+
+  // Update overviewDate naar eerste dag van de selectie
+if (type === 'day') {
+  overviewDate = new Date(date);
+} else if (type === 'week') {
+  overviewDate = getStartOfISOWeekUTC(date);
+} else if (type === 'month') {
+  overviewDate = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
+}
+
+// Optioneel: refresh Overzicht automatisch
+await refreshToday();
   updateBreakdownHeader(type, date);
 }
 
