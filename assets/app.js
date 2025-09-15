@@ -65,19 +65,18 @@ function setDayLabel(d) {
   const todayStr = new Date().toISOString().slice(0, 10);
   const dateStr = d.toISOString().slice(0, 10);
 
-  const opts = { weekday: "long", day: "numeric", month: "long" };
-  let formattedDate = d.toLocaleDateString("nl-NL", opts);
-
   const labelEl = $("#overview-label");
   if (!labelEl) return;
 
   if (dateStr === todayStr) {
     labelEl.textContent = "Vandaag verkocht";
   } else {
-    labelEl.textContent = `Verkoop van ${formattedDate}`;
+    // korte notatie: ma 1 sept
+    const opts = { weekday: "short", day: "numeric", month: "short" };
+    const formattedDate = d.toLocaleDateString("nl-NL", opts);
+    labelEl.textContent = formattedDate;
   }
 }
-
 
 // ---------------------
 // Sales rendering (met swipe gallery)
@@ -495,6 +494,25 @@ async function checkSession() {
 // DOM Content Loaded
 // ---------------------
 document.addEventListener("DOMContentLoaded", async () => {
+
+const overviewLabel = $("#overview-label");
+const prevDayBtn = $("#prev-day");
+const nextDayBtn = $("#next-day");
+
+overviewLabel?.addEventListener("click", async () => {
+  overviewDate = new Date(); // terug naar vandaag
+  await refreshToday();
+});
+
+prevDayBtn?.addEventListener("click", async () => {
+  overviewDate.setDate(overviewDate.getDate() - 1);
+  await refreshToday();
+});
+
+nextDayBtn?.addEventListener("click", async () => {
+  overviewDate.setDate(overviewDate.getDate() + 1);
+  await refreshToday();
+});
 
   const paymentInput = document.getElementById("payment-method");
   const paymentIcon = document.getElementById("payment-icon");

@@ -3,7 +3,8 @@
 
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>Flea Market</title>
 
   <!-- Tailwind CSS CDN -->
@@ -20,8 +21,7 @@
   </script>
 
   <!-- Font Awesome -->
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <!-- Eigen styles -->
@@ -85,8 +85,7 @@
             <div class="flex flex-col">
               <label class="text-sm font-medium mb-1">Betaalmethode</label>
               <label class="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" id="payment-method" name="payment_method"
-                  class="sr-only peer">
+                <input type="checkbox" id="payment-method" name="payment_method" class="sr-only peer">
                 <div class="w-16 h-8 bg-gray-300 peer-focus:outline-none rounded-full peer
                             peer-checked:bg-green-500 transition-colors"></div>
                 <div class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow-md
@@ -129,16 +128,33 @@
       <!-- Vandaag verkocht -->
       <section id="view-overzicht" class="p-4 pb-24 hidden">
         <div class="card bg-white dark:bg-slate-800 dark:text-slate-100 p-6 space-y-4 shadow-lg rounded-xl">
-          <div class="flex items-center gap-2 mb-2">
-            <i class="fa-solid fa-calendar-day text-indigo-600"></i>
-            <h2 id="overview-label" class="text-2xl font-semibold">Vandaag verkocht</h2>
+          <div class="flex items-center justify-between mb-4 relative">
+            <!-- Linker pijl -->
+            <button id="prev-day" class="absolute left-0 text-indigo-600 hover:text-indigo-800 text-2xl font-bold">
+              ‹
+            </button>
+
+            <!-- Gecentreerd label -->
+            <div class="flex items-center gap-2 justify-center w-full">
+              <i class="fa-solid fa-calendar-day text-indigo-600"></i>
+              <h2 id="overview-label" class="text-2xl font-semibold cursor-pointer text-center">Vandaag verkocht</h2>
+            </div>
+
+            <!-- Rechter pijl -->
+            <button id="next-day" class="absolute right-0 text-indigo-600 hover:text-indigo-800 text-2xl font-bold">
+              ›
+            </button>
           </div>
           <div class="flex justify-center items-center gap-2 mb-4 text-sm font-semibold">
             <span>ik</span>
             <label class="relative inline-block w-16 h-8">
               <input type="checkbox" id="filter-mine" class="sr-only peer" />
-              <div class="absolute inset-0 bg-gray-300 rounded-full transition-colors peer-checked:bg-indigo-600 dark:bg-slate-700 dark:peer-checked:bg-indigo-500"></div>
-              <div class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow-md transition-transform peer-checked:translate-x-8 dark:bg-slate-600 dark:peer-checked:bg-indigo-400"></div>
+              <div
+                class="absolute inset-0 bg-gray-300 rounded-full transition-colors peer-checked:bg-indigo-600 dark:bg-slate-700 dark:peer-checked:bg-indigo-500">
+              </div>
+              <div
+                class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow-md transition-transform peer-checked:translate-x-8 dark:bg-slate-600 dark:peer-checked:bg-indigo-400">
+              </div>
             </label>
             <span>iedereen</span>
           </div>
@@ -171,20 +187,24 @@
         <!-- Floating button + menu -->
         <div id="breakdown-fab" class="fixed bottom-24 right-4 flex flex-col items-end space-y-2 z-50">
           <div id="breakdown-fab-menu" class="hidden absolute bottom-full mb-2 flex flex-col items-end space-y-2">
-            <label for="breakdown-date-picker" class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-lg rounded-xl px-4 py-3 text-left w-40 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer">
+            <label for="breakdown-date-picker"
+              class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-lg rounded-xl px-4 py-3 text-left w-40 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer">
               <i class="fa-solid fa-calendar-day mr-2"></i> Dag
             </label>
             <input type="date" id="breakdown-date-picker" class="absolute opacity-0 w-0 h-0 pointer-events-auto" />
-            <label for="breakdown-week-picker" class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-lg rounded-xl px-4 py-3 text-left w-40 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer">
+            <label for="breakdown-week-picker"
+              class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-lg rounded-xl px-4 py-3 text-left w-40 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer">
               <i class="fa-solid fa-calendar-week mr-2"></i> Week
             </label>
             <input type="week" id="breakdown-week-picker" class="absolute opacity-0 w-0 h-0 pointer-events-auto" />
-            <label for="breakdown-month-picker" class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-lg rounded-xl px-4 py-3 text-left w-40 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer">
+            <label for="breakdown-month-picker"
+              class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-lg rounded-xl px-4 py-3 text-left w-40 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer">
               <i class="fa-solid fa-calendar-alt mr-2"></i> Maand
-              </label>
-              <input type="month" id="breakdown-month-picker" class="absolute opacity-0 w-0 h-0 pointer-events-auto" />
+            </label>
+            <input type="month" id="breakdown-month-picker" class="absolute opacity-0 w-0 h-0 pointer-events-auto" />
           </div>
-          <button id="breakdown-date-btn" class="w-16 h-16 bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center justify-center shadow-xl cursor-pointer transition">
+          <button id="breakdown-date-btn"
+            class="w-16 h-16 bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center justify-center shadow-xl cursor-pointer transition">
             <i class="fa-solid fa-calendar-days text-2xl"></i>
           </button>
         </div>
@@ -206,8 +226,10 @@
       </section>
 
       <!-- Bottom Tabs -->
-      <nav id="tabs" class="tabbar safe-bottom flex justify-around bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 p-2">
-        <button data-tab="home" class="tab active flex flex-col items-center text-sm text-slate-700 dark:text-slate-300">
+      <nav id="tabs"
+        class="tabbar safe-bottom flex justify-around bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 p-2">
+        <button data-tab="home"
+          class="tab active flex flex-col items-center text-sm text-slate-700 dark:text-slate-300">
           <i class="fa-solid fa-house"></i><span>Home</span>
         </button>
         <button data-tab="overzicht" class="tab flex flex-col items-center text-sm text-slate-700 dark:text-slate-300">
@@ -226,4 +248,5 @@
 
   <script src="assets/app.js"></script>
 </body>
+
 </html>
