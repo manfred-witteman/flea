@@ -70,7 +70,7 @@ function setDayLabel(d) {
 }
 
 // ---------------------
-// Sales rendering
+// Sales rendering (met swipe gallery)
 // ---------------------
 function renderTodaySales(data, showAll, currentUserId) {
   const list = $("#today-list");
@@ -88,51 +88,115 @@ function renderTodaySales(data, showAll, currentUserId) {
   }
   empty.classList.add("hidden");
 
+  // ---------------------
+  // Modal setup
+  // ---------------------
   let modal = document.getElementById("sale-modal");
   let modalImg = document.getElementById("sale-modal-img");
+  let prevBtn, nextBtn;
 
-if (!modal) {
-  modal = document.createElement("div");
-  modal.id = "sale-modal";
-  modal.className = "fixed inset-0 bg-black bg-opacity-70 hidden flex items-start justify-center z-50"; // items-start i.p.v. items-center
-  modal.style.transition = "opacity 0.2s ease";
-  modal.style.opacity = 0;
-
-  // Container voor content
-  const modalContent = document.createElement("div");
-  modalContent.className = "relative max-h-[85vh] overflow-auto p-4 mt-12"; // mt-12 om van boven te schuiven
-  modalContent.style.display = "flex";
-  modalContent.style.justifyContent = "center";
-
-  // Sluit-knop
-  const closeBtn = document.createElement("button");
-  closeBtn.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
-  closeBtn.className =
-    "absolute top-2 right-2 bg-white text-slate-700 rounded-full shadow-md w-8 h-8 flex items-center justify-center hover:bg-slate-100 z-50";
-  closeBtn.addEventListener("click", () => {
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "sale-modal";
+    modal.className = "fixed inset-0 bg-black bg-opacity-70 hidden flex items-start justify-center z-50";
+    modal.style.transition = "opacity 0.2s ease";
     modal.style.opacity = 0;
-    setTimeout(() => modal.classList.add("hidden"), 200);
-  });
 
-  // Modal image
-  modalImg = document.createElement("img");
-  modalImg.id = "sale-modal-img";
-  modalImg.className = "max-w-full max-h-[80vh] rounded-lg shadow-lg"; // iets kleinere max-height
+    const modalContent = document.createElement("div");
+    modalContent.className = "relative max-h-[85vh] overflow-auto p-4 mt-12 flex justify-center";
 
-  modalContent.appendChild(modalImg);
-  modal.appendChild(modalContent);
-  modal.appendChild(closeBtn);
-  document.body.appendChild(modal);
-
-  // Klik buiten content sluit modal
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
+    // Sluitknop
+    const closeBtn = document.createElement("button");
+    closeBtn.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
+    closeBtn.className = "absolute top-2 right-2 bg-white text-slate-700 rounded-full shadow-md w-8 h-8 flex items-center justify-center hover:bg-slate-100 z-50";
+    closeBtn.addEventListener("click", () => {
       modal.style.opacity = 0;
       setTimeout(() => modal.classList.add("hidden"), 200);
+    });
+
+    // Afbeelding
+    modalImg = document.createElement("img");
+    modalImg.id = "sale-modal-img";
+    modalImg.className = "max-w-full max-h-[80vh] rounded-lg shadow-lg";
+
+    // Navigatieknoppen
+    prevBtn = document.createElement("button");
+    prevBtn.innerHTML = `<i class="fa-solid fa-chevron-left"></i>`;
+    prevBtn.className = "absolute left-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-70 text-slate-700 rounded-full w-10 h-10 flex items-center justify-center shadow-md hover:bg-slate-100";
+
+    nextBtn = document.createElement("button");
+    nextBtn.innerHTML = `<i class="fa-solid fa-chevron-right"></i>`;
+    nextBtn.className = "absolute right-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-70 text-slate-700 rounded-full w-10 h-10 flex items-center justify-center shadow-md hover:bg-slate-100";
+
+    modalContent.appendChild(modalImg);
+    modal.appendChild(modalContent);
+    modal.appendChild(closeBtn);
+    modal.appendChild(prevBtn);
+    modal.appendChild(nextBtn);
+    document.body.appendChild(modal);
+
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.style.opacity = 0;
+        setTimeout(() => modal.classList.add("hidden"), 200);
+      }
+    });
+  } else {
+    prevBtn = modal.querySelector("button:nth-of-type(2)");
+    nextBtn = modal.querySelector("button:nth-of-type(3)");
+  }
+
+  // ---------------------
+  // Dagafbeeldingen verzamelen
+  // ---------------------
+  let dayImages = [];
+  filteredSales.forEach((sale) => {
+    if (sale.image_url && sale.image_url.trim() !== "") {
+      const imagePath = sale.image_url.trim();
+      const fullPath = imagePath.startsWith("http")
+        ? imagePath
+        : UPLOADS_BASE + imagePath.replace(/^\/+/, "");
+      dayImages.push(fullPath);
     }
   });
-}
 
+  let currentImageIndex = 0;
+  function showImageAtIndex(index) {
+    if (dayImages.length === 0) return;
+    currentImageIndex = (index + dayImages.length) % dayImages.length;
+    modalImg.src = dayImages[currentImageIndex];
+  }
+
+  // ---------------------
+  // Swipe support
+  // ---------------------
+  let startX = 0;
+  modal.addEventListener("touchstart", (e) => {
+    startX = e.touches[0].clientX;
+  });
+  modal.addEventListener("touchend", (e) => {
+    const diffX = e.changedTouches[0].clientX - startX;
+    if (Math.abs(diffX) > 50) {
+      if (diffX > 0) {
+        showImageAtIndex(currentImageIndex - 1);
+      } else {
+        showImageAtIndex(currentImageIndex + 1);
+      }
+    }
+  });
+
+  prevBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    showImageAtIndex(currentImageIndex - 1);
+  });
+  nextBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    showImageAtIndex(currentImageIndex + 1);
+  });
+
+  // ---------------------
+  // Lijst renderen
+  // ---------------------
   filteredSales.forEach((sale) => {
     const li = document.createElement("li");
     li.className = "flex items-center gap-3 py-2";
@@ -143,15 +207,12 @@ if (!modal) {
 
     const textBlock = document.createElement("div");
     textBlock.className = "flex flex-col";
-
     const desc = document.createElement("div");
     desc.className = "font-medium";
     desc.textContent = sale.description;
-
     const sub = document.createElement("div");
     sub.className = "text-sm text-slate-500";
     sub.textContent = `${formatEuro(sale.price)} • ${sale.owner_name}`;
-
     textBlock.appendChild(desc);
     textBlock.appendChild(sub);
 
@@ -173,7 +234,6 @@ if (!modal) {
       const thumb = document.createElement("img");
       const imagePath = sale.image_url.trim();
       const fullPath = imagePath.startsWith("http") ? imagePath : UPLOADS_BASE + imagePath.replace(/^\/+/, "");
-
       thumb.className = "w-12 h-12 object-cover rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer transition-opacity duration-300";
       thumb.src = UPLOADS_BASE + "placeholder.png";
       thumb.style.opacity = 0.5;
@@ -186,7 +246,8 @@ if (!modal) {
       };
 
       thumb.addEventListener("click", () => {
-        modalImg.src = thumb.src;
+        currentImageIndex = dayImages.indexOf(fullPath);
+        showImageAtIndex(currentImageIndex);
         modal.classList.remove("hidden");
         requestAnimationFrame(() => (modal.style.opacity = 1));
       });
@@ -225,6 +286,7 @@ if (!modal) {
     list.appendChild(li);
   });
 }
+
 
 // ---------------------
 // Refresh functions
