@@ -48,8 +48,9 @@ function parseMoney(value) {
 // Global state
 // ---------------------
 let currentUserId = null;
-let currentDate = new Date();
-let overviewDate = new Date(); 
+let overviewDate = new Date();
+let currentRange = "day";
+let breakdownFabInitialized = false;
 
 // ---------------------
 // UI helpers
@@ -86,7 +87,7 @@ function renderTodaySales(data, showAll, currentUserId) {
   const empty = $("#today-empty");
   list.innerHTML = "";
 
-  const colors = ["bg-indigo-500","bg-emerald-500","bg-rose-500","bg-amber-500","bg-sky-500","bg-purple-500","bg-fuchsia-500","bg-teal-500"];
+  const colors = ["bg-indigo-500", "bg-emerald-500", "bg-rose-500", "bg-amber-500", "bg-sky-500", "bg-purple-500", "bg-fuchsia-500", "bg-teal-500"];
   const colorForUser = (userId) => colors[userId % colors.length];
 
   const filteredSales = showAll ? data.sales : data.sales.filter((s) => s.cashier_user_id == currentUserId);
@@ -281,7 +282,7 @@ function renderTodaySales(data, showAll, currentUserId) {
         if (!confirm("Verkoop verwijderen?")) return;
         await api("delete_sale", { id: sale.id, image_url: sale.image_url });
         await refreshToday();
-        await refreshBreakdown(currentDate);
+        await refreshBreakdown(overviewDate);
       });
       trashSlot.appendChild(btn);
     } else {
@@ -308,11 +309,12 @@ async function refreshToday() {
 }
 
 async function refreshBreakdown(date, type) {
-  const payloadDate = type === 'day' 
+  currentRange = type;
+  const payloadDate = type === 'day'
     ? formatDateUTC(date)
-    : type === 'week' 
+    : type === 'week'
       ? formatDateUTC(getStartOfISOWeekUTC(date))
-      : `${date.getUTCFullYear()}-${String(date.getUTCMonth()+1).padStart(2,'0')}-01`;
+      : `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-01`;
 
   const response = await fetch(API_BASE, {
     method: 'POST',
@@ -322,7 +324,7 @@ async function refreshBreakdown(date, type) {
 
   const data = await response.json();
 
-  
+
 
   // update lijst
   const list = document.getElementById('breakdown-list');
@@ -338,16 +340,16 @@ async function refreshBreakdown(date, type) {
 
 
   // Update overviewDate naar eerste dag van de selectie
-if (type === 'day') {
-  overviewDate = new Date(date);
-} else if (type === 'week') {
-  overviewDate = getStartOfISOWeekUTC(date);
-} else if (type === 'month') {
-  overviewDate = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
-}
+  if (type === 'day') {
+    overviewDate = new Date(date);
+  } else if (type === 'week') {
+    overviewDate = getStartOfISOWeekUTC(date);
+  } else if (type === 'month') {
+    overviewDate = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
+  }
 
-// Optioneel: refresh Overzicht automatisch
-await refreshToday();
+  // Optioneel: refresh Overzicht automatisch
+  await refreshToday();
   updateBreakdownHeader(type, date);
 }
 
@@ -404,55 +406,64 @@ imageInput?.addEventListener("change", async (event) => {
 // ---------------------
 // Breakdown FAB Init
 // ---------------------
+
+
 function initBreakdownFAB() {
+  if (breakdownFabInitialized) return; // voorkomt dubbele init
+  breakdownFabInitialized = true;
+
   const fabBtn = document.getElementById("breakdown-date-btn");
   const fabMenu = document.getElementById("breakdown-fab-menu");
   const dateInput = document.getElementById("breakdown-date-picker");
   const weekInput = document.getElementById("breakdown-week-picker");
   const monthInput = document.getElementById("breakdown-month-picker");
-  
 
   let currentDate = new Date();
 
   fabBtn.addEventListener("click", () => {
     fabMenu.classList.toggle("hidden");
     dateInput.value = currentDate.toISOString().slice(0, 10);
-    weekInput.value = getISOWeekString(currentDate); // corrigeert week input
+    weekInput.value = getISOWeekStringUTC(currentDate); // week correct zetten
     monthInput.value = currentDate.toISOString().slice(0, 7);
   });
 
   dateInput.addEventListener("change", async () => {
     if (!dateInput.value) return;
-    currentDate = new Date(dateInput.value);
-    await refreshBreakdown(currentDate, "day");
+    const d = new Date(dateInput.value);
+    await refreshBreakdown(d, "day");
     fabMenu.classList.add("hidden");
   });
 
   weekInput.addEventListener("change", async () => {
-  if (!weekInput.value) return;
-  currentDate = getDateOfISOWeekUTC(weekInput.value);
-  await refreshBreakdown(currentDate, "week");
-  fabMenu.classList.add("hidden");
-});
+    if (!weekInput.value) return;
+    const d = getDateOfISOWeekUTC(weekInput.value);
+    await refreshBreakdown(d, "week");
+    fabMenu.classList.add("hidden");
+  });
 
   monthInput.addEventListener("change", async () => {
-  if (!monthInput.value) return;
-  const [year, month] = monthInput.value.split("-").map(Number);
-  currentDate = new Date(Date.UTC(year, month-1, 1)); // altijd 1e dag UTC
-  await refreshBreakdown(currentDate, "month");
-  fabMenu.classList.add("hidden");
-});
+    if (!monthInput.value) return;
+    const [year, month] = monthInput.value.split("-").map(Number);
+    const d = new Date(Date.UTC(year, month - 1, 1));
+    await refreshBreakdown(d, "month");
+    fabMenu.classList.add("hidden");
+  });
 
-  // Labels trigger hidden inputs
-  fabMenu.querySelector("label[for='breakdown-date-picker']").addEventListener("click", () => dateInput.click());
-  fabMenu.querySelector("label[for='breakdown-week-picker']").addEventListener("click", () => weekInput.click());
-  fabMenu.querySelector("label[for='breakdown-month-picker']").addEventListener("click", () => monthInput.click());
+  // Labels trigger de verborgen inputs
+  fabMenu.querySelector("label[for='breakdown-date-picker']")
+    .addEventListener("click", () => dateInput.showPicker?.());
+  fabMenu.querySelector("label[for='breakdown-week-picker']")
+    .addEventListener("click", () => weekInput.showPicker?.());
+  fabMenu.querySelector("label[for='breakdown-month-picker']")
+    .addEventListener("click", () => monthInput.showPicker?.());
 }
+
 
 
 // ---------------------
 // Session handling
 // ---------------------
+
 async function checkSession() {
   try {
     const me = await api("me");
@@ -461,9 +472,8 @@ async function checkSession() {
       $("#screen-login").classList.add("hidden");
       $("#screen-app").classList.remove("hidden");
       await populateOwnerSelect(currentUserId);
-      currentDate = new Date();
       await refreshToday();
-      await refreshBreakdown(currentDate, "day");
+      await refreshBreakdown(overviewDate, "day");
       setActiveTab("home");
 
       const tabsContainer = $("#tabs");
@@ -479,7 +489,12 @@ async function checkSession() {
         adminTab.addEventListener("click", () => setActiveTab("admin"));
       }
 
-      initBreakdownFAB();
+      // Zorg dat de FAB maar één keer init wordt uitgevoerd
+      if (!breakdownFabInitialized) {
+        initBreakdownFAB();
+        breakdownFabInitialized = true;
+      }
+
     } else {
       $("#screen-login").classList.remove("hidden");
       $("#screen-app").classList.add("hidden");
@@ -490,29 +505,30 @@ async function checkSession() {
   }
 }
 
+
 // ---------------------
 // DOM Content Loaded
 // ---------------------
 document.addEventListener("DOMContentLoaded", async () => {
 
-const overviewLabel = $("#overview-label");
-const prevDayBtn = $("#prev-day");
-const nextDayBtn = $("#next-day");
+  const overviewLabel = $("#overview-label");
+  const prevDayBtn = $("#prev-day");
+  const nextDayBtn = $("#next-day");
 
-overviewLabel?.addEventListener("click", async () => {
-  overviewDate = new Date(); // terug naar vandaag
-  await refreshToday();
-});
+  overviewLabel?.addEventListener("click", async () => {
+    overviewDate = new Date(); // terug naar vandaag
+    await refreshToday();
+  });
 
-prevDayBtn?.addEventListener("click", async () => {
-  overviewDate.setDate(overviewDate.getDate() - 1);
-  await refreshToday();
-});
+  prevDayBtn?.addEventListener("click", async () => {
+    overviewDate.setDate(overviewDate.getDate() - 1);
+    await refreshToday();
+  });
 
-nextDayBtn?.addEventListener("click", async () => {
-  overviewDate.setDate(overviewDate.getDate() + 1);
-  await refreshToday();
-});
+  nextDayBtn?.addEventListener("click", async () => {
+    overviewDate.setDate(overviewDate.getDate() + 1);
+    await refreshToday();
+  });
 
   const paymentInput = document.getElementById("payment-method");
   const paymentIcon = document.getElementById("payment-icon");
@@ -528,13 +544,19 @@ nextDayBtn?.addEventListener("click", async () => {
     }
   });
 
+  const dayLabel = document.getElementById("day-label");
+  dayLabel?.addEventListener("click", async () => {
+    overviewDate = new Date(); // één globale datum voor alles
+    await refreshBreakdown(overviewDate, "day");
+  });
+
 
   $(".tabbar")?.querySelectorAll(".tab[data-tab]")?.forEach((btn) => {
     btn.addEventListener("click", async () => {
       const tab = btn.dataset.tab;
       setActiveTab(tab);
       if (tab === "overzicht") await refreshToday();
-      if (tab === "breakdown") await refreshBreakdown(currentDate, "day");
+      if (tab === "breakdown") await refreshBreakdown(overviewDate, currentRange);
     });
   });
 
@@ -571,7 +593,7 @@ nextDayBtn?.addEventListener("click", async () => {
       owner_user_id: parseInt(form.owner_user_id.value, 10),
       cost: form.cost.value ? parseMoney(form.cost.value) : null,
       image_url: imageUrlInput.value || null,
-      is_pin: form.payment_method.checked ? 1 : 0 
+      is_pin: form.payment_method.checked ? 1 : 0
     };
 
 
@@ -587,7 +609,7 @@ nextDayBtn?.addEventListener("click", async () => {
       imageUrlInput.value = "";
       if (currentUserId) form.owner_user_id.value = currentUserId;
       await refreshToday();
-      await refreshBreakdown(currentDate);
+      await refreshBreakdown(overviewDate);
       setActiveTab("overzicht");
     } catch (err) {
       alert(err.message || "Fout bij opslaan.");
@@ -595,6 +617,11 @@ nextDayBtn?.addEventListener("click", async () => {
   });
 
   $("#filter-mine")?.addEventListener("change", refreshToday);
+
+  document.getElementById("login-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    return false; // extra bescherming
+  });
 
   document.addEventListener("click", async (e) => {
     if (!e.target.closest("#btn-settle")) return;
@@ -618,6 +645,7 @@ nextDayBtn?.addEventListener("click", async () => {
   });
 
   await checkSession();
+  initBreakdownFAB();
 });
 
 
@@ -629,17 +657,23 @@ function updateBreakdownHeader(type, date) {
   const label = document.getElementById('day-label');
   if (!label) return;
 
+  label.className = "flex items-center justify-center gap-2 font-medium cursor-pointer";
+
+  let text = "";
   if (type === 'day') {
-    label.textContent = date.toLocaleDateString('nl-NL', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
+    text = date.toLocaleDateString('nl-NL', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
   } else if (type === 'week') {
     const start = getStartOfISOWeekUTC(date);
     const end = getEndOfISOWeekUTC(date);
     const weekNumber = getISOWeekNumberUTC(date);
-    label.textContent = `Week ${weekNumber} (${start.toLocaleDateString('nl-NL')} t/m ${end.toLocaleDateString('nl-NL')})`;
+    text = `Week ${weekNumber} (${start.toLocaleDateString('nl-NL')} t/m ${end.toLocaleDateString('nl-NL')})`;
   } else if (type === 'month') {
-    label.textContent = date.toLocaleDateString('nl-NL', { month: 'long', year: 'numeric' });
+    text = date.toLocaleDateString('nl-NL', { month: 'long', year: 'numeric' });
   }
+
+  label.innerHTML = `<i class="fa-solid fa-calendar-days text-indigo-600"></i><span>${text}</span>`;
 }
+
 
 
 // ----------------------
@@ -647,7 +681,7 @@ function updateBreakdownHeader(type, date) {
 // ----------------------
 // Dag string in YYYY-MM-DD
 function formatDateUTC(date) {
-  return date.toISOString().slice(0,10); // altijd in UTC
+  return date.toISOString().slice(0, 10); // altijd in UTC
 }
 
 // Begin van de ISO-week (maandag)
@@ -678,13 +712,13 @@ function getISOWeekNumberUTC(date) {
 // ISO week string: YYYY-Www
 function getISOWeekStringUTC(date) {
   const weekNo = getISOWeekNumberUTC(date);
-  return `${date.getUTCFullYear()}-W${weekNo.toString().padStart(2,"0")}`;
+  return `${date.getUTCFullYear()}-W${weekNo.toString().padStart(2, "0")}`;
 }
 
 // Date van ISO week string: YYYY-Www → maandag van die week
 function getDateOfISOWeekUTC(weekStr) {
   const [year, week] = weekStr.split("-W").map(Number);
-  const simple = new Date(Date.UTC(year,0,1 + (week-1)*7));
+  const simple = new Date(Date.UTC(year, 0, 1 + (week - 1) * 7));
   const dow = simple.getUTCDay();
   const monday = new Date(simple);
   if (dow <= 4) monday.setUTCDate(simple.getUTCDate() - dow + 1);

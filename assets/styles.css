@@ -33,6 +33,15 @@
   transition: color 0.2s;
 }
 
+.hidden-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 #prev-day:hover, #next-day:hover {
   color: #4f46e5; /* Indigo-600 hover */
 }
