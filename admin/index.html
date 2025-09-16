@@ -1,93 +1,99 @@
-<!-- /admin/index.html -->
 <!DOCTYPE html>
 <html lang="nl">
+
 <head>
   <meta charset="UTF-8">
-  <title>Admin Panel</title>
-  <link rel="stylesheet" href="../assets/styles.css">
+  <title>Beheeromgeving</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="admin.js" defer></script>
 </head>
-<body>
-  <div id="screen-login">
-    <h2>Login Admin</h2>
-    <form id="login-form">
-      <input type="email" name="email" placeholder="E-mail" required>
-      <input type="password" name="password" placeholder="Wachtwoord" required>
-      <button type="submit">Login</button>
-    </form>
-    <div id="login-error" style="color:red; display:none;"></div>
+
+<body class="bg-gray-100 text-gray-900 min-h-screen flex items-center justify-center">
+  <!-- Login -->
+  <div id="login-page" class="w-full max-w-md p-6 bg-white rounded-2xl shadow-lg hidden">
+    <h1 class="text-2xl font-bold mb-4 text-center">Inloggen</h1>
+    <div class="space-y-4">
+      <input id="login-email" type="email" placeholder="E-mailadres"
+        class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500">
+      <input id="login-password" type="password" placeholder="Wachtwoord"
+        class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500">
+      <button id="login-btn" class="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700">
+        Inloggen
+      </button>
+    </div>
   </div>
 
-  <div id="screen-app" style="display:none;">
-    <h2>Welkom Admin</h2>
-    <nav>
-      <ul>
-        <li><a href="qr-config.html">QR Configuratie</a></li>
-        <!-- later andere admin links -->
-      </ul>
-    </nav>
-    <button id="btn-logout">Uitloggen</button>
+  <!-- Dashboard -->
+  <div id="dashboard" class="w-full hidden">
+    <div class="max-w-6xl mx-auto py-6 px-4">
+      <header class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Beheeromgeving</h1>
+        <button id="logout-btn" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
+          Uitloggen
+        </button>
+      </header>
+
+      <!-- Tabs -->
+      <div class="flex space-x-4 mb-6">
+        <button class="tab-btn bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold" data-tab="users">Gebruikers</button>
+        <button class="tab-btn bg-gray-300 text-black px-4 py-2 rounded-lg font-semibold" data-tab="mapping">Mappings</button>
+      </div>
+
+      <div id="tabs-container" class="relative">
+        <!-- Gebruikers tab -->
+        <div id="tab-users" class="tab-content bg-white rounded-2xl shadow p-6">
+          <h2 class="text-xl font-semibold mb-4">Gebruikers</h2>
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2">Naam</th>
+                <th>IBAN</th>
+                <th>Acties</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody"></tbody>
+          </table>
+        </div>
+
+        <!-- Mappings tab -->
+        <div id="tab-mapping" class="tab-content hidden bg-white rounded-2xl shadow p-6">
+          <h2 class="text-xl font-semibold mb-4">Mappings</h2>
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2">Geld voor</th>
+                <th>wordt gepind naar rekening van</th>
+                <th>Acties</th>
+              </tr>
+            </thead>
+            <tbody id="config-tbody"></tbody>
+            <tfoot>
+              <tr>
+                <td>
+                  <select id="new-owner" class="border rounded px-2 py-1 w-full">
+                    <option value="">-- Kies owner --</option>
+                  </select>
+                </td>
+                <td>
+                  <select id="new-qr-user" class="border rounded px-2 py-1 w-full">
+                    <option value="">-- Kies gebruiker --</option>
+                  </select>
+                </td>
+                <td class="text-center">
+                  <button id="add-mapping-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded font-semibold">
+                    +
+                  </button>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <script>
-    // ---------------------
-    // Dynamisch base path
-    // ---------------------
-    const BASE_PATH = window.location.pathname.replace(/\/[^/]*$/, "");
-    const API_BASE = BASE_PATH + "/../api/api.php";     
-    const UPLOADS_BASE = BASE_PATH + "/../env/uploads/";
-
-    async function api(action, payload = {}, method='POST') {
-      const opts = { method };
-      if (method === 'POST') {
-        if (payload instanceof FormData) {
-          opts.body = payload;
-        } else {
-          opts.body = JSON.stringify({ action, ...payload });
-          opts.headers = {'Content-Type': 'application/json'};
-        }
-      }
-      const res = await fetch(API_BASE, opts);
-      return res.json();
-    }
-
-    async function checkSession() {
-      try {
-        const me = await api('me');
-        if (me?.user) {
-          document.getElementById('screen-login').style.display = 'none';
-          document.getElementById('screen-app').style.display = 'block';
-        } else {
-          document.getElementById('screen-login').style.display = 'block';
-          document.getElementById('screen-app').style.display = 'none';
-        }
-      } catch {
-        document.getElementById('screen-login').style.display = 'block';
-        document.getElementById('screen-app').style.display = 'none';
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      checkSession();
-
-      document.getElementById('login-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        document.getElementById('login-error').style.display = 'none';
-        const form = e.currentTarget;
-        try {
-          await api('login', { email: form.email.value.trim(), password: form.password.value });
-          form.reset();
-          await checkSession();
-        } catch (err) {
-          document.getElementById('login-error').textContent = err.message || 'Inloggen mislukt';
-          document.getElementById('login-error').style.display = 'block';
-        }
-      });
-
-      document.getElementById('btn-logout').addEventListener('click', async () => {
-        await api('logout');
-        checkSession();
-      });
-    });
-  </script>
+  <!-- Toast container -->
+  <div id="toast-container" class="fixed bottom-4 right-4 space-y-2 z-50"></div>
 </body>
+
 </html>

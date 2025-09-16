@@ -1,0 +1,11 @@
+.tab-content {
+    position: absolute; /* stap op elkaar */
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+#tabs-container {
+    position: relative;
+    min-height: 400px; /* of een dynamische waarde */
+}
