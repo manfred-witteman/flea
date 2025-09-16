@@ -1,0 +1,93 @@
+<!-- /admin/index.html -->
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <div id="screen-login">
+    <h2>Login Admin</h2>
+    <form id="login-form">
+      <input type="email" name="email" placeholder="E-mail" required>
+      <input type="password" name="password" placeholder="Wachtwoord" required>
+      <button type="submit">Login</button>
+    </form>
+    <div id="login-error" style="color:red; display:none;"></div>
+  </div>
+
+  <div id="screen-app" style="display:none;">
+    <h2>Welkom Admin</h2>
+    <nav>
+      <ul>
+        <li><a href="qr-config.html">QR Configuratie</a></li>
+        <!-- later andere admin links -->
+      </ul>
+    </nav>
+    <button id="btn-logout">Uitloggen</button>
+  </div>
+
+  <script>
+    // ---------------------
+    // Dynamisch base path
+    // ---------------------
+    const BASE_PATH = window.location.pathname.replace(/\/[^/]*$/, "");
+    const API_BASE = BASE_PATH + "/../api/api.php";     
+    const UPLOADS_BASE = BASE_PATH + "/../env/uploads/";
+
+    async function api(action, payload = {}, method='POST') {
+      const opts = { method };
+      if (method === 'POST') {
+        if (payload instanceof FormData) {
+          opts.body = payload;
+        } else {
+          opts.body = JSON.stringify({ action, ...payload });
+          opts.headers = {'Content-Type': 'application/json'};
+        }
+      }
+      const res = await fetch(API_BASE, opts);
+      return res.json();
+    }
+
+    async function checkSession() {
+      try {
+        const me = await api('me');
+        if (me?.user) {
+          document.getElementById('screen-login').style.display = 'none';
+          document.getElementById('screen-app').style.display = 'block';
+        } else {
+          document.getElementById('screen-login').style.display = 'block';
+          document.getElementById('screen-app').style.display = 'none';
+        }
+      } catch {
+        document.getElementById('screen-login').style.display = 'block';
+        document.getElementById('screen-app').style.display = 'none';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      checkSession();
+
+      document.getElementById('login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        document.getElementById('login-error').style.display = 'none';
+        const form = e.currentTarget;
+        try {
+          await api('login', { email: form.email.value.trim(), password: form.password.value });
+          form.reset();
+          await checkSession();
+        } catch (err) {
+          document.getElementById('login-error').textContent = err.message || 'Inloggen mislukt';
+          document.getElementById('login-error').style.display = 'block';
+        }
+      });
+
+      document.getElementById('btn-logout').addEventListener('click', async () => {
+        await api('logout');
+        checkSession();
+      });
+    });
+  </script>
+</body>
+</html>
