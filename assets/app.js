@@ -9,6 +9,7 @@ const $ = (sel) => document.querySelector(sel);
 const ROOT_PATH = window.location.pathname.split("/").filter(Boolean)[0]; // 'flea_test' of 'flea'
 const UPLOADS_BASE = "/" + ROOT_PATH + "/env/uploads/";
 const API_BASE = "/" + ROOT_PATH + "/api/api.php";
+let paymentInput, paymentIcon, paymentText;
 
 // ---------------------
 // API helper
@@ -96,7 +97,7 @@ function renderTodaySales(data, showAll, currentUserId) {
   empty.classList.add("hidden");
 
   // ---------------------
-  // Modal setup
+  // Modal setup (afbeeldingen)
   // ---------------------
   let modal = document.getElementById("sale-modal");
   let modalImg = document.getElementById("sale-modal-img");
@@ -112,7 +113,6 @@ function renderTodaySales(data, showAll, currentUserId) {
     const modalContent = document.createElement("div");
     modalContent.className = "relative max-h-[85vh] overflow-auto p-4 mt-12 flex justify-center";
 
-    // Sluitknop
     const closeBtn = document.createElement("button");
     closeBtn.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
     closeBtn.className = "absolute top-2 right-2 bg-white text-slate-700 rounded-full shadow-md w-8 h-8 flex items-center justify-center hover:bg-slate-100 z-50";
@@ -121,12 +121,10 @@ function renderTodaySales(data, showAll, currentUserId) {
       setTimeout(() => modal.classList.add("hidden"), 200);
     });
 
-    // Afbeelding
     modalImg = document.createElement("img");
     modalImg.id = "sale-modal-img";
     modalImg.className = "max-w-full max-h-[80vh] rounded-lg shadow-lg";
 
-    // Navigatieknoppen
     prevBtn = document.createElement("button");
     prevBtn.innerHTML = `<i class="fa-solid fa-chevron-left"></i>`;
     prevBtn.className = "absolute left-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-70 text-slate-700 rounded-full w-10 h-10 flex items-center justify-center shadow-md hover:bg-slate-100";
@@ -156,7 +154,6 @@ function renderTodaySales(data, showAll, currentUserId) {
   // ---------------------
   // Dagafbeeldingen verzamelen
   // ---------------------
-
   let dayImages = [];
   filteredSales.forEach((sale) => {
     if (sale.image_url && sale.image_url.trim() !== "") {
@@ -173,32 +170,18 @@ function renderTodaySales(data, showAll, currentUserId) {
     modalImg.src = dayImages[currentImageIndex];
   }
 
-  // ---------------------
   // Swipe support
-  // ---------------------
   let startX = 0;
-  modal.addEventListener("touchstart", (e) => {
-    startX = e.touches[0].clientX;
-  });
+  modal.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX; });
   modal.addEventListener("touchend", (e) => {
     const diffX = e.changedTouches[0].clientX - startX;
     if (Math.abs(diffX) > 50) {
-      if (diffX > 0) {
-        showImageAtIndex(currentImageIndex - 1);
-      } else {
-        showImageAtIndex(currentImageIndex + 1);
-      }
+      if (diffX > 0) showImageAtIndex(currentImageIndex - 1);
+      else showImageAtIndex(currentImageIndex + 1);
     }
   });
-
-  prevBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    showImageAtIndex(currentImageIndex - 1);
-  });
-  nextBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    showImageAtIndex(currentImageIndex + 1);
-  });
+  prevBtn.addEventListener("click", (e) => { e.stopPropagation(); showImageAtIndex(currentImageIndex - 1); });
+  nextBtn.addEventListener("click", (e) => { e.stopPropagation(); showImageAtIndex(currentImageIndex + 1); });
 
   // ---------------------
   // Lijst renderen
@@ -207,10 +190,12 @@ function renderTodaySales(data, showAll, currentUserId) {
     const li = document.createElement("li");
     li.className = "flex items-center gap-3 py-2";
 
+    // Avatar
     const avatar = document.createElement("div");
     avatar.className = `flex items-center justify-center w-10 h-10 rounded-full text-white font-bold ${colorForUser(sale.cashier_user_id)}`;
     avatar.textContent = sale.cashier_name.charAt(0).toUpperCase();
 
+    // Tekst
     const textBlock = document.createElement("div");
     textBlock.className = "flex flex-col";
     const desc = document.createElement("div");
@@ -225,10 +210,27 @@ function renderTodaySales(data, showAll, currentUserId) {
     li.appendChild(avatar);
     li.appendChild(textBlock);
 
+    // Spacer
     const spacer = document.createElement("div");
     spacer.className = "flex-1";
     li.appendChild(spacer);
 
+    // Betaalmethode icoon
+      const paymentBlock = document.createElement("div");
+      paymentBlock.className = "flex items-center gap-2";
+
+      if (sale.is_pin === 0) {
+        const paymentIconEl = document.createElement("i");
+        paymentIconEl.className = "fa-solid fa-money-bill text-green-600";
+        paymentIconEl.title = "Contant";
+        paymentBlock.appendChild(paymentIconEl);
+      }
+
+      // Voeg alleen toe als er een icoon is
+      if (paymentBlock.children.length > 0) {
+        li.appendChild(paymentBlock);
+      }
+    // Thumbnail + trash
     const rightBlock = document.createElement("div");
     rightBlock.className = "grid grid-cols-[48px,20px] items-center gap-2";
 
@@ -240,34 +242,27 @@ function renderTodaySales(data, showAll, currentUserId) {
       const thumb = document.createElement("img");
       const imageUrl = sale.image_url.trim();
       const fullPath = imageUrl.startsWith("http") ? imageUrl : UPLOADS_BASE + imageUrl.replace(/^\/+/, "");
-      
       thumb.className = "w-12 h-12 object-cover rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer transition-opacity duration-300";
       thumb.src = UPLOADS_BASE + "placeholder.png";
       thumb.style.opacity = 0.5;
-
       const imgLoader = new Image();
       imgLoader.src = fullPath;
-      imgLoader.onload = () => {
-        thumb.src = fullPath;
-        thumb.style.opacity = 1;
-      };
-
+      imgLoader.onload = () => { thumb.src = fullPath; thumb.style.opacity = 1; };
       thumb.addEventListener("click", () => {
         currentImageIndex = dayImages.indexOf(fullPath);
         showImageAtIndex(currentImageIndex);
         modal.classList.remove("hidden");
         requestAnimationFrame(() => (modal.style.opacity = 1));
       });
-
       thumbSlot.appendChild(thumb);
     } else {
       const thumbPh = document.createElement("div");
       thumbPh.className = "w-12 h-12 rounded-xl border border-transparent invisible";
       thumbSlot.appendChild(thumbPh);
     }
-
     rightBlock.appendChild(thumbSlot);
 
+    // Trash knop
     const trashSlot = document.createElement("div");
     if (sale.cashier_user_id === currentUserId) {
       const btn = document.createElement("button");
@@ -287,12 +282,13 @@ function renderTodaySales(data, showAll, currentUserId) {
       trashPh.className = "fa-solid fa-trash opacity-0";
       trashSlot.appendChild(trashPh);
     }
-
     rightBlock.appendChild(trashSlot);
+
     li.appendChild(rightBlock);
     list.appendChild(li);
   });
 }
+
 
 
 // ---------------------
@@ -531,35 +527,57 @@ function showQrModal(payload, form) {
     try {
       const qrData = await api("get_qr_for_owner", { owner_user_id: payload.owner_user_id });
 
-      // <--- log de response
-      console.log("QR API response:", qrData);
+      if (!qrData || !qrData.qr_url) return resolve(null);
 
-      if (!qrData.success || !qrData.qr_url) return reject(new Error("Geen QR-code gevonden"));
+      // Modal element
+      let qrModal = document.getElementById("qr-modal");
+      if (!qrModal) {
+        qrModal = document.createElement("div");
+        qrModal.id = "qr-modal";
+        qrModal.className = "fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center z-50";
+        qrModal.style.transition = "opacity 0.2s ease";
 
-      const qrModal = document.getElementById("qr-modal");
-      const qrImg = document.getElementById("qr-image");
-      const qrDesc = document.getElementById("qr-sale-desc");
-      const qrPrice = document.getElementById("qr-sale-price");
-      const okBtn = document.getElementById("qr-ok");
-      const cancelBtn = document.getElementById("qr-cancel");
+        const modalContent = document.createElement("div");
+        modalContent.className = "bg-white p-6 rounded-xl shadow-lg max-w-sm w-full flex flex-col items-center gap-4";
 
-      qrImg.src = qrData.qr_url;
-      qrDesc.textContent = payload.description;
-      qrPrice.textContent = formatEuro(payload.price);
+        const qrImg = document.createElement("img");
+        qrImg.id = "qr-image";
+        qrImg.className = "w-48 h-48 object-contain";
+
+        const qrDesc = document.createElement("div");
+        qrDesc.id = "qr-sale-desc";
+        qrDesc.className = "font-medium text-center";
+
+        const qrPrice = document.createElement("div");
+        qrPrice.id = "qr-sale-price";
+        qrPrice.className = "text-lg font-semibold text-indigo-600";
+
+        const okBtn = document.createElement("button");
+        okBtn.id = "qr-ok";
+        okBtn.className = "bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700";
+        okBtn.textContent = "Klaar";
+
+        modalContent.appendChild(qrImg);
+        modalContent.appendChild(qrDesc);
+        modalContent.appendChild(qrPrice);
+        modalContent.appendChild(okBtn);
+        qrModal.appendChild(modalContent);
+        document.body.appendChild(qrModal);
+      } else {
+        // Update content als modal al bestaat
+        document.getElementById("qr-image").src = qrData.qr_url;
+        document.getElementById("qr-sale-desc").textContent = payload.description;
+        document.getElementById("qr-sale-price").textContent = formatEuro(payload.price);
+        const okBtn = document.getElementById("qr-ok");
+        okBtn.textContent = "Klaar";
+        okBtn.replaceWith(okBtn.cloneNode(true)); // listeners reset
+      }
+
       qrModal.classList.remove("hidden");
-
-      // Clean old listeners
-      okBtn.replaceWith(okBtn.cloneNode(true));
-      cancelBtn.replaceWith(cancelBtn.cloneNode(true));
 
       document.getElementById("qr-ok").addEventListener("click", () => {
         qrModal.classList.add("hidden");
-        resolve();
-      });
-
-      document.getElementById("qr-cancel").addEventListener("click", () => {
-        qrModal.classList.add("hidden");
-        //reject(new Error("Verkoop geannuleerd"));
+        resolve(qrData);
       });
 
     } catch (err) {
@@ -567,6 +585,8 @@ function showQrModal(payload, form) {
     }
   });
 }
+
+
 
 
 
@@ -578,6 +598,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const overviewLabel = $("#overview-label");
   const prevDayBtn = $("#prev-day");
   const nextDayBtn = $("#next-day");
+
+
+  paymentInput = document.getElementById("payment-method");
+  paymentIcon = document.getElementById("payment-icon");
+  paymentText = document.getElementById("payment-text");
 
   overviewLabel?.addEventListener("click", async () => {
     overviewDate = new Date(); // terug naar vandaag
@@ -594,19 +619,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     await refreshToday();
   });
 
-  const paymentInput = document.getElementById("payment-method");
-  const paymentIcon = document.getElementById("payment-icon");
-  const paymentText = document.getElementById("payment-text");
-
-  paymentInput?.addEventListener("change", () => {
-    if (paymentInput.checked) {
-      paymentIcon.className = "fa-solid fa-credit-card";
-      paymentText.textContent = "Pin";
-    } else {
-      paymentIcon.className = "fa-solid fa-money-bill";
-      paymentText.textContent = "Contant";
-    }
-  });
+  
+  paymentInput?.addEventListener("change", updatePaymentLabel);
 
   const dayLabel = document.getElementById("day-label");
   dayLabel?.addEventListener("click", async () => {
@@ -648,7 +662,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     imageUrlInput.value = "";
   });
 
-  // Form submit
+// Form submit
 $("#sale-form")?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const form = e.currentTarget;
@@ -659,7 +673,7 @@ $("#sale-form")?.addEventListener("submit", async (e) => {
     owner_user_id: parseInt(form.owner_user_id.value, 10),
     cost: form.cost.value ? parseMoney(form.cost.value) : null,
     image_url: uploadedImageUrl || null,
-    is_pin: form.payment_method.checked ? 1 : 0 
+    is_pin: form.payment_method.checked ? 1 : 0
   };
 
   if (!payload.description || payload.price == null || isNaN(payload.owner_user_id)) {
@@ -669,17 +683,38 @@ $("#sale-form")?.addEventListener("submit", async (e) => {
 
   try {
     setButtonLoading(true, "Opslaan…");
+
+    // --------------------------
+    // PIN QR check
+    // --------------------------
+    if (payload.is_pin) {
+      const qrResult = await showQrModal(payload, form);
+
+      // Als er een QR was bevestigd → log of gebruik het indien nodig
+      if (qrResult) {
+        console.log("QR bevestigd door gebruiker:", qrResult.qr_url);
+      } else {
+        console.log("Geen QR of modal geannuleerd, verder met opslaan");
+      }
+    }
+
+    // Voeg verkoop toe
     await api("add_sale", payload);
 
+    // Reset form & UI
     form.reset();
+    updatePaymentLabel();
     preview.src = "";
     preview.classList.add("hidden");
     uploadedImageUrl = null;
     imageUrlInput.value = "";
     if (currentUserId) form.owner_user_id.value = currentUserId;
+
+    // Refresh data
     await refreshToday();
     await refreshBreakdown(currentDate);
     setActiveTab("overzicht");
+
   } catch (err) {
     alert(err.message || "Fout bij opslaan.");
   } finally {
@@ -761,6 +796,18 @@ function updateBreakdownHeader(type, date) {
   }
 
   label.innerHTML = `<i class="fa-solid fa-calendar-days text-indigo-600"></i><span>${text}</span>`;
+}
+
+
+function updatePaymentLabel() {
+  if (!paymentInput) return;
+  if (paymentInput.checked) {
+    paymentIcon.className = "fa-solid fa-credit-card";
+    paymentText.textContent = "Pin";
+  } else {
+    paymentIcon.className = "fa-solid fa-money-bill";
+    paymentText.textContent = "Contant";
+  }
 }
 
 
