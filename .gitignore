@@ -1,3 +1,46 @@
+# =========================
+# Project-specifiek
+# =========================
+chat/chat.env.php
 
-chat/chat.env.php
-chat/chat.env.php
+# =========================
+# macOS
+# =========================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+
+# =========================
+# Node.js
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+.pnpm-debug.log*
+
+# =========================
+# VSCode
+# =========================
+.vscode/
+.history/
+
+# =========================
+# Logs
+# =========================
+*.log
+logs/
+*.log.*
+
+# =========================
+# Build / Dist
+# =========================
+dist/
+build/
+out/
