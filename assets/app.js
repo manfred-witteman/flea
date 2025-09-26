@@ -219,9 +219,9 @@ function renderTodaySales(data, showAll, currentUserId) {
       const paymentBlock = document.createElement("div");
       paymentBlock.className = "flex items-center gap-2";
 
-      if (sale.is_pin === 0) {
+      if (sale.is_pin === 1) {
         const paymentIconEl = document.createElement("i");
-        paymentIconEl.className = "fa-solid fa-money-bill text-green-600";
+        paymentIconEl.className = "fa-solid fa-credit-card text-green-600";
         paymentIconEl.title = "Contant";
         paymentBlock.appendChild(paymentIconEl);
       }
