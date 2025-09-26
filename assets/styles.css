@@ -24,6 +24,55 @@
 }
 
 
+/* Geanimeerde gradient spinner */
+.btn-loader {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-loader .spinner {
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 6px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Fade-in/fade-out knop tekst */
+.btn-loader .btn-text {
+  transition: opacity 0.2s;
+}
+.btn-loader.loading .btn-text {
+  opacity: 0.5;
+}
+
+
+.button-spinner {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #333;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 #prev-day, #next-day {
   background: none;
   border: none;

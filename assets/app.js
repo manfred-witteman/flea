@@ -6,9 +6,9 @@ const $ = (sel) => document.querySelector(sel);
 // ---------------------
 // Dynamic base paths
 // ---------------------
-const BASE_PATH = window.location.pathname.replace(/\/[^/]*$/, "");
-const API_BASE = BASE_PATH + "/api/api.php";
-const UPLOADS_BASE = BASE_PATH + "/api/uploads/";
+const ROOT_PATH = window.location.pathname.split("/").filter(Boolean)[0]; // 'flea_test' of 'flea'
+const UPLOADS_BASE = "/" + ROOT_PATH + "/env/uploads/";
+const API_BASE = "/" + ROOT_PATH + "/api/api.php";
 
 // ---------------------
 // API helper
@@ -41,9 +41,6 @@ function parseMoney(value) {
   return isNaN(num) ? null : num;
 }
 
-
-
-
 // ---------------------
 // Global state
 // ---------------------
@@ -51,6 +48,7 @@ let currentUserId = null;
 let overviewDate = new Date();
 let currentRange = "day";
 let breakdownFabInitialized = false;
+let currentDate = new Date();
 
 // ---------------------
 // UI helpers
@@ -72,7 +70,6 @@ function setDayLabel(d) {
   if (dateStr === todayStr) {
     labelEl.textContent = "Vandaag verkocht";
   } else {
-    // korte notatie: ma 1 sept
     const opts = { weekday: "short", day: "numeric", month: "short" };
     const formattedDate = d.toLocaleDateString("nl-NL", opts);
     labelEl.textContent = formattedDate;
@@ -159,13 +156,12 @@ function renderTodaySales(data, showAll, currentUserId) {
   // ---------------------
   // Dagafbeeldingen verzamelen
   // ---------------------
+
   let dayImages = [];
   filteredSales.forEach((sale) => {
     if (sale.image_url && sale.image_url.trim() !== "") {
-      const imagePath = sale.image_url.trim();
-      const fullPath = imagePath.startsWith("http")
-        ? imagePath
-        : UPLOADS_BASE + imagePath.replace(/^\/+/, "");
+      const imageUrl = sale.image_url.trim();
+      const fullPath = imageUrl.startsWith("http") ? imageUrl : UPLOADS_BASE + imageUrl.replace(/^\/+/, "");
       dayImages.push(fullPath);
     }
   });
@@ -242,8 +238,9 @@ function renderTodaySales(data, showAll, currentUserId) {
     const hasImage = sale.image_url && sale.image_url.trim() !== "";
     if (hasImage) {
       const thumb = document.createElement("img");
-      const imagePath = sale.image_url.trim();
-      const fullPath = imagePath.startsWith("http") ? imagePath : UPLOADS_BASE + imagePath.replace(/^\/+/, "");
+      const imageUrl = sale.image_url.trim();
+      const fullPath = imageUrl.startsWith("http") ? imageUrl : UPLOADS_BASE + imageUrl.replace(/^\/+/, "");
+      
       thumb.className = "w-12 h-12 object-cover rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer transition-opacity duration-300";
       thumb.src = UPLOADS_BASE + "placeholder.png";
       thumb.style.opacity = 0.5;
@@ -332,7 +329,7 @@ async function refreshBreakdown(date, type) {
   data.rows.forEach(row => {
     const li = document.createElement('li');
     li.className = 'py-2 flex justify-between';
-    li.innerHTML = `<span>${row.owner_name}</span><span>€${row.revenue.toFixed(2)}</span>`;
+    li.innerHTML = `<span>${row.owner_name}</span><span>${formatEuro(row.revenue)}</span>`;
     list.appendChild(li);
   });
 
@@ -372,15 +369,22 @@ async function populateOwnerSelect(defaultUserId) {
 }
 
 // ---------------------
-// Image handling
+// Image handling (preview + pendingUpload)
 // ---------------------
 const imageInput = $("#image-upload");
 const preview = $("#image-preview");
 const imageUrlInput = $("input[name='image_url']");
+const submitBtn = $("#sale-form button[type='submit']");
+let uploadedImageUrl = null;
+
+// Start met knop ingeschakeld, tenzij er een afbeelding nodig is
+submitBtn.disabled = false;
 
 imageInput?.addEventListener("change", async (event) => {
   const file = event.target.files[0];
   if (!file) return;
+
+  setButtonLoading(true, "Uploaden…");
 
   const reader = new FileReader();
   reader.onload = (e) => {
@@ -396,10 +400,21 @@ imageInput?.addEventListener("change", async (event) => {
   try {
     const res = await fetch(API_BASE, { method: "POST", body: formData });
     const data = await res.json();
-    if (data.success) imageUrlInput.value = data.url;
-    else alert("Upload fout: " + (data.error || "Onbekend"));
+
+    if (data.success) {
+      uploadedImageUrl = data.url;
+      imageUrlInput.value = uploadedImageUrl;
+    } else {
+      uploadedImageUrl = null;
+      imageUrlInput.value = "";
+      alert("Upload fout: " + (data.error || "Onbekend"));
+    }
   } catch (err) {
+    uploadedImageUrl = null;
+    imageUrlInput.value = "";
     console.error("Upload error", err);
+  } finally {
+    setButtonLoading(false);
   }
 });
 
@@ -418,7 +433,7 @@ function initBreakdownFAB() {
   const weekInput = document.getElementById("breakdown-week-picker");
   const monthInput = document.getElementById("breakdown-month-picker");
 
-  let currentDate = new Date();
+  
 
   fabBtn.addEventListener("click", () => {
     fabMenu.classList.toggle("hidden");
@@ -505,6 +520,55 @@ async function checkSession() {
   }
 }
 
+// ---------------------
+// Show QR modal
+// ---------------------
+
+function showQrModal(payload, form) {
+  return new Promise(async (resolve, reject) => {
+    if (!payload.is_pin) return resolve();
+
+    try {
+      const qrData = await api("get_qr_for_owner", { owner_user_id: payload.owner_user_id });
+
+      // <--- log de response
+      console.log("QR API response:", qrData);
+
+      if (!qrData.success || !qrData.qr_url) return reject(new Error("Geen QR-code gevonden"));
+
+      const qrModal = document.getElementById("qr-modal");
+      const qrImg = document.getElementById("qr-image");
+      const qrDesc = document.getElementById("qr-sale-desc");
+      const qrPrice = document.getElementById("qr-sale-price");
+      const okBtn = document.getElementById("qr-ok");
+      const cancelBtn = document.getElementById("qr-cancel");
+
+      qrImg.src = qrData.qr_url;
+      qrDesc.textContent = payload.description;
+      qrPrice.textContent = formatEuro(payload.price);
+      qrModal.classList.remove("hidden");
+
+      // Clean old listeners
+      okBtn.replaceWith(okBtn.cloneNode(true));
+      cancelBtn.replaceWith(cancelBtn.cloneNode(true));
+
+      document.getElementById("qr-ok").addEventListener("click", () => {
+        qrModal.classList.add("hidden");
+        resolve();
+      });
+
+      document.getElementById("qr-cancel").addEventListener("click", () => {
+        qrModal.classList.add("hidden");
+        //reject(new Error("Verkoop geannuleerd"));
+      });
+
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+
 
 // ---------------------
 // DOM Content Loaded
@@ -584,44 +648,49 @@ document.addEventListener("DOMContentLoaded", async () => {
     imageUrlInput.value = "";
   });
 
-  $("#sale-form")?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const payload = {
-      description: form.description.value.trim(),
-      price: parseMoney(form.price.value),
-      owner_user_id: parseInt(form.owner_user_id.value, 10),
-      cost: form.cost.value ? parseMoney(form.cost.value) : null,
-      image_url: imageUrlInput.value || null,
-      is_pin: form.payment_method.checked ? 1 : 0
-    };
+  // Form submit
+$("#sale-form")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = e.currentTarget;
 
+  const payload = {
+    description: form.description.value.trim(),
+    price: parseMoney(form.price.value),
+    owner_user_id: parseInt(form.owner_user_id.value, 10),
+    cost: form.cost.value ? parseMoney(form.cost.value) : null,
+    image_url: uploadedImageUrl || null,
+    is_pin: form.payment_method.checked ? 1 : 0 
+  };
 
-    if (!payload.description || payload.price == null || isNaN(payload.owner_user_id)) {
-      alert("Controleer je invoer.");
-      return;
-    }
-    try {
-      await api("add_sale", payload);
-      form.reset();
-      preview.src = "";
-      preview.classList.add("hidden");
-      imageUrlInput.value = "";
-      if (currentUserId) form.owner_user_id.value = currentUserId;
-      await refreshToday();
-      await refreshBreakdown(overviewDate);
-      setActiveTab("overzicht");
-    } catch (err) {
-      alert(err.message || "Fout bij opslaan.");
-    }
-  });
+  if (!payload.description || payload.price == null || isNaN(payload.owner_user_id)) {
+    alert("Controleer je invoer.");
+    return;
+  }
 
+  try {
+    setButtonLoading(true, "Opslaan…");
+    await api("add_sale", payload);
+
+    form.reset();
+    preview.src = "";
+    preview.classList.add("hidden");
+    uploadedImageUrl = null;
+    imageUrlInput.value = "";
+    if (currentUserId) form.owner_user_id.value = currentUserId;
+    await refreshToday();
+    await refreshBreakdown(currentDate);
+    setActiveTab("overzicht");
+  } catch (err) {
+    alert(err.message || "Fout bij opslaan.");
+  } finally {
+    setButtonLoading(false);
+  }
+});
+
+  
   $("#filter-mine")?.addEventListener("change", refreshToday);
 
-  document.getElementById("login-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-    return false; // extra bescherming
-  });
+ 
 
   document.addEventListener("click", async (e) => {
     if (!e.target.closest("#btn-settle")) return;
@@ -648,6 +717,26 @@ document.addEventListener("DOMContentLoaded", async () => {
   initBreakdownFAB();
 });
 
+
+
+function setButtonLoading(isLoading, text = "Opslaan") {
+  if (!submitBtn) return;
+
+  if (isLoading) {
+    submitBtn.disabled = true;
+
+    submitBtn.classList.add("btn-loader", "opacity-80", "cursor-not-allowed");
+    submitBtn.innerHTML = `
+      <span class="spinner"></span>
+      <span class="btn-text">${text}</span>
+    `;
+  } else {
+    submitBtn.disabled = false;
+
+    submitBtn.classList.remove("btn-loader", "opacity-80", "cursor-not-allowed");
+    submitBtn.textContent = text;
+  }
+}
 
 
 // ----------------------
