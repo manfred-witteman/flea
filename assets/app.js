@@ -698,6 +698,8 @@ $("#sale-form")?.addEventListener("submit", async (e) => {
       }
     }
 
+    
+
     // Voeg verkoop toe
     await api("add_sale", payload);
 
@@ -750,7 +752,116 @@ $("#sale-form")?.addEventListener("submit", async (e) => {
 
   await checkSession();
   initBreakdownFAB();
+
+  // 👇 voeg dit toe
+if (!document.querySelector(".tab[data-tab='motivation']")) {
+  initMotivationTab();
+}
+
+// ======================
+// Motivatie Tab via Chat API
+// ======================
+const MOTIVATION_INTERVAL = 90 * 60 * 1000; // 1,5 uur
+let currentMotivation = "";
+
+async function fetchMotivation() {
+  try {
+    const res = await fetch("/" + ROOT_PATH + "/chat/chat.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        action: "motivation",
+        user_id: currentUserId,          // ID van ingelogde gebruiker
+        user_name: $("#owner-select")?.selectedOptions[0]?.textContent // naam
+      })
+    });
+    const data = await res.json();
+
+    if (data?.message) {
+      currentMotivation = data.message;
+      updateMotivationTab();
+      showMotivationBadge();
+    } else {
+      console.warn("Geen motivatie ontvangen", data);
+    }
+  } catch (err) {
+    console.error("Fout bij motivatie ophalen:", err);
+  }
+}
+
+
+
+// Badge tonen/verwijderen (zelfde als eerder)
+function showMotivationBadge() { /* ... */ }
+function clearMotivationBadge() { /* ... */ }
+
+async function initMotivationTab() {
+  const tabsContainer = document.getElementById("tabs");
+  const logoutBtn = document.getElementById("btn-logout");
+  if (!tabsContainer || !logoutBtn) return;
+
+  logoutBtn.remove();
+
+  const motivationTab = document.createElement("button");
+  motivationTab.className = "tab flex flex-col items-center text-sm text-slate-700 dark:text-slate-300";
+  motivationTab.dataset.tab = "motivation";
+  motivationTab.innerHTML = `<i class="fa-solid fa-sun"></i><span>Boost</span>`;
+  tabsContainer.appendChild(motivationTab);
+
+  if (!document.getElementById("view-motivation")) {
+    const motivationView = document.createElement("section");
+    motivationView.id = "view-motivation";
+    motivationView.className = "hidden p-6 text-center flex flex-col justify-center items-center";
+    motivationView.innerHTML = `
+      <h2 class="text-2xl font-bold mb-4">Motivatie Boost</h2>
+      <p id="motivation-text" class="text-4xl font-bold text-slate-700 italic max-w-[90%] mx-auto"></p>
+    `;
+    document.getElementById("screen-app").appendChild(motivationView);
+  }
+
+  motivationTab.addEventListener("click", () => {
+    setActiveTab("motivation");
+    document.getElementById("motivation-text").textContent = currentMotivation || "Even geen motivatie beschikbaar.";
+    clearMotivationBadge();
+  });
+
+  // 👇 eerste fetch en interval
+  await fetchMotivation();
+  setInterval(fetchMotivation, MOTIVATION_INTERVAL);
+}
+
+
+
 });
+
+function updateMotivationTab() {
+  const motivationEl = document.getElementById("motivation-text");
+  if (motivationEl) {
+    motivationEl.textContent = currentMotivation || "Even geen motivatie beschikbaar.";
+  }
+}
+
+
+function showMotivationBadge() {
+  const tab = document.querySelector(".tab[data-tab='motivation']");
+  if (!tab) return;
+
+  // Check of badge al bestaat
+  if (!tab.querySelector(".badge")) {
+    const badge = document.createElement("span");
+    badge.className = `
+      badge absolute top-1 right-2 w-3 h-3 bg-red-500 rounded-full
+      border-2 border-white dark:border-slate-800
+    `;
+    tab.classList.add("relative"); // zodat absolute positioning werkt
+    tab.appendChild(badge);
+  }
+}
+
+function clearMotivationBadge() {
+  const badge = document.querySelector(".tab[data-tab='motivation'] .badge");
+  if (badge) badge.remove();
+}
 
 
 
