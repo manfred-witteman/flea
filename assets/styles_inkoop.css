@@ -1,0 +1,180 @@
+/* Basic modern iOS-like UI helpers */
+:root {
+  --radius: 1.25rem;
+}
+
+.card {
+  @apply bg-white rounded-2xl shadow-xl p-4;
+}
+
+.input {
+  @apply w-full rounded-xl border border-slate-200 bg-white px-3 py-2 outline-none focus:ring-2 focus:ring-red-200;
+}
+
+.label {
+  @apply text-sm text-slate-600;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-xl px-4 py-2 bg-red-600 text-white font-medium shadow-lg hover:bg-red-700 transition;
+}
+
+.btn-icon {
+  @apply inline-flex items-center justify-center rounded-xl px-3 py-2 bg-slate-100 text-slate-700 hover:bg-slate-200 transition;
+}
+
+
+/* Geanimeerde gradient spinner */
+.btn-loader {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-loader .spinner {
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 6px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Fade-in/fade-out knop tekst */
+.btn-loader .btn-text {
+  transition: opacity 0.2s;
+}
+.btn-loader.loading .btn-text {
+  opacity: 0.5;
+}
+
+.button-spinner {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #333;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+#prev-day, #next-day {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.hidden-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+#prev-day:hover, #next-day:hover {
+  color: #DC2626; /* rood hover */
+}
+
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  background: white;
+  box-shadow: 0 -10px 30px rgba(15,23,42,0.12);
+  padding: 6px 8px env(safe-area-inset-bottom);
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 6px;
+  border-radius: 14px;
+  font-size: 12px;
+  color: rgb(71 85 105);
+}
+.tab i { font-size: 18px }
+.tab.active { background: rgb(254 226 226); color: rgb(220 38 38); } /* lichtrood / rood */
+
+/* helpers for iOS bottom safe area */
+.safe-bottom { padding-bottom: calc(env(safe-area-inset-bottom) + 4px); }
+
+/* Hide arrows for number inputs on mobile Safari/Chrome */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type=number] { -moz-appearance: textfield; }
+
+/* ====== DARK MODE ====== */
+@media (prefers-color-scheme: dark) {
+  body {
+    @apply bg-slate-900 text-slate-100;
+  }
+
+  .card {
+    @apply bg-slate-800 text-slate-100;
+  }
+
+  .input {
+    @apply bg-slate-800 border-slate-700 text-slate-100;
+  }
+
+  .label {
+    @apply text-slate-400;
+  }
+
+  .btn-primary {
+    @apply bg-red-600 text-white hover:bg-red-500;
+  }
+
+  .btn-icon {
+    @apply bg-slate-700 text-slate-200 hover:bg-slate-600;
+  }
+
+  .tabbar {
+    @apply bg-slate-800 border-slate-700;
+  }
+
+  .tab {
+    @apply text-slate-300;
+  }
+  .tab.active {
+    @apply bg-slate-700 text-red-400;
+  }
+
+  /* Divider kleuren in dark mode */
+  #today-list {
+    @apply divide-slate-700;
+  }
+
+  /* Borders in cards */
+  .card,
+  .border-slate-100 {
+    @apply border-slate-700;
+  }
+
+  /* Tekst van lege lijsten */
+  #today-empty {
+    @apply text-slate-400;
+  }
+}
