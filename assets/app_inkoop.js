@@ -1,5 +1,5 @@
 // ======================
-// Minimal Front-End SPA (Home + Overzicht)
+// Minimal Front-End SPA (Inkoop)
 // ======================
 const $ = (sel) => document.querySelector(sel);
 
@@ -9,8 +9,12 @@ const $ = (sel) => document.querySelector(sel);
 const ROOT_PATH = window.location.pathname.split("/").filter(Boolean)[0];
 const UPLOADS_BASE = "/flea_uploads/";
 const API_BASE = "/" + ROOT_PATH + "/api/api.php";
+
 let paymentInput, paymentIcon, paymentText;
 let uploadedImageUrl = null;
+let overviewDate = new Date();
+let submitBtn;
+let currentUserId = null;
 
 // ---------------------
 // API helper
@@ -21,11 +25,21 @@ const api = async (action, payload = {}, method = "POST") => {
     opts.headers["Content-Type"] = "application/json";
     opts.body = JSON.stringify({ action, ...payload });
   }
-  const res = await fetch(API_BASE, opts);
-  if (!res.ok) throw new Error("Serverfout");
-  const data = await res.json();
-  if (data.error) throw new Error(data.error);
-  return data;
+  try {
+    const res = await fetch(API_BASE, { ...opts, credentials: "include" });
+    if (!res.ok) throw new Error("Serverfout");
+    const text = await res.text();
+    try {
+      const data = JSON.parse(text);
+      if (data.error) throw new Error(data.error);
+      return data;
+    } catch {
+      console.error("Invalid JSON response:", text);
+      throw new Error("Ongeldige server response");
+    }
+  } catch (err) {
+    throw err;
+  }
 };
 
 // ---------------------
@@ -44,12 +58,6 @@ function parseMoney(value) {
 }
 
 // ---------------------
-// Global state
-// ---------------------
-let currentUserId = null;
-let overviewDate = new Date();
-
-// ---------------------
 // UI helpers
 // ---------------------
 function setActiveTab(name) {
@@ -66,276 +74,25 @@ function setDayLabel(d) {
   if (!labelEl) return;
 
   if (dateStr === todayStr) {
-    labelEl.textContent = "Vandaag verkocht";
+    labelEl.textContent = "Vandaag ingekocht";
   } else {
     const opts = { weekday: "short", day: "numeric", month: "short" };
     labelEl.textContent = d.toLocaleDateString("nl-NL", opts);
   }
 }
 
-// ---------------------
-// Sales rendering
-// ---------------------
-function renderTodaySales(data, showAll, currentUserId) {
-  const list = $("#today-list");
-  const empty = $("#today-empty");
-  list.innerHTML = "";
-
-  const colors = ["bg-indigo-500", "bg-emerald-500", "bg-rose-500", "bg-amber-500"];
-  const colorForUser = (userId) => colors[userId % colors.length];
-
-  const filteredSales = showAll ? data.sales : data.sales.filter((s) => s.cashier_user_id == currentUserId);
-
-  if (!filteredSales.length) {
-    empty.classList.remove("hidden");
-    return;
-  }
-  empty.classList.add("hidden");
-
-  filteredSales.forEach((sale) => {
-    const li = document.createElement("li");
-    li.className = "flex items-center gap-3 py-2";
-
-    // Avatar
-    const avatar = document.createElement("div");
-    avatar.className = `flex items-center justify-center w-10 h-10 rounded-full text-white font-bold ${colorForUser(sale.cashier_user_id)}`;
-    avatar.textContent = sale.cashier_name.charAt(0).toUpperCase();
-
-    // Text
-    const textBlock = document.createElement("div");
-    textBlock.className = "flex flex-col";
-    const desc = document.createElement("div");
-    desc.className = "font-medium";
-    desc.textContent = sale.description;
-    const sub = document.createElement("div");
-    sub.className = "text-sm text-slate-500";
-    sub.textContent = `${formatEuro(sale.price)} • ${sale.owner_name}`;
-    textBlock.appendChild(desc);
-    textBlock.appendChild(sub);
-
-    li.appendChild(avatar);
-    li.appendChild(textBlock);
-
-    // Spacer
-    const spacer = document.createElement("div");
-    spacer.className = "flex-1";
-    li.appendChild(spacer);
-
-    // Payment icon
-    const paymentBlock = document.createElement("div");
-    paymentBlock.className = "flex items-center gap-2";
-    if (sale.is_pin === 1) {
-      const paymentIconEl = document.createElement("i");
-      paymentIconEl.className = "fa-solid fa-credit-card text-green-600";
-      paymentBlock.appendChild(paymentIconEl);
-    }
-    if (paymentBlock.children.length > 0) li.appendChild(paymentBlock);
-
-    list.appendChild(li);
-  });
-}
-
-// ---------------------
-// Refresh functions
-// ---------------------
-async function refreshToday() {
-  const data = await api("list_sales", { date: formatDateUTC(overviewDate) });
-  setDayLabel(overviewDate);
-  const showAll = $("#filter-mine")?.checked ?? false;
-  renderTodaySales(data, showAll, currentUserId);
-}
-
-// ---------------------
-// Owner select
-// ---------------------
-async function populateOwnerSelect(defaultUserId) {
-  const select = $("#owner-select");
-  if (!select) return;
-  const dataUsers = await api("list_users");
-  select.innerHTML = "";
-  dataUsers.users.forEach((u) => {
-    const option = document.createElement("option");
-    option.value = u.id.toString();
-    option.textContent = u.name;
-    select.appendChild(option);
-  });
-  if (defaultUserId) select.value = defaultUserId.toString();
-}
-
-// ---------------------
-// Image handling
-// ---------------------
-const imageInput = document.getElementById("image-upload");
-const preview = document.getElementById("image-preview");
-const imageUrlInput = document.querySelector("input[name='image_url']");
-const submitBtn = document.querySelector("#purchase-form button[type='submit']");
-
-imageInput?.addEventListener("change", async (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  setButtonLoading(true, "Uploaden…");
-
-  // Preview
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    preview.src = e.target.result;
-    preview.classList.remove("hidden");
-  };
-  reader.readAsDataURL(file);
-
-  // Upload
-  const formData = new FormData();
-  formData.append("image", file);
-  formData.append("action", "upload_image");
-
-  try {
-    const res = await fetch(API_BASE, { method: "POST", body: formData });
-    const data = await res.json();
-
-    if (data.success && data.filename) {
-      uploadedImageUrl = `/uploads/${data.filename}`;
-      imageUrlInput.value = uploadedImageUrl;
-    } else {
-      uploadedImageUrl = null;
-      imageUrlInput.value = "";
-      alert("Upload fout: " + (data.error || "Onbekend"));
-    }
-  } catch (err) {
-    uploadedImageUrl = null;
-    imageUrlInput.value = "";
-    alert("Er is een fout opgetreden bij het uploaden.");
-  } finally {
-    setButtonLoading(false);
-  }
-});
-
-// ---------------------
-// Session handling
-// ---------------------
-async function checkSession() {
-  try {
-    const me = await api("me");
-    if (me?.user) {
-      currentUserId = me.user.id;
-      $("#screen-login").classList.add("hidden");
-      $("#screen-app").classList.remove("hidden");
-      await populateOwnerSelect(currentUserId);
-      await refreshToday();
-      setActiveTab("home");
-    } else {
-      $("#screen-login").classList.remove("hidden");
-      $("#screen-app").classList.add("hidden");
-    }
-  } catch {
-    $("#screen-login").classList.remove("hidden");
-    $("#screen-app").classList.add("hidden");
+function setButtonLoading(isLoading, text = "Opslaan") {
+  if (!submitBtn) return;
+  if (isLoading) {
+    submitBtn.disabled = true;
+    submitBtn.classList.add("btn-loader", "opacity-80", "cursor-not-allowed");
+    submitBtn.innerHTML = `<span class="spinner"></span><span class="btn-text">${text}</span>`;
+  } else {
+    submitBtn.disabled = false;
+    submitBtn.classList.remove("btn-loader", "opacity-80", "cursor-not-allowed");
+    submitBtn.textContent = text;
   }
 }
-
-// ---------------------
-// DOM Content Loaded
-// ---------------------
-document.addEventListener("DOMContentLoaded", async () => {
-  paymentInput = document.getElementById("payment-method");
-  paymentIcon = document.getElementById("payment-icon");
-  paymentText = document.getElementById("payment-text");
-
-  const overviewLabel = $("#overview-label");
-  const prevDayBtn = $("#prev-day");
-  const nextDayBtn = $("#next-day");
-
-  overviewLabel?.addEventListener("click", async () => {
-    overviewDate = new Date();
-    await refreshToday();
-  });
-
-  prevDayBtn?.addEventListener("click", async () => {
-    overviewDate.setDate(overviewDate.getDate() - 1);
-    await refreshToday();
-  });
-
-  nextDayBtn?.addEventListener("click", async () => {
-    overviewDate.setDate(overviewDate.getDate() + 1);
-    await refreshToday();
-  });
-
-  paymentInput?.addEventListener("change", updatePaymentLabel);
-
-  // Tab switching: alleen home + overzicht
-  $(".tabbar")?.querySelectorAll(".tab[data-tab]")?.forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      setActiveTab(btn.dataset.tab);
-      if (btn.dataset.tab === "overzicht") await refreshToday();
-    });
-  });
-
-  // Login form
-  $("#login-form")?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    $("#login-error")?.classList.add("hidden");
-    const form = e.currentTarget;
-    try {
-      await api("login", { email: form.email.value.trim(), password: form.password.value });
-      form.reset();
-      await checkSession();
-    } catch (err) {
-      $("#login-error").textContent = err.message || "Inloggen mislukt";
-      $("#login-error").classList.remove("hidden");
-    }
-  });
-
-  // Logout
-  $("#btn-logout")?.addEventListener("click", async () => {
-    await api("logout");
-    $("#screen-app").classList.add("hidden");
-    $("#screen-login").classList.remove("hidden");
-    preview.src = "";
-    preview.classList.add("hidden");
-    imageUrlInput.value = "";
-  });
-
-  // Purchase form
-  $("#purchase-form")?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-
-    const payload = {
-      description: form.description.value.trim(),
-      price: parseMoney(form.price.value),
-      owner_user_id: parseInt(form.owner_user_id.value, 10),
-      image_url: uploadedImageUrl || null,
-      is_pin: form.payment_method.checked ? 1 : 0
-    };
-    if (!payload.description || payload.price == null || isNaN(payload.owner_user_id)) {
-      alert("Controleer je invoer.");
-      return;
-    }
-
-    try {
-      setButtonLoading(true, "Opslaan…");
-      await api("add_sale", payload);
-      form.reset();
-      updatePaymentLabel();
-      preview.src = "";
-      preview.classList.add("hidden");
-      uploadedImageUrl = null;
-      imageUrlInput.value = "";
-      if (currentUserId) form.owner_user_id.value = currentUserId;
-
-      await refreshToday();
-      setActiveTab("overzicht");
-    } catch (err) {
-      alert(err.message || "Fout bij opslaan.");
-    } finally {
-      setButtonLoading(false);
-    }
-  });
-
-  $("#filter-mine")?.addEventListener("change", refreshToday);
-
-  await checkSession();
-});
 
 // ---------------------
 // Payment label update
@@ -352,22 +109,239 @@ function updatePaymentLabel() {
 }
 
 // ---------------------
+// Purchase rendering
+// ---------------------
+function renderPurchases(data) {
+  const list = $("#today-list");
+  const empty = $("#today-empty");
+  list.innerHTML = "";
+
+  if (!data.purchases || data.purchases.length === 0) {
+    empty.classList.remove("hidden");
+    return;
+  }
+  empty.classList.add("hidden");
+
+  data.purchases.forEach((p) => {
+    const li = document.createElement("li");
+    li.className = "flex items-center gap-3 py-2";
+
+    const textBlock = document.createElement("div");
+    textBlock.className = "flex flex-col";
+    const desc = document.createElement("div");
+    desc.className = "font-medium";
+    desc.textContent = p.description;
+    const sub = document.createElement("div");
+    sub.className = "text-sm text-slate-500";
+    let subText = `Inkoop: ${formatEuro(p.cost)}`;
+    if (p.target_price) subText += ` • Streefprijs: ${formatEuro(p.target_price)}`;
+    if (p.purchase_remarks) subText += ` • Opmerkingen: ${p.purchase_remarks}`;
+    sub.textContent = subText;
+
+    textBlock.appendChild(desc);
+    textBlock.appendChild(sub);
+    li.appendChild(textBlock);
+
+    if (p.image_url) {
+      const img = document.createElement("img");
+      // Altijd gebruik UPLOADS_BASE
+      img.src = p.image_url.startsWith("/")
+        ? p.image_url
+        : `${UPLOADS_BASE}${p.image_url}`;
+      img.className = "w-16 h-16 object-cover rounded-lg";
+      li.appendChild(img);
+    }
+
+    list.appendChild(li);
+  });
+}
+
+// ---------------------
+// Refresh purchases
+// ---------------------
+async function refreshPurchases() {
+  try {
+    const data = await api("list_purchases", { date: formatDateUTC(overviewDate) });
+    console.log("refreshPurchases data:", data);  // debug
+    setDayLabel(overviewDate);
+    renderPurchases(data);
+  } catch (err) {
+    console.error("Refresh purchases failed:", err);
+  }
+}
+
+// ---------------------
+// Image handling
+// ---------------------
+const imageInput = document.getElementById("image-upload");
+const preview = document.getElementById("image-preview");
+const imageUrlInput = document.querySelector("input[name='image_url']");
+
+imageInput?.addEventListener("change", async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+  setButtonLoading(true, "Uploaden…");
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    preview.src = e.target.result;
+    preview.classList.remove("hidden");
+  };
+  reader.readAsDataURL(file);
+
+  const formData = new FormData();
+  formData.append("image", file);
+  formData.append("action", "upload_image");
+
+  try {
+    const res = await fetch(API_BASE, { method: "POST", body: formData, credentials: "include" });
+    const text = await res.text();
+    const data = JSON.parse(text);
+    if (data.success && data.filename) {
+      uploadedImageUrl = `${UPLOADS_BASE}${data.filename}`;
+      imageUrlInput.value = uploadedImageUrl;
+    } else {
+      uploadedImageUrl = null;
+      imageUrlInput.value = "";
+      alert("Upload fout: " + (data.error || "Onbekend"));
+    }
+  } catch {
+    uploadedImageUrl = null;
+    imageUrlInput.value = "";
+    alert("Fout bij upload.");
+  } finally {
+    setButtonLoading(false);
+  }
+});
+
+// ---------------------
+// Session handling
+// ---------------------
+async function checkSession() {
+  try {
+    const me = await api("me");
+    console.log("Session check:", me);
+    if (me?.user) {
+      currentUserId = me.user.id;  // <-- hier
+      $("#screen-login").classList.add("hidden");
+      $("#screen-app").classList.remove("hidden");
+
+      // Zet hidden field voor owner_user_id
+      const ownerInput = document.getElementById("owner_user_id");
+      if (ownerInput) ownerInput.value = currentUserId;
+
+      await refreshPurchases();
+      setActiveTab("home");
+    } else {
+      $("#screen-login").classList.remove("hidden");
+      $("#screen-app").classList.add("hidden");
+    }
+  } catch (err) {
+    console.error("checkSession error:", err);
+    $("#screen-login").classList.remove("hidden");
+    $("#screen-app").classList.add("hidden");
+  }
+}
+
+// ---------------------
 // Date helpers
 // ---------------------
 function formatDateUTC(date) {
   return date.toISOString().slice(0, 10);
 }
 
-function setButtonLoading(isLoading, text = "Opslaan") {
-  if (!submitBtn) return;
+// ---------------------
+// DOMContentLoaded
+// ---------------------
+document.addEventListener("DOMContentLoaded", async () => {
+  paymentInput = document.getElementById("payment-method");
+  paymentIcon = document.getElementById("payment-icon");
+  paymentText = document.getElementById("payment-text");
+  submitBtn = document.querySelector("#purchase-form button[type='submit']");
 
-  if (isLoading) {
-    submitBtn.disabled = true;
-    submitBtn.classList.add("btn-loader", "opacity-80", "cursor-not-allowed");
-    submitBtn.innerHTML = `<span class="spinner"></span><span class="btn-text">${text}</span>`;
-  } else {
-    submitBtn.disabled = false;
-    submitBtn.classList.remove("btn-loader", "opacity-80", "cursor-not-allowed");
-    submitBtn.textContent = text;
-  }
-}
+  const overviewLabel = $("#overview-label");
+  const prevDayBtn = $("#prev-day");
+  const nextDayBtn = $("#next-day");
+
+  overviewLabel?.addEventListener("click", async () => {
+    overviewDate = new Date();
+    await refreshPurchases();
+  });
+  prevDayBtn?.addEventListener("click", async () => {
+    overviewDate.setDate(overviewDate.getDate() - 1);
+    await refreshPurchases();
+  });
+  nextDayBtn?.addEventListener("click", async () => {
+    overviewDate.setDate(overviewDate.getDate() + 1);
+    await refreshPurchases();
+  });
+
+  paymentInput?.addEventListener("change", updatePaymentLabel);
+
+  $(".tabbar")?.querySelectorAll(".tab[data-tab]")?.forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      setActiveTab(btn.dataset.tab);
+      if (btn.dataset.tab === "overzicht") await refreshPurchases();
+    });
+  });
+
+  $("#login-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    $("#login-error")?.classList.add("hidden");
+    const form = e.currentTarget;
+    try {
+      await api("login", { email: form.email.value.trim(), password: form.password.value });
+      form.reset();
+      await checkSession();
+    } catch (err) {
+      $("#login-error").textContent = err.message || "Inloggen mislukt";
+      $("#login-error").classList.remove("hidden");
+    }
+  });
+
+  $("#btn-logout")?.addEventListener("click", async () => {
+    await api("logout");
+    $("#screen-app").classList.add("hidden");
+    $("#screen-login").classList.remove("hidden");
+    preview.src = "";
+    preview.classList.add("hidden");
+    imageUrlInput.value = "";
+  });
+
+  $("#purchase-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const payload = {
+      description: form.description.value.trim(),
+      cost: parseMoney(form.price.value) || 0,   // nooit null
+      owner_user_id: parseInt(form.owner_user_id.value, 10) || currentUserId,
+      purchase_is_pin: form.payment_method.checked ? 1 : 0,
+      purchase_remarks: form.purchase_remarks.value.trim() || null,
+      target_price: parseMoney(form.target_price.value) || null,
+      qr_id: null,
+      image_url: uploadedImageUrl || null,
+      purchased_at: new Date().toISOString().slice(0, 19).replace("T", " ")
+    };
+    if (!payload.description || payload.cost == null) {
+      alert("Controleer je invoer.");
+      return;
+    }
+    try {
+      setButtonLoading(true, "Opslaan…");
+      await api("add_purchase", payload);
+      form.reset();
+      updatePaymentLabel();
+      preview.src = "";
+      preview.classList.add("hidden");
+      uploadedImageUrl = null;
+      imageUrlInput.value = "";
+      await refreshPurchases();
+    } catch (err) {
+      alert(err.message || "Fout bij opslaan.");
+    } finally {
+      setButtonLoading(false);
+    }
+  });
+
+  await checkSession();
+});

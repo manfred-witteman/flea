@@ -43,19 +43,14 @@ function require_login()
 
 function uploads_dir(): string
 {
-    return dirname(__DIR__) . '/env/uploads/';
+    return rtrim(UPLOADS_DIR, '/') . '/';
 }
 
-function uploads_url($filename) {
-    // Dynamisch de root detecteren, geen /api/ in de URL
+function uploads_url($filename)
+{
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
     $host = $_SERVER['HTTP_HOST'];
-
-    // Vind de base path van het project
-    $scriptDir = dirname($_SERVER['SCRIPT_NAME']); // bv. /flea_test/api
-    $basePath = preg_replace('#/api$#', '', $scriptDir); // verwijder /api
-
-    return $protocol . "://" . $host . $basePath . "/env/uploads/" . ltrim($filename, '/');
+    return $protocol . "://" . $host . UPLOADS_URL_BASE . ltrim($filename, '/');
 }
 
 // ------------------------
@@ -76,7 +71,8 @@ try {
         case 'login':
             $email = trim($input['email'] ?? '');
             $password = $input['password'] ?? '';
-            if (!$email || !$password) respond(['error' => 'E-mail en wachtwoord vereist']);
+            if (!$email || !$password)
+                respond(['error' => 'E-mail en wachtwoord vereist']);
 
             $stmt = $db->prepare('SELECT id, name, email, password_hash, is_admin FROM users WHERE email=? AND active=1');
             $stmt->bind_param('s', $email);
@@ -86,28 +82,29 @@ try {
             if (!$user || !password_verify($password, $user['password_hash'])) {
                 respond(['error' => 'Ongeldige inlog']);
             }
-            $_SESSION['user_id'] = (int)$user['id'];
+            $_SESSION['user_id'] = (int) $user['id'];
             respond([
                 'ok' => true,
                 'user' => [
-                    'id' => (int)$user['id'],
+                    'id' => (int) $user['id'],
                     'name' => $user['name'],
                     'email' => $user['email'],
-                    'is_admin' => (int)$user['is_admin']
+                    'is_admin' => (int) $user['is_admin']
                 ]
             ]);
             break;
 
         case 'me':
-            if (!isset($_SESSION['user_id'])) respond(['user' => null]);
-            $uid = (int)$_SESSION['user_id'];
+            if (!isset($_SESSION['user_id']))
+                respond(['user' => null]);
+            $uid = (int) $_SESSION['user_id'];
             $stmt = $db->prepare('SELECT id, name, email, is_admin FROM users WHERE id=?');
             $stmt->bind_param('i', $uid);
             $stmt->execute();
             $res = $stmt->get_result();
             $user = $res->fetch_assoc();
-            $user['id'] = (int)$user['id'];
-            $user['is_admin'] = (int)$user['is_admin'];
+            $user['id'] = (int) $user['id'];
+            $user['is_admin'] = (int) $user['is_admin'];
             respond(['user' => $user]);
             break;
 
@@ -122,10 +119,10 @@ try {
             $users = [];
             while ($row = $res->fetch_assoc()) {
                 $users[] = [
-                    'id' => (int)$row['id'],
+                    'id' => (int) $row['id'],
                     'name' => $row['name'],
                     'iban' => $row['iban'],
-                    'qr_url' => $row['qr_url']
+                    'qr_filename' => $row['qr_url'] // just filename
                 ];
             }
             respond(['users' => $users]);
@@ -139,30 +136,59 @@ try {
         case 'delete_mapping':
             require_login();
             $ownerId = intval($input['owner_user_id'] ?? 0);
-            if (!$ownerId) respond(['error' => 'Geen geldig ID']);
+            if (!$ownerId)
+                respond(['error' => 'Geen geldig ID']);
             $stmt = $db->prepare("DELETE FROM qr_config WHERE owner_user_id = ?");
             $stmt->bind_param('i', $ownerId);
-            if (!$stmt->execute()) respond(['error' => 'Kon mapping niet verwijderen']);
+            if (!$stmt->execute())
+                respond(['error' => 'Kon mapping niet verwijderen']);
             respond(['success' => true]);
             break;
 
 
         case 'add_sale':
             require_login();
+
             $description = trim($input['description'] ?? '');
             $price = $input['price'] ?? null;
             $cost = $input['cost'] ?? null;
             $owner_user_id = $input['owner_user_id'] ?? null;
-            if (!$description || !is_numeric($price) || !$owner_user_id) respond(['error' => 'Ongeldige invoer']);
+            $image_filename = trim((string) ($input['image_url'] ?? '')); // frontend stuurt nu 'image_url'
+            $is_pin = isset($input['is_pin']) ? intval($input['is_pin']) : 0;
+
+            // Validatie
+            if (!$description || !is_numeric($price) || !$owner_user_id) {
+                respond(['error' => 'Ongeldige invoer']);
+            }
+
             $price = floatval($price);
             $owner_user_id = intval($owner_user_id);
             $cashier_user_id = intval($_SESSION['user_id']);
             $cost_val = is_null($cost) || $cost === '' ? null : floatval($cost);
-            $image_url = trim((string)($input['image_url'] ?? ''));
-            $is_pin = isset($input['is_pin']) ? intval($input['is_pin']) : 0;
-            $stmt = $db->prepare('INSERT INTO sales (description, price, cost, owner_user_id, cashier_user_id, image_url, is_pin, sold_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())');
-            $stmt->bind_param('sdsissi', $description, $price, $cost_val, $owner_user_id, $cashier_user_id, $image_url, $is_pin);
-            if (!$stmt->execute()) respond(['error' => 'Kon verkoop niet opslaan']);
+
+            // Sla alleen de basename van de afbeelding op, geen pad
+            $image_filename = $image_filename ? basename($image_filename) : null;
+
+            $stmt = $db->prepare('
+                INSERT INTO sales (description, price, cost, owner_user_id, cashier_user_id, image_url, is_pin, sold_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
+            ');
+
+            $stmt->bind_param(
+                'sdsissi',
+                $description,
+                $price,
+                $cost_val,
+                $owner_user_id,
+                $cashier_user_id,
+                $image_filename,
+                $is_pin
+            );
+
+            if (!$stmt->execute()) {
+                respond(['error' => 'Kon verkoop niet opslaan']);
+            }
+
             respond(['ok' => true, 'id' => $db->insert_id]);
             break;
 
@@ -185,10 +211,15 @@ try {
             $res = $stmt->get_result();
             $sales = [];
             while ($row = $res->fetch_assoc()) {
-                $row['id'] = (int)$row['id'];
-                $row['owner_user_id'] = (int)$row['owner_user_id'];
-                $row['cashier_user_id'] = (int)$row['cashier_user_id'];
-                $row['is_pin'] = (int)$row['is_pin']; // <--- toevoegen
+                $row['id'] = (int) $row['id'];
+                $row['owner_user_id'] = (int) $row['owner_user_id'];
+                $row['cashier_user_id'] = (int) $row['cashier_user_id'];
+                $row['is_pin'] = (int) $row['is_pin'];
+
+                if (!empty($row['image_url'])) {
+                    $row['image_url'] = uploads_url($row['image_url']);
+                }
+
                 $sales[] = $row;
             }
             respond(['sales' => $sales]);
@@ -197,19 +228,111 @@ try {
         case 'delete_sale':
             require_login();
             $id = intval($input['id'] ?? 0);
-            if (!$id) respond(['error' => 'Ongeldig ID']);
+            if (!$id)
+                respond(['error' => 'Ongeldig ID']);
             $stmt = $db->prepare('SELECT image_url FROM sales WHERE id=?');
             $stmt->bind_param('i', $id);
             $stmt->execute();
             $res = $stmt->get_result();
             $row = $res->fetch_assoc();
-            $filePath = $row['image_url'] ? uploads_dir() . basename($row['image_url']) : '';
+            $filePath = !empty($row['image_url']) ? uploads_dir() . $row['image_url'] : '';
             $stmt = $db->prepare('UPDATE sales SET deleted=1, deleted_at=NOW() WHERE id=?');
             $stmt->bind_param('i', $id);
             $stmt->execute();
-            if ($filePath && file_exists($filePath)) @unlink($filePath);
+            if ($filePath && file_exists($filePath))
+                @unlink($filePath);
             respond(['ok' => true]);
             break;
+
+
+
+        case 'add_purchase':
+                require_login();
+
+                // Input ophalen en trimmen
+                $description      = trim($input['description'] ?? '');
+                $purchased_at     = $input['purchased_at'] ?? date('Y-m-d H:i:s');
+                $purchase_remarks = trim($input['purchase_remarks'] ?? '');
+                $owner_user_id    = $input['owner_user_id'] ?? null;
+                $purchase_is_pin  = isset($input['purchase_is_pin']) ? intval($input['purchase_is_pin']) : 0;
+                $target_price     = isset($input['target_price']) ? floatval($input['target_price']) : null;
+                $qr_id            = !empty($input['qr_id']) ? trim((string)$input['qr_id']) : null;
+                $cost             = isset($input['cost']) ? floatval($input['cost']) : null;
+                $image_filename   = trim((string)($input['image_url'] ?? ''));
+
+                // Validatie
+                if (!$description || !$owner_user_id || $cost === null) {
+                    error_log('add_purchase: Ongeldige invoer: ' . print_r($input, true));
+                    respond(['error' => 'Ongeldige invoer']);
+                }
+
+                $owner_user_id  = intval($owner_user_id);
+                $cashier_user_id = intval($_SESSION['user_id']);
+                $image_filename  = $image_filename ? basename($image_filename) : null;
+                $purchase_remarks = $purchase_remarks ?: null;
+                $target_price     = $target_price !== null ? $target_price : null;
+                $qr_id            = $qr_id ?: null;
+
+                // Prepare statement
+                $stmt = $db->prepare('
+                    INSERT INTO sales
+                    (description, cost, owner_user_id, cashier_user_id, purchased_at, purchase_remarks, purchase_is_pin, target_price, qr_id, image_url)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ');
+
+                if (!$stmt) {
+                    error_log('add_purchase: Prepare failed: ' . $db->error);
+                    respond(['error' => 'Kon inkoop niet voorbereiden']);
+                }
+
+                // Bind parameters
+                if (!$stmt->bind_param(
+                    'sdissidsis',
+                    $description,
+                    $cost,
+                    $owner_user_id,
+                    $cashier_user_id,
+                    $purchased_at,
+                    $purchase_remarks,
+                    $purchase_is_pin,
+                    $target_price,
+                    $qr_id,
+                    $image_filename
+                )) {
+                    error_log('add_purchase: Bind failed: ' . $stmt->error . ' | Input: ' . print_r($input, true));
+                    respond(['error' => 'Kon inkoop niet binden']);
+                }
+
+                // Execute
+                if (!$stmt->execute()) {
+                    error_log('add_purchase: Execute failed: ' . $stmt->error . ' | Input: ' . print_r($input, true));
+                    respond(['error' => 'Kon inkoop niet opslaan']);
+                }
+
+                respond(['ok' => true, 'id' => $db->insert_id]);
+                break;
+
+        case 'list_purchases':
+            require_login();
+
+            $stmt = $db->prepare('
+                SELECT * FROM sales
+                WHERE purchased_at IS NOT NULL
+                ORDER BY purchased_at DESC
+            ');
+
+            if (!$stmt->execute()) {
+                error_log("list_purchases failed: " . $stmt->error);
+                respond(['error' => 'Kon purchases niet ophalen']);
+            }
+
+            $res = $stmt->get_result();
+            $purchases = $res->fetch_all(MYSQLI_ASSOC);
+
+            respond(['purchases' => $purchases]);
+            break;
+
+
 
         case 'breakdown':
             require_login();
@@ -244,7 +367,7 @@ try {
             while ($row = $res->fetch_assoc()) {
                 $rev = floatval($row['revenue']);
                 $total += $rev;
-                $rows[] = ['owner_id' => (int)$row['owner_id'], 'owner_name' => $row['owner_name'], 'revenue' => round($rev, 2)];
+                $rows[] = ['owner_id' => (int) $row['owner_id'], 'owner_name' => $row['owner_name'], 'revenue' => round($rev, 2)];
             }
             respond(['rows' => $rows, 'total' => round($total, 2)]);
             break;
@@ -252,73 +375,83 @@ try {
         // ------------------------
         // GET QR FOR OWNER
         // ------------------------
-       case 'get_qr_for_owner':
-        require_login();
+        case 'get_qr_for_owner':
+            require_login();
 
-        $ownerId = intval($input["owner_user_id"] ?? 0);
-        if (!$ownerId) {
-            respond(null); // ongeldig owner ID → gewoon null
-        }
+            $ownerId = intval($input["owner_user_id"] ?? 0);
+            if (!$ownerId) {
+                respond(null); // ongeldig owner ID → gewoon null
+            }
 
-        $stmt = $db->prepare('
+            $stmt = $db->prepare('
             SELECT u.id AS qr_user_id, u.qr_url
             FROM qr_config q
             JOIN users u ON u.id = q.qr_user_id
             WHERE q.owner_user_id = ?
             LIMIT 1
         ');
-        $stmt->bind_param('i', $ownerId);
-        $stmt->execute();
-        $res = $stmt->get_result();
-        $row = $res->fetch_assoc();
+            $stmt->bind_param('i', $ownerId);
+            $stmt->execute();
+            $res = $stmt->get_result();
+            $row = $res->fetch_assoc();
 
-        if ($row && !empty($row['qr_url'])) {
-            $qrFileName = basename($row['qr_url']);
-            $qrFullUrl = uploads_url($qrFileName);
-
-            respond([
-                'success' => true,
-                'qr_user_id' => (int)$row['qr_user_id'],
-                'qr_url' => $qrFullUrl
-            ]);
-        } else {
-            respond([]);
-        }
-        break;
+            if ($row && !empty($row['qr_url'])) {
+                respond([
+                    'success' => true,
+                    'qr_user_id' => (int) $row['qr_user_id'],
+                    'qr_filename' => $row['qr_url'] // just filename
+                ]);
+            } else {
+                respond([]);
+            }
+            break;
 
         // ------------------------
         // UPLOAD IMAGE
         // ------------------------
         case 'upload_image':
             require_login();
-            if (!isset($_FILES['image'])) respond(['error' => 'Geen bestand ontvangen']);
+            if (!isset($_FILES['image']))
+                respond(['error' => 'Geen bestand ontvangen']);
             $file = $_FILES['image'];
-            if ($file['error'] !== UPLOAD_ERR_OK) respond(['error' => 'Fout bij upload']);
+            if ($file['error'] !== UPLOAD_ERR_OK)
+                respond(['error' => 'Fout bij upload']);
             $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-            $allowed = ['jpg','jpeg','png','gif'];
-            if (!in_array($ext, $allowed)) respond(['error' => 'Alleen JPG, PNG of GIF toegestaan']);
+            $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+            if (!in_array($ext, $allowed))
+                respond(['error' => 'Alleen JPG, PNG of GIF toegestaan']);
             $targetDir = uploads_dir();
-            if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
-            if (!is_writable($targetDir)) respond(['error' => 'Uploads map niet schrijfbaar']);
+            if (!is_dir($targetDir))
+                mkdir($targetDir, 0777, true);
+            if (!is_writable($targetDir))
+                respond(['error' => 'Uploads map niet schrijfbaar']);
             $filename = time() . '_' . bin2hex(random_bytes(5)) . '.jpg';
             $target = $targetDir . $filename;
-            if (!move_uploaded_file($file['tmp_name'], $target)) respond(['error' => 'Kon bestand niet opslaan']);
-            $url = uploads_url($filename);
-            respond(['success' => true, 'url' => $url]);
+            if (!move_uploaded_file($file['tmp_name'], $target)) {
+                respond(['error' => 'Kon bestand niet opslaan']);
+            }
+
+            // Store only filename in DB
+            respond([
+                'success' => true,
+                'filename' => $filename
+            ]);
             break;
 
-                // ------------------------
+        // ------------------------
         // UPDATE USER (iban + qr_url)
         // ------------------------
         case 'update_user':
             require_login();
             $id = intval($input['id'] ?? 0);
             $iban = trim($input['iban'] ?? '');
-            $qr_url = trim($input['qr_url'] ?? '');
-            if (!$id) respond(['error' => 'Geen geldig ID']);
+            $qr_filename = trim($input['qr_filename'] ?? ''); // expect just filename from frontend
+            if (!$id)
+                respond(['error' => 'Geen geldig ID']);
             $stmt = $db->prepare("UPDATE users SET iban = ?, qr_url = ? WHERE id = ?");
-            $stmt->bind_param('ssi', $iban, $qr_url, $id);
-            if (!$stmt->execute()) respond(['error' => 'Kon gebruiker niet updaten']);
+            $stmt->bind_param('ssi', $iban, $qr_filename, $id);
+            if (!$stmt->execute())
+                respond(['error' => 'Kon gebruiker niet updaten']);
             respond(['success' => true]);
             break;
 
@@ -337,9 +470,9 @@ try {
             $rows = [];
             while ($row = $res->fetch_assoc()) {
                 $rows[] = [
-                    'owner_id' => (int)$row['owner_id'],
+                    'owner_id' => (int) $row['owner_id'],
                     'owner_name' => $row['owner_name'],
-                    'qr_user_id' => (int)$row['qr_user_id'],
+                    'qr_user_id' => (int) $row['qr_user_id'],
                     'qr_user_name' => $row['qr_user_name']
                 ];
             }
@@ -349,37 +482,42 @@ try {
         // ------------------------
         // UPDATE MAPPING (qr_config)
         // ------------------------
-       case 'update_mapping':
-    require_login();
-    $ownerId = intval($input['owner_user_id'] ?? 0);
-    $qrUserId = isset($input['qr_user_id']) ? $input['qr_user_id'] : null;
+        case 'update_mapping':
+            require_login();
+            $ownerId = intval($input['owner_user_id'] ?? 0);
+            $qrUserId = isset($input['qr_user_id']) ? $input['qr_user_id'] : null;
 
-    if (!$ownerId) respond(['error' => 'Owner is verplicht']);
+            if (!$ownerId)
+                respond(['error' => 'Owner is verplicht']);
 
-    if ($qrUserId === null) {
-        // QR-user is null
-        $stmt = $db->prepare("
+            if ($qrUserId === null) {
+                // QR-user is null
+                $stmt = $db->prepare("
             INSERT INTO qr_config (owner_user_id, qr_user_id)
             VALUES (?, NULL)
             ON DUPLICATE KEY UPDATE qr_user_id = NULL
         ");
-        $stmt->bind_param('i', $ownerId);
-    } else {
-        $stmt = $db->prepare("
+                $stmt->bind_param('i', $ownerId);
+            } else {
+                $stmt = $db->prepare("
             INSERT INTO qr_config (owner_user_id, qr_user_id)
             VALUES (?, ?)
             ON DUPLICATE KEY UPDATE qr_user_id = VALUES(qr_user_id)
         ");
-        $stmt->bind_param('ii', $ownerId, $qrUserId);
+                $stmt->bind_param('ii', $ownerId, $qrUserId);
+            }
+
+            if (!$stmt->execute())
+                respond(['error' => 'Kon mapping niet opslaan']);
+            respond(['success' => true]);
+            break;
+        default:
+            respond(['error' => 'Ongeldige actie']);
+
+
+
     }
 
-    if (!$stmt->execute()) respond(['error' => 'Kon mapping niet opslaan']);
-    respond(['success' => true]);
-    break;
-
-
-      
-    }
 
 } catch (Throwable $e) {
     error_log($e->getMessage());
