@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+error_log("API executing from: " . __DIR__);
+
 // ------------------------
 // FOUTAFHANDELING & LOGGING
 // ------------------------
@@ -9,6 +11,8 @@ ini_set('display_errors', 1);
 ini_set('log_errors', '1');
 ini_set('error_log', dirname(__DIR__) . '/env/logs/php_errors.log');
 error_reporting(E_ALL);
+
+error_log("🔥 API started: " . date('Y-m-d H:i:s'));
 
 // ------------------------
 // HEADERS
@@ -156,6 +160,9 @@ try {
             $image_filename = trim((string) ($input['image_url'] ?? '')); // frontend stuurt nu 'image_url'
             $is_pin = isset($input['is_pin']) ? intval($input['is_pin']) : 0;
 
+            // 🪵 Debugregel — tijdelijk toevoegen
+            error_log("DEBUG add_sale: " . json_encode($input));
+
             // Validatie
             if (!$description || !is_numeric($price) || !$owner_user_id) {
                 respond(['error' => 'Ongeldige invoer']);
@@ -170,9 +177,9 @@ try {
             $image_filename = $image_filename ? basename($image_filename) : null;
 
             $stmt = $db->prepare('
-                INSERT INTO sales (description, price, cost, owner_user_id, cashier_user_id, image_url, is_pin, sold_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
-            ');
+        INSERT INTO sales (description, price, cost, owner_user_id, cashier_user_id, image_url, is_pin, sold_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
+    ');
 
             $stmt->bind_param(
                 'sdsissi',
@@ -247,46 +254,47 @@ try {
 
 
         case 'add_purchase':
-                require_login();
+            require_login();
 
-                // Input ophalen en trimmen
-                $description      = trim($input['description'] ?? '');
-                $purchased_at     = $input['purchased_at'] ?? date('Y-m-d H:i:s');
-                $purchase_remarks = trim($input['purchase_remarks'] ?? '');
-                $owner_user_id    = $input['owner_user_id'] ?? null;
-                $purchase_is_pin  = isset($input['purchase_is_pin']) ? intval($input['purchase_is_pin']) : 0;
-                $target_price     = isset($input['target_price']) ? floatval($input['target_price']) : null;
-                $qr_id            = !empty($input['qr_id']) ? trim((string)$input['qr_id']) : null;
-                $cost             = isset($input['cost']) ? floatval($input['cost']) : null;
-                $image_filename   = trim((string)($input['image_url'] ?? ''));
+            // Input ophalen en trimmen
+            $description = trim($input['description'] ?? '');
+            $purchased_at = $input['purchased_at'] ?? date('Y-m-d H:i:s');
+            $purchase_remarks = trim($input['purchase_remarks'] ?? '');
+            $owner_user_id = $input['owner_user_id'] ?? null;
+            $purchase_is_pin = isset($input['purchase_is_pin']) ? intval($input['purchase_is_pin']) : 0;
+            $target_price = isset($input['target_price']) ? floatval($input['target_price']) : null;
+            $qr_id = !empty($input['qr_id']) ? trim((string) $input['qr_id']) : null;
+            $cost = isset($input['cost']) ? floatval($input['cost']) : null;
+            $image_filename = trim((string) ($input['image_url'] ?? ''));
 
-                // Validatie
-                if (!$description || !$owner_user_id || $cost === null) {
-                    error_log('add_purchase: Ongeldige invoer: ' . print_r($input, true));
-                    respond(['error' => 'Ongeldige invoer']);
-                }
+            // Validatie
+            if (!$description || !$owner_user_id || $cost === null) {
+                error_log('add_purchase: Ongeldige invoer: ' . print_r($input, true));
+                respond(['error' => 'Ongeldige invoer']);
+            }
 
-                $owner_user_id  = intval($owner_user_id);
-                $cashier_user_id = intval($_SESSION['user_id']);
-                $image_filename  = $image_filename ? basename($image_filename) : null;
-                $purchase_remarks = $purchase_remarks ?: null;
-                $target_price     = $target_price !== null ? $target_price : null;
-                $qr_id            = $qr_id ?: null;
+            $owner_user_id = intval($owner_user_id);
+            $cashier_user_id = intval($_SESSION['user_id']);
+            $image_filename = $image_filename ? basename($image_filename) : null;
+            $purchase_remarks = $purchase_remarks ?: null;
+            $target_price = $target_price !== null ? $target_price : null;
+            $qr_id = $qr_id ?: null;
 
-                // Prepare statement
-                $stmt = $db->prepare('
+            // Prepare statement
+            $stmt = $db->prepare('
                     INSERT INTO sales
                     (description, cost, owner_user_id, cashier_user_id, purchased_at, purchase_remarks, purchase_is_pin, target_price, qr_id, image_url)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ');
 
-                if (!$stmt) {
-                    error_log('add_purchase: Prepare failed: ' . $db->error);
-                    respond(['error' => 'Kon inkoop niet voorbereiden']);
-                }
+            if (!$stmt) {
+                error_log('add_purchase: Prepare failed: ' . $db->error);
+                respond(['error' => 'Kon inkoop niet voorbereiden']);
+            }
 
-                // Bind parameters
-                if (!$stmt->bind_param(
+            // Bind parameters
+            if (
+                !$stmt->bind_param(
                     'sdissidsis',
                     $description,
                     $cost,
@@ -298,57 +306,127 @@ try {
                     $target_price,
                     $qr_id,
                     $image_filename
-                )) {
-                    error_log('add_purchase: Bind failed: ' . $stmt->error . ' | Input: ' . print_r($input, true));
-                    respond(['error' => 'Kon inkoop niet binden']);
-                }
-
-                // Execute
-                if (!$stmt->execute()) {
-                    error_log('add_purchase: Execute failed: ' . $stmt->error . ' | Input: ' . print_r($input, true));
-                    respond(['error' => 'Kon inkoop niet opslaan']);
-                }
-
-                respond(['ok' => true, 'id' => $db->insert_id]);
-                break;
-
-        case 'list_purchases':
-            require_login();
-
-            $stmt = $db->prepare('
-                SELECT * FROM sales
-                WHERE purchased_at IS NOT NULL
-                AND sold_at IS NULL
-                ORDER BY purchased_at DESC
-            ');
-
-            if (!$stmt->execute()) {
-                error_log("list_purchases failed: " . $stmt->error);
-                respond(['error' => 'Kon purchases niet ophalen']);
+                )
+            ) {
+                error_log('add_purchase: Bind failed: ' . $stmt->error . ' | Input: ' . print_r($input, true));
+                respond(['error' => 'Kon inkoop niet binden']);
             }
 
-            $res = $stmt->get_result();
-            $purchases = $res->fetch_all(MYSQLI_ASSOC);
+            // Execute
+            if (!$stmt->execute()) {
+                error_log('add_purchase: Execute failed: ' . $stmt->error . ' | Input: ' . print_r($input, true));
+                respond(['error' => 'Kon inkoop niet opslaan']);
+            }
 
-            respond(['purchases' => $purchases]);
+            respond(['ok' => true, 'id' => $db->insert_id]);
             break;
+
+        case 'list_purchases':
+    require_login();
+
+    // Log dat we in list_purchases komen (tijdelijk, voor debugging)
+    error_log("DEBUG list_purchases called by user_id=" . intval($_SESSION['user_id'] ?? 0));
+
+    $stmt = $db->prepare('
+        SELECT id, description, cost, image_url, purchase_is_pin, purchase_remarks,
+               target_price, qr_id, purchased_at, sold_at, owner_user_id, cashier_user_id, deleted
+        FROM sales
+        WHERE purchased_at IS NOT NULL
+          AND (sold_at IS NULL OR sold_at = "")
+          AND deleted = 0
+        ORDER BY purchased_at DESC
+    ');
+
+    if (!$stmt) {
+        error_log("list_purchases prepare failed: " . $db->error);
+        respond(['error' => 'Kon purchases niet ophalen']);
+    }
+
+    if (!$stmt->execute()) {
+        error_log("list_purchases execute failed: " . $stmt->error);
+        respond(['error' => 'Kon purchases niet ophalen']);
+    }
+
+    $res = $stmt->get_result();
+    $purchases = $res->fetch_all(MYSQLI_ASSOC);
+
+    // Log how many rows we fetched (voor debugging)
+    error_log("DEBUG list_purchases fetched: " . count($purchases) . " rows");
+
+    // Normaliseer en formatteer data voor frontend
+    foreach ($purchases as &$p) {
+        // cast ints
+        $p['id'] = (int) $p['id'];
+        $p['owner_user_id'] = isset($p['owner_user_id']) ? (int) $p['owner_user_id'] : null;
+        $p['cashier_user_id'] = isset($p['cashier_user_id']) ? (int) $p['cashier_user_id'] : null;
+        $p['deleted'] = (int) ($p['deleted'] ?? 0);
+
+        // normaliseer qr_id: empty string -> null
+        if (!isset($p['qr_id']) || $p['qr_id'] === '' || strtolower($p['qr_id']) === 'null') {
+            $p['qr_id'] = null;
+        }
+
+        // image_url -> full URL (or null)
+        if (!empty($p['image_url'])) {
+            $p['image_url'] = uploads_url($p['image_url']);
+        } else {
+            $p['image_url'] = null;
+        }
+    }
+    unset($p);
+
+    // Log first row for quick inspection (if exists)
+    if (count($purchases) > 0) {
+        error_log("DEBUG list_purchases sample: " . json_encode($purchases[0]));
+    }
+
+    respond(['purchases' => $purchases]);
+    break;
+
 
         case 'attach_qr':
             require_login();
-            $id = intval($_POST['id'] ?? 0);
-            $qr_id = trim($_POST['qr_id'] ?? '');
 
+            $id = intval($input['id'] ?? 0);
+            $qr_id = trim((string) ($input['qr_id'] ?? ''));
+
+            // Basic validation
             if (!$id || !$qr_id) {
                 respond(['error' => 'Ongeldige invoer']);
             }
 
-            $stmt = $db->prepare('UPDATE sales SET qr_id = ? WHERE id = ?');
-            if (!$stmt->execute([$qr_id, $id])) {
-                error_log("attach_qr failed: " . $stmt->error);
-                respond(['error' => 'Kon QR niet koppelen']);
+            // Controleer of de verkoop bestaat
+            $stmt = $db->prepare('SELECT id, qr_id FROM sales WHERE id = ? LIMIT 1');
+            if (!$stmt) {
+                respond(['error' => 'Databasefout bij voorbereiden SELECT']);
+            }
+            $stmt->bind_param('i', $id);
+            $stmt->execute();
+            $res = $stmt->get_result();
+            $sale = $res->fetch_assoc();
+            $stmt->close();
+
+            if (!$sale) {
+                respond(['error' => 'Verkoop niet gevonden']);
             }
 
-            respond(['success' => true]);
+            // Check of er al een QR gekoppeld is
+            if (!empty($sale['qr_id'])) {
+                respond(['error' => 'Er is al een QR-code gekoppeld']);
+            }
+
+            // Koppel de QR
+            $stmt = $db->prepare('UPDATE sales SET qr_id = ? WHERE id = ?');
+            if (!$stmt) {
+                respond(['error' => 'Databasefout bij voorbereiden UPDATE']);
+            }
+            $stmt->bind_param('si', $qr_id, $id);
+
+            if (!$stmt->execute()) {
+                respond(['error' => 'Kon QR-code niet koppelen']);
+            }
+
+            respond(['ok' => true, 'id' => $id, 'qr_id' => $qr_id]);
             break;
 
 
