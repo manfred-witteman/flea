@@ -15,6 +15,7 @@ let uploadedImageUrl = null;
 let overviewDate = new Date();
 let submitBtn;
 let currentUserId = null;
+let filterToggle = null;
 
 // ---------------------
 // API helper
@@ -111,45 +112,31 @@ function updatePaymentLabel() {
 // ---------------------
 // Purchase rendering
 // ---------------------
-function renderPurchases(data) {
+function renderPurchases(purchases) {
   const list = $("#today-list");
   const empty = $("#today-empty");
   list.innerHTML = "";
 
-  if (!data.purchases || data.purchases.length === 0) {
+  if (!purchases || purchases.length === 0) {
     empty.classList.remove("hidden");
     return;
   }
+
   empty.classList.add("hidden");
 
-  data.purchases.forEach((p) => {
+  purchases.forEach((p) => {
     const li = document.createElement("li");
     li.className = "flex items-center gap-3 py-2";
 
-    const textBlock = document.createElement("div");
-    textBlock.className = "flex flex-col";
-    const desc = document.createElement("div");
-    desc.className = "font-medium";
-    desc.textContent = p.description;
-    const sub = document.createElement("div");
-    sub.className = "text-sm text-slate-500";
-    let subText = `Inkoop: ${formatEuro(p.cost)}`;
-    if (p.target_price) subText += ` • Streefprijs: ${formatEuro(p.target_price)}`;
-    if (p.purchase_remarks) subText += ` • Opmerkingen: ${p.purchase_remarks}`;
-    sub.textContent = subText;
+    // … bestaande beschrijving/subinfo code …
 
-    textBlock.appendChild(desc);
-    textBlock.appendChild(sub);
-    li.appendChild(textBlock);
-
-    if (p.image_url) {
-      const img = document.createElement("img");
-      // Altijd gebruik UPLOADS_BASE
-      img.src = p.image_url.startsWith("/")
-        ? p.image_url
-        : `${UPLOADS_BASE}${p.image_url}`;
-      img.className = "w-16 h-16 object-cover rounded-lg";
-      li.appendChild(img);
+    // QR-handmatig koppelen knop
+    if (!p.qr_id) {
+      const qrBtn = document.createElement("button");
+      qrBtn.className = "ml-auto text-sm bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg shrink-0";
+      qrBtn.textContent = "QR koppelen";
+      qrBtn.addEventListener("click", () => attachQrToPurchase(p.id));
+      li.appendChild(qrBtn);
     }
 
     list.appendChild(li);
@@ -157,14 +144,42 @@ function renderPurchases(data) {
 }
 
 // ---------------------
+// QR koppelen 
+// ---------------------
+async function attachQrToPurchase(purchaseId) {
+  try {
+    // Dynamisch importeren zodat het alleen wordt geladen bij gebruik
+    const { startQrScanIOS } = await import("./qr/qrScanner.js");
+
+    // Start overlay-scanner
+    const qrValue = await startQrScanIOS();
+
+    if (!qrValue) return;
+
+    // Verstuur naar de API
+    await api("attach_qr", { id: purchaseId, qr_id: qrValue });
+    alert("QR-code gekoppeld!");
+    await refreshPurchases();
+  } catch (err) {
+    if (err.message !== "Scan geannuleerd") {
+      console.error("Fout bij koppelen QR (debug):", err);
+      alert("Fout bij koppelen QR: " + (err?.message || JSON.stringify(err)));
+    }
+    console.warn("QR-scan afgebroken of mislukt:", err);
+  }
+}
+// ---------------------
 // Refresh purchases
 // ---------------------
 async function refreshPurchases() {
   try {
-    const data = await api("list_purchases", { date: formatDateUTC(overviewDate) });
-    console.log("refreshPurchases data:", data);  // debug
-    setDayLabel(overviewDate);
-    renderPurchases(data);
+    const data = await api("list_purchases");
+
+    const filteredPurchases = filterToggle?.checked
+      ? data.purchases.filter(p => !p.qr_id)
+      : data.purchases;
+
+    renderPurchases(filteredPurchases);
   } catch (err) {
     console.error("Refresh purchases failed:", err);
   }
@@ -220,13 +235,11 @@ imageInput?.addEventListener("change", async (event) => {
 async function checkSession() {
   try {
     const me = await api("me");
-    console.log("Session check:", me);
     if (me?.user) {
-      currentUserId = me.user.id;  // <-- hier
+      currentUserId = me.user.id;
       $("#screen-login").classList.add("hidden");
       $("#screen-app").classList.remove("hidden");
 
-      // Zet hidden field voor owner_user_id
       const ownerInput = document.getElementById("owner_user_id");
       if (ownerInput) ownerInput.value = currentUserId;
 
@@ -258,24 +271,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   paymentIcon = document.getElementById("payment-icon");
   paymentText = document.getElementById("payment-text");
   submitBtn = document.querySelector("#purchase-form button[type='submit']");
+  filterToggle = document.getElementById("filter-qr");
 
-  const overviewLabel = $("#overview-label");
-  const prevDayBtn = $("#prev-day");
-  const nextDayBtn = $("#next-day");
-
-  overviewLabel?.addEventListener("click", async () => {
-    overviewDate = new Date();
-    await refreshPurchases();
-  });
-  prevDayBtn?.addEventListener("click", async () => {
-    overviewDate.setDate(overviewDate.getDate() - 1);
-    await refreshPurchases();
-  });
-  nextDayBtn?.addEventListener("click", async () => {
-    overviewDate.setDate(overviewDate.getDate() + 1);
-    await refreshPurchases();
-  });
-
+  filterToggle?.addEventListener("change", refreshPurchases);
   paymentInput?.addEventListener("change", updatePaymentLabel);
 
   $(".tabbar")?.querySelectorAll(".tab[data-tab]")?.forEach((btn) => {
@@ -313,7 +311,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const form = e.currentTarget;
     const payload = {
       description: form.description.value.trim(),
-      cost: parseMoney(form.price.value) || 0,   // nooit null
+      cost: parseMoney(form.price.value) || 0,
       owner_user_id: parseInt(form.owner_user_id.value, 10) || currentUserId,
       purchase_is_pin: form.payment_method.checked ? 1 : 0,
       purchase_remarks: form.purchase_remarks.value.trim() || null,

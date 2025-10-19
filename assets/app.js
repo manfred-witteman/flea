@@ -7,7 +7,7 @@ const $ = (sel) => document.querySelector(sel);
 // Dynamic base paths
 // ---------------------
 const ROOT_PATH = window.location.pathname.split("/").filter(Boolean)[0]; // 'flea_test' of 'flea'
-const UPLOADS_BASE = "/" + ROOT_PATH + "/env/uploads/";
+const UPLOADS_BASE = "/flea_uploads/";
 const API_BASE = "/" + ROOT_PATH + "/api/api.php";
 let paymentInput, paymentIcon, paymentText;
 
@@ -367,13 +367,13 @@ async function populateOwnerSelect(defaultUserId) {
 // ---------------------
 // Image handling (preview + pendingUpload)
 // ---------------------
-const imageInput = $("#image-upload");
-const preview = $("#image-preview");
-const imageUrlInput = $("input[name='image_url']");
-const submitBtn = $("#sale-form button[type='submit']");
+const imageInput = document.getElementById("image-upload");
+const preview = document.getElementById("image-preview");
+const imageUrlInput = document.querySelector("input[name='image_url']");
+const submitBtn = document.querySelector("#sale-form button[type='submit']");
 let uploadedImageUrl = null;
 
-// Start met knop ingeschakeld, tenzij er een afbeelding nodig is
+// Start met knop ingeschakeld
 submitBtn.disabled = false;
 
 imageInput?.addEventListener("change", async (event) => {
@@ -382,6 +382,7 @@ imageInput?.addEventListener("change", async (event) => {
 
   setButtonLoading(true, "Uploaden…");
 
+  // Preview
   const reader = new FileReader();
   reader.onload = (e) => {
     preview.src = e.target.result;
@@ -389,6 +390,7 @@ imageInput?.addEventListener("change", async (event) => {
   };
   reader.readAsDataURL(file);
 
+  // Upload
   const formData = new FormData();
   formData.append("image", file);
   formData.append("action", "upload_image");
@@ -397,8 +399,9 @@ imageInput?.addEventListener("change", async (event) => {
     const res = await fetch(API_BASE, { method: "POST", body: formData });
     const data = await res.json();
 
-    if (data.success) {
-      uploadedImageUrl = data.url;
+    if (data.success && data.filename) {
+      // Voeg prefix toe zodat database een volledige URL krijgt
+      uploadedImageUrl = `/uploads/${data.filename}`;
       imageUrlInput.value = uploadedImageUrl;
     } else {
       uploadedImageUrl = null;
@@ -409,10 +412,13 @@ imageInput?.addEventListener("change", async (event) => {
     uploadedImageUrl = null;
     imageUrlInput.value = "";
     console.error("Upload error", err);
+    alert("Er is een fout opgetreden bij het uploaden.");
   } finally {
     setButtonLoading(false);
   }
 });
+
+
 
 // ---------------------
 // Breakdown FAB Init
@@ -527,7 +533,7 @@ function showQrModal(payload, form) {
     try {
       const qrData = await api("get_qr_for_owner", { owner_user_id: payload.owner_user_id });
 
-      if (!qrData || !qrData.qr_url) return resolve(null);
+      if (!qrData || !qrData.qr_filename) return resolve(null);
 
       // Modal element
       let qrModal = document.getElementById("qr-modal");
@@ -565,7 +571,7 @@ function showQrModal(payload, form) {
         document.body.appendChild(qrModal);
       } else {
         // Update content als modal al bestaat
-        document.getElementById("qr-image").src = qrData.qr_url;
+        document.getElementById("qr-image").src = UPLOADS_BASE + qrData.qr_filename;
         document.getElementById("qr-sale-desc").textContent = payload.description;
         document.getElementById("qr-sale-price").textContent = formatEuro(payload.price);
         const okBtn = document.getElementById("qr-ok");
@@ -672,10 +678,9 @@ $("#sale-form")?.addEventListener("submit", async (e) => {
     price: parseMoney(form.price.value),
     owner_user_id: parseInt(form.owner_user_id.value, 10),
     cost: form.cost.value ? parseMoney(form.cost.value) : null,
-    image_url: uploadedImageUrl || null,
+    image_url: uploadedImageUrl || null,  // <-- must match backend
     is_pin: form.payment_method.checked ? 1 : 0
   };
-
   if (!payload.description || payload.price == null || isNaN(payload.owner_user_id)) {
     alert("Controleer je invoer.");
     return;
@@ -692,7 +697,7 @@ $("#sale-form")?.addEventListener("submit", async (e) => {
 
       // Als er een QR was bevestigd → log of gebruik het indien nodig
       if (qrResult) {
-        console.log("QR bevestigd door gebruiker:", qrResult.qr_url);
+        console.log("QR bevestigd door gebruiker:", qrResult.qr_filename);
       } else {
         console.log("Geen QR of modal geannuleerd, verder met opslaan");
       }

@@ -318,6 +318,7 @@ try {
             $stmt = $db->prepare('
                 SELECT * FROM sales
                 WHERE purchased_at IS NOT NULL
+                AND sold_at IS NULL
                 ORDER BY purchased_at DESC
             ');
 
@@ -332,6 +333,23 @@ try {
             respond(['purchases' => $purchases]);
             break;
 
+        case 'attach_qr':
+            require_login();
+            $id = intval($_POST['id'] ?? 0);
+            $qr_id = trim($_POST['qr_id'] ?? '');
+
+            if (!$id || !$qr_id) {
+                respond(['error' => 'Ongeldige invoer']);
+            }
+
+            $stmt = $db->prepare('UPDATE sales SET qr_id = ? WHERE id = ?');
+            if (!$stmt->execute([$qr_id, $id])) {
+                error_log("attach_qr failed: " . $stmt->error);
+                respond(['error' => 'Kon QR niet koppelen']);
+            }
+
+            respond(['success' => true]);
+            break;
 
 
         case 'breakdown':
