@@ -1,6 +1,563 @@
-[11-Oct-2025 13:39:02 Europe/Amsterdam] Resource temporarily unavailable
-[11-Oct-2025 13:39:10 Europe/Amsterdam] Resource temporarily unavailable
-[11-Oct-2025 13:39:10 Europe/Amsterdam] Resource temporarily unavailable
-[11-Oct-2025 13:39:12 Europe/Amsterdam] Resource temporarily unavailable
-[11-Oct-2025 13:39:44 Europe/Amsterdam] Resource temporarily unavailable
-[11-Oct-2025 13:39:46 Europe/Amsterdam] Resource temporarily unavailable
+[19-Oct-2025 21:39:04 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:39:04
+[19-Oct-2025 21:39:04 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:39:04 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:39:04 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:39:04 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:39:04
+[19-Oct-2025 21:39:04 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:39:04 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:39:04 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:39:05 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:39:05
+[19-Oct-2025 21:39:05 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:39:05 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:39:05 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:39:05 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:39:05
+[19-Oct-2025 21:39:05 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:39:05 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:39:05 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:39:07 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:39:07
+[19-Oct-2025 21:39:07 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:39:07 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:39:07 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:39:08 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:39:08
+[19-Oct-2025 21:39:08 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:39:08 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:39:08 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:40:45 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:40:45
+[19-Oct-2025 21:40:45 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:40:45
+[19-Oct-2025 21:40:45 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:40:45 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:40:45 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:40:47 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:40:47
+[19-Oct-2025 21:40:47 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:40:47 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:40:47 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:41:58 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:41:58
+[19-Oct-2025 21:41:58 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:41:58 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:41:58 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:41:59 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:41:59
+[19-Oct-2025 21:41:59 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:41:59 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:41:59 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:41:59 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:41:59
+[19-Oct-2025 21:41:59 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:41:59 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:41:59 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:45:27 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:45:27
+[19-Oct-2025 21:45:27 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:45:27
+[19-Oct-2025 21:45:27 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:45:27 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:45:27 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:45:29 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:45:29
+[19-Oct-2025 21:45:29 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:45:29 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:45:29 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:45:31 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:45:31
+[19-Oct-2025 21:45:31 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:45:31 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:45:31 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:45:32 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:45:32
+[19-Oct-2025 21:45:32 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:45:32 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:45:32 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:45:32 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:45:32
+[19-Oct-2025 21:45:32 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:45:32 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:45:32 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:45:33 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:45:33
+[19-Oct-2025 21:45:33 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:45:33 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:45:33 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:49:16 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:49:16
+[19-Oct-2025 21:49:16 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:49:16
+[19-Oct-2025 21:49:16 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:49:16 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:49:16 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:49:18 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:49:18
+[19-Oct-2025 21:49:18 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:49:18 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:49:18 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:49:20 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:49:20
+[19-Oct-2025 21:49:20 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:49:20 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:49:20 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:49:21 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:49:21
+[19-Oct-2025 21:49:21 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:49:21 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:49:21 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:49:21 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:49:21
+[19-Oct-2025 21:49:21 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:49:21 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:49:21 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:49:22 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:49:22
+[19-Oct-2025 21:49:22 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:49:22 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:49:22 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:49:22 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:49:22
+[19-Oct-2025 21:49:22 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:49:22 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:49:22 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:49:23 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:49:23
+[19-Oct-2025 21:49:23 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:49:23 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:49:23 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:49:29 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:49:29
+[19-Oct-2025 21:49:29 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:49:29 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:49:29 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:49:38 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:49:38
+[19-Oct-2025 21:49:38 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:49:38 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:49:38 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:49:39 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:49:39
+[19-Oct-2025 21:49:39 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:49:39 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:49:39 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:54:51 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:54:51
+[19-Oct-2025 21:54:51 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:54:51
+[19-Oct-2025 21:54:51 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:54:51 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:54:51 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:54:52 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:54:52
+[19-Oct-2025 21:54:52 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:54:52 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:54:52 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:54:54 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:54:54
+[19-Oct-2025 21:54:54 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:54:54 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:54:54 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:54:55 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:54:55
+[19-Oct-2025 21:54:55 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:54:55 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:54:55 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:54:56 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:54:56
+[19-Oct-2025 21:54:56 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:54:56 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:54:56 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:54:56 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:54:56
+[19-Oct-2025 21:54:56 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:54:56 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:54:56 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:54:57 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:54:57
+[19-Oct-2025 21:54:57 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:54:57 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:54:57 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:54:58 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:54:58
+[19-Oct-2025 21:54:58 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:54:58 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:54:58 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:54:58 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:54:58
+[19-Oct-2025 21:54:58 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:54:58 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:54:58 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:55:00 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:55:00
+[19-Oct-2025 21:55:00 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:55:00 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:55:00 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:55:02 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:55:02
+[19-Oct-2025 21:55:02 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:55:02 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:55:02 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:55:03 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:55:03
+[19-Oct-2025 21:55:03 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:55:03 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:55:03 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:55:04 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:55:04
+[19-Oct-2025 21:55:04 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:55:04 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:55:04 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":null,"purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:56:45 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:56:45
+[19-Oct-2025 21:56:48 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:56:48
+[19-Oct-2025 21:56:48 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:56:48 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:56:48 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:56:50 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:56:50
+[19-Oct-2025 21:56:50 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:56:50 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:56:50 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:56:52 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:56:52
+[19-Oct-2025 21:56:52 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:56:52 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:56:52 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:56:52 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:56:52
+[19-Oct-2025 21:56:52 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:56:52 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:56:52 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:56:53 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:56:53
+[19-Oct-2025 21:56:53 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:56:53 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:56:53 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:56:54 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:56:54
+[19-Oct-2025 21:56:54 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:56:54 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:56:54 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:56:56 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:56:56
+[19-Oct-2025 21:56:56 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:56:56 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:56:56 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:56:56 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:56:56
+[19-Oct-2025 21:56:56 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:56:56 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:56:56 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:56:57 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:56:57
+[19-Oct-2025 21:56:57 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:56:57 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:56:57 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:56:58 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:56:58
+[19-Oct-2025 21:56:58 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:56:58 Europe/Amsterdam] DEBUG list_purchases fetched: 1 rows
+[19-Oct-2025 21:56:58 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1704,"description":"Mijn god","cost":"4.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"90.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 19:26:36","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:57:23 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:57:23
+[19-Oct-2025 21:57:23 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:57:23
+[19-Oct-2025 21:57:23 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:57:23 Europe/Amsterdam] DEBUG list_purchases fetched: 2 rows
+[19-Oct-2025 21:57:23 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1705,"description":"Lieve hemel!","cost":"7.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"99.00","qr_id":null,"purchased_at":"2025-10-19 19:57:23","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:57:25 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:57:25
+[19-Oct-2025 21:57:25 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:57:25 Europe/Amsterdam] DEBUG list_purchases fetched: 2 rows
+[19-Oct-2025 21:57:25 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1705,"description":"Lieve hemel!","cost":"7.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"99.00","qr_id":null,"purchased_at":"2025-10-19 19:57:23","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:57:55 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:57:55
+[19-Oct-2025 21:57:58 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:57:58
+[19-Oct-2025 21:57:58 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:57:58 Europe/Amsterdam] DEBUG list_purchases fetched: 2 rows
+[19-Oct-2025 21:57:58 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1705,"description":"Lieve hemel!","cost":"7.00","image_url":null,"purchase_is_pin":0,"purchase_remarks":"0","target_price":"99.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 19:57:23","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:58:46 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:58:46
+[19-Oct-2025 21:58:48 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:58:48
+[19-Oct-2025 21:58:48 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:58:48
+[19-Oct-2025 21:58:48 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:58:48 Europe/Amsterdam] DEBUG list_purchases fetched: 3 rows
+[19-Oct-2025 21:58:48 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1706,"description":"Sweet lord!","cost":"10.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760903926_8b07f0edef.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"999.00","qr_id":null,"purchased_at":"2025-10-19 19:58:48","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:58:50 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:58:50
+[19-Oct-2025 21:58:50 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:58:50 Europe/Amsterdam] DEBUG list_purchases fetched: 3 rows
+[19-Oct-2025 21:58:50 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1706,"description":"Sweet lord!","cost":"10.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760903926_8b07f0edef.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"999.00","qr_id":null,"purchased_at":"2025-10-19 19:58:48","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 21:59:35 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:59:35
+[19-Oct-2025 21:59:38 Europe/Amsterdam] 🔥 API started: 2025-10-19 21:59:38
+[19-Oct-2025 21:59:38 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 21:59:38 Europe/Amsterdam] DEBUG list_purchases fetched: 3 rows
+[19-Oct-2025 21:59:38 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1706,"description":"Sweet lord!","cost":"10.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760903926_8b07f0edef.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"999.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 19:58:48","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:03:27 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:03:27
+[19-Oct-2025 22:03:27 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:03:27
+[19-Oct-2025 22:03:27 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:03:27 Europe/Amsterdam] DEBUG list_purchases fetched: 3 rows
+[19-Oct-2025 22:03:27 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1706,"description":"Sweet lord!","cost":"10.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760903926_8b07f0edef.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"999.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 19:58:48","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:03:34 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:03:34
+[19-Oct-2025 22:03:34 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:03:34
+[19-Oct-2025 22:03:34 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:03:34
+[19-Oct-2025 22:03:34 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:03:34
+[19-Oct-2025 22:03:34 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:03:34
+[19-Oct-2025 22:03:36 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:03:36
+[19-Oct-2025 22:08:40 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:08:40
+[19-Oct-2025 22:08:40 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:08:40
+[19-Oct-2025 22:08:40 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:08:40 Europe/Amsterdam] DEBUG list_purchases fetched: 3 rows
+[19-Oct-2025 22:08:40 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1706,"description":"Sweet lord!","cost":"10.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760903926_8b07f0edef.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"999.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 19:58:48","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:08:42 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:08:42
+[19-Oct-2025 22:08:42 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:08:42 Europe/Amsterdam] DEBUG list_purchases fetched: 3 rows
+[19-Oct-2025 22:08:42 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1706,"description":"Sweet lord!","cost":"10.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760903926_8b07f0edef.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"999.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 19:58:48","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:08:52 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:08:52
+[19-Oct-2025 22:08:52 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:08:52 Europe/Amsterdam] DEBUG list_purchases fetched: 3 rows
+[19-Oct-2025 22:08:52 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1706,"description":"Sweet lord!","cost":"10.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760903926_8b07f0edef.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"999.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 19:58:48","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:08:53 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:08:53
+[19-Oct-2025 22:08:53 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:08:53 Europe/Amsterdam] DEBUG list_purchases fetched: 3 rows
+[19-Oct-2025 22:08:53 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1706,"description":"Sweet lord!","cost":"10.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760903926_8b07f0edef.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"999.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 19:58:48","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:08:54 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:08:54
+[19-Oct-2025 22:08:54 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:08:54 Europe/Amsterdam] DEBUG list_purchases fetched: 3 rows
+[19-Oct-2025 22:08:54 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1706,"description":"Sweet lord!","cost":"10.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760903926_8b07f0edef.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"999.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 19:58:48","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:08:55 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:08:55
+[19-Oct-2025 22:08:55 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:08:55 Europe/Amsterdam] DEBUG list_purchases fetched: 3 rows
+[19-Oct-2025 22:08:55 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1706,"description":"Sweet lord!","cost":"10.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760903926_8b07f0edef.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"999.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 19:58:48","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:09:34 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:09:34
+[19-Oct-2025 22:09:34 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:09:34 Europe/Amsterdam] DEBUG list_purchases fetched: 3 rows
+[19-Oct-2025 22:09:34 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1706,"description":"Sweet lord!","cost":"10.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760903926_8b07f0edef.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"999.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 19:58:48","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:09:35 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:09:35
+[19-Oct-2025 22:09:35 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:09:35 Europe/Amsterdam] DEBUG list_purchases fetched: 3 rows
+[19-Oct-2025 22:09:35 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1706,"description":"Sweet lord!","cost":"10.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760903926_8b07f0edef.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"999.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 19:58:48","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:10:46 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:10:46
+[19-Oct-2025 22:10:52 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:10:52
+[19-Oct-2025 22:10:52 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:10:52
+[19-Oct-2025 22:10:52 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:10:52 Europe/Amsterdam] DEBUG list_purchases fetched: 4 rows
+[19-Oct-2025 22:10:52 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1707,"description":"Apple Watch","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760904646_ae78a42ca9.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"80.00","qr_id":null,"purchased_at":"2025-10-19 20:10:52","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:10:55 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:10:55
+[19-Oct-2025 22:10:55 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:10:55 Europe/Amsterdam] DEBUG list_purchases fetched: 4 rows
+[19-Oct-2025 22:10:55 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1707,"description":"Apple Watch","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760904646_ae78a42ca9.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"80.00","qr_id":null,"purchased_at":"2025-10-19 20:10:52","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:11:23 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:11:23
+[19-Oct-2025 22:11:27 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:11:27
+[19-Oct-2025 22:11:27 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:11:27 Europe/Amsterdam] DEBUG list_purchases fetched: 4 rows
+[19-Oct-2025 22:11:27 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1707,"description":"Apple Watch","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760904646_ae78a42ca9.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"80.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 20:10:52","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:12:22 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:12:22
+[19-Oct-2025 22:12:22 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:12:22
+[19-Oct-2025 22:12:22 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:12:22 Europe/Amsterdam] DEBUG list_purchases fetched: 4 rows
+[19-Oct-2025 22:12:22 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1707,"description":"Apple Watch","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760904646_ae78a42ca9.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"80.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 20:10:52","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:13:33 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:13:33
+[19-Oct-2025 22:13:37 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:13:37
+[19-Oct-2025 22:13:37 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:13:37
+[19-Oct-2025 22:13:37 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:13:37 Europe/Amsterdam] DEBUG list_purchases fetched: 5 rows
+[19-Oct-2025 22:13:37 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1708,"description":"iPhone","cost":"10.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760904813_12686c82f8.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"50.00","qr_id":null,"purchased_at":"2025-10-19 20:13:37","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:13:39 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:13:39
+[19-Oct-2025 22:13:39 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:13:39 Europe/Amsterdam] DEBUG list_purchases fetched: 5 rows
+[19-Oct-2025 22:13:39 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1708,"description":"iPhone","cost":"10.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760904813_12686c82f8.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"50.00","qr_id":null,"purchased_at":"2025-10-19 20:13:37","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:13:56 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:13:56
+[19-Oct-2025 22:13:56 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:13:56
+[19-Oct-2025 22:13:56 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:13:56 Europe/Amsterdam] DEBUG list_purchases fetched: 5 rows
+[19-Oct-2025 22:13:56 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1708,"description":"iPhone","cost":"10.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760904813_12686c82f8.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"50.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 20:13:37","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:14:11 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:14:11
+[19-Oct-2025 22:14:11 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:14:11 Europe/Amsterdam] DEBUG list_purchases fetched: 5 rows
+[19-Oct-2025 22:14:11 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1708,"description":"iPhone","cost":"10.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760904813_12686c82f8.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"50.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 20:13:37","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:14:11 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:14:11
+[19-Oct-2025 22:14:11 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:14:11 Europe/Amsterdam] DEBUG list_purchases fetched: 5 rows
+[19-Oct-2025 22:14:11 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1708,"description":"iPhone","cost":"10.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760904813_12686c82f8.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"50.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 20:13:37","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:20:03 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:20:03
+[19-Oct-2025 22:20:03 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:20:03
+[19-Oct-2025 22:20:03 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:20:03 Europe/Amsterdam] DEBUG list_purchases fetched: 5 rows
+[19-Oct-2025 22:20:03 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1708,"description":"iPhone","cost":"10.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760904813_12686c82f8.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"50.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 20:13:37","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:20:04 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:20:04
+[19-Oct-2025 22:20:04 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:20:04 Europe/Amsterdam] DEBUG list_purchases fetched: 5 rows
+[19-Oct-2025 22:20:04 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1708,"description":"iPhone","cost":"10.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760904813_12686c82f8.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"50.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 20:13:37","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:20:55 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:20:55
+[19-Oct-2025 22:20:58 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:20:58
+[19-Oct-2025 22:20:58 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:20:58
+[19-Oct-2025 22:20:58 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:20:58 Europe/Amsterdam] DEBUG list_purchases fetched: 6 rows
+[19-Oct-2025 22:20:58 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1709,"description":"hopsssaaaa","cost":"999.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905255_2a3839c328.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"9999999.00","qr_id":null,"purchased_at":"2025-10-19 20:20:58","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:21:00 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:21:00
+[19-Oct-2025 22:21:00 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:21:00 Europe/Amsterdam] DEBUG list_purchases fetched: 6 rows
+[19-Oct-2025 22:21:00 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1709,"description":"hopsssaaaa","cost":"999.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905255_2a3839c328.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"9999999.00","qr_id":null,"purchased_at":"2025-10-19 20:20:58","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:21:21 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:21:21
+[19-Oct-2025 22:21:21 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:21:21
+[19-Oct-2025 22:21:21 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:21:21 Europe/Amsterdam] DEBUG list_purchases fetched: 6 rows
+[19-Oct-2025 22:21:21 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1709,"description":"hopsssaaaa","cost":"999.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905255_2a3839c328.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"9999999.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 20:20:58","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:21:49 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:21:49
+[19-Oct-2025 22:21:49 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:21:49 Europe/Amsterdam] DEBUG list_purchases fetched: 6 rows
+[19-Oct-2025 22:21:49 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1709,"description":"hopsssaaaa","cost":"999.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905255_2a3839c328.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"9999999.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 20:20:58","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:21:52 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:21:52
+[19-Oct-2025 22:21:52 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:21:52
+[19-Oct-2025 22:21:52 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:21:52 Europe/Amsterdam] DEBUG list_purchases fetched: 6 rows
+[19-Oct-2025 22:21:52 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1709,"description":"hopsssaaaa","cost":"999.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905255_2a3839c328.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"9999999.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 20:20:58","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:21:53 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:21:53
+[19-Oct-2025 22:21:53 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:21:53 Europe/Amsterdam] DEBUG list_purchases fetched: 6 rows
+[19-Oct-2025 22:21:53 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1709,"description":"hopsssaaaa","cost":"999.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905255_2a3839c328.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"9999999.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 20:20:58","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:22:07 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:22:07
+[19-Oct-2025 22:22:16 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:22:16
+[19-Oct-2025 22:24:48 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:24:48
+[19-Oct-2025 22:24:48 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:24:48
+[19-Oct-2025 22:24:48 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:24:48 Europe/Amsterdam] DEBUG list_purchases fetched: 6 rows
+[19-Oct-2025 22:24:48 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1709,"description":"hopsssaaaa","cost":"999.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905255_2a3839c328.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"9999999.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 20:20:58","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:24:49 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:24:49
+[19-Oct-2025 22:24:49 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:24:49 Europe/Amsterdam] DEBUG list_purchases fetched: 6 rows
+[19-Oct-2025 22:24:49 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1709,"description":"hopsssaaaa","cost":"999.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905255_2a3839c328.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"9999999.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 20:20:58","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:24:58 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:24:58
+[19-Oct-2025 22:25:07 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:25:07
+[19-Oct-2025 22:25:10 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:25:10
+[19-Oct-2025 22:25:10 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:25:10 Europe/Amsterdam] DEBUG list_purchases fetched: 6 rows
+[19-Oct-2025 22:25:10 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1709,"description":"hopsssaaaa","cost":"999.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905255_2a3839c328.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"9999999.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 20:20:58","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:25:16 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:25:16
+[19-Oct-2025 22:25:23 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:25:23
+[19-Oct-2025 22:27:25 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:27:25
+[19-Oct-2025 22:27:28 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:27:28
+[19-Oct-2025 22:27:28 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:27:28
+[19-Oct-2025 22:27:28 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:27:28 Europe/Amsterdam] DEBUG list_purchases fetched: 7 rows
+[19-Oct-2025 22:27:28 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1710,"description":"schaartje","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905645_49dc34185d.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"11.00","qr_id":null,"purchased_at":"2025-10-19 20:27:28","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:27:30 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:27:30
+[19-Oct-2025 22:27:30 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:27:30 Europe/Amsterdam] DEBUG list_purchases fetched: 7 rows
+[19-Oct-2025 22:27:30 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1710,"description":"schaartje","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905645_49dc34185d.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"11.00","qr_id":null,"purchased_at":"2025-10-19 20:27:28","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:28:03 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:28:03
+[19-Oct-2025 22:28:03 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:28:03
+[19-Oct-2025 22:28:03 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:28:03 Europe/Amsterdam] DEBUG list_purchases fetched: 7 rows
+[19-Oct-2025 22:28:03 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1710,"description":"schaartje","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905645_49dc34185d.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"11.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 20:27:28","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:28:13 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:28:13
+[19-Oct-2025 22:28:13 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:28:13 Europe/Amsterdam] DEBUG list_purchases fetched: 7 rows
+[19-Oct-2025 22:28:13 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1710,"description":"schaartje","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905645_49dc34185d.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"11.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 20:27:28","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:28:14 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:28:14
+[19-Oct-2025 22:28:14 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:28:14 Europe/Amsterdam] DEBUG list_purchases fetched: 7 rows
+[19-Oct-2025 22:28:14 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1710,"description":"schaartje","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905645_49dc34185d.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"11.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 20:27:28","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:28:15 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:28:15
+[19-Oct-2025 22:28:15 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:28:15 Europe/Amsterdam] DEBUG list_purchases fetched: 7 rows
+[19-Oct-2025 22:28:15 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1710,"description":"schaartje","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905645_49dc34185d.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"11.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 20:27:28","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:28:16 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:28:16
+[19-Oct-2025 22:28:16 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:28:16 Europe/Amsterdam] DEBUG list_purchases fetched: 7 rows
+[19-Oct-2025 22:28:16 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1710,"description":"schaartje","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905645_49dc34185d.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"11.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 20:27:28","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:28:18 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:28:18
+[19-Oct-2025 22:28:18 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:28:18 Europe/Amsterdam] DEBUG list_purchases fetched: 7 rows
+[19-Oct-2025 22:28:18 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1710,"description":"schaartje","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905645_49dc34185d.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"11.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 20:27:28","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:28:19 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:28:19
+[19-Oct-2025 22:28:19 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:28:19 Europe/Amsterdam] DEBUG list_purchases fetched: 7 rows
+[19-Oct-2025 22:28:19 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1710,"description":"schaartje","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905645_49dc34185d.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"11.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 20:27:28","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:28:20 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:28:20
+[19-Oct-2025 22:28:20 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:28:20 Europe/Amsterdam] DEBUG list_purchases fetched: 7 rows
+[19-Oct-2025 22:28:20 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1710,"description":"schaartje","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905645_49dc34185d.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"11.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 20:27:28","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:28:21 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:28:21
+[19-Oct-2025 22:28:21 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:28:21 Europe/Amsterdam] DEBUG list_purchases fetched: 7 rows
+[19-Oct-2025 22:28:21 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1710,"description":"schaartje","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905645_49dc34185d.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"11.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 20:27:28","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:28:21 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:28:21
+[19-Oct-2025 22:28:21 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:28:21 Europe/Amsterdam] DEBUG list_purchases fetched: 7 rows
+[19-Oct-2025 22:28:21 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1710,"description":"schaartje","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905645_49dc34185d.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"11.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 20:27:28","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:28:22 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:28:22
+[19-Oct-2025 22:28:22 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:28:22 Europe/Amsterdam] DEBUG list_purchases fetched: 7 rows
+[19-Oct-2025 22:28:22 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1710,"description":"schaartje","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905645_49dc34185d.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"11.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 20:27:28","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:28:23 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:28:23
+[19-Oct-2025 22:28:23 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:28:23 Europe/Amsterdam] DEBUG list_purchases fetched: 7 rows
+[19-Oct-2025 22:28:23 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1710,"description":"schaartje","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905645_49dc34185d.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"11.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 20:27:28","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:28:24 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:28:24
+[19-Oct-2025 22:28:24 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:28:24 Europe/Amsterdam] DEBUG list_purchases fetched: 7 rows
+[19-Oct-2025 22:28:24 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1710,"description":"schaartje","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905645_49dc34185d.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"11.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 20:27:28","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:28:35 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:28:35
+[19-Oct-2025 22:32:48 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:32:48
+[19-Oct-2025 22:32:51 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:32:51
+[19-Oct-2025 22:32:51 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:32:51
+[19-Oct-2025 22:32:51 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:32:51
+[19-Oct-2025 22:32:51 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:32:51 Europe/Amsterdam] DEBUG list_purchases fetched: 7 rows
+[19-Oct-2025 22:32:51 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1710,"description":"schaartje","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905645_49dc34185d.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"11.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 20:27:28","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:32:54 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:32:54
+[19-Oct-2025 22:32:54 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:32:54 Europe/Amsterdam] DEBUG list_purchases fetched: 7 rows
+[19-Oct-2025 22:32:54 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1710,"description":"schaartje","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905645_49dc34185d.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"11.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 20:27:28","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:33:52 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:33:52
+[19-Oct-2025 22:34:00 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:34:00
+[19-Oct-2025 22:34:00 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:34:00
+[19-Oct-2025 22:34:00 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:34:00
+[19-Oct-2025 22:34:00 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:34:00 Europe/Amsterdam] DEBUG list_purchases fetched: 7 rows
+[19-Oct-2025 22:34:00 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1710,"description":"schaartje","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905645_49dc34185d.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"11.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 20:27:28","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:34:01 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:34:01
+[19-Oct-2025 22:34:01 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:34:01 Europe/Amsterdam] DEBUG list_purchases fetched: 7 rows
+[19-Oct-2025 22:34:01 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1710,"description":"schaartje","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905645_49dc34185d.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"11.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 20:27:28","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:38:17 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:38:17
+[19-Oct-2025 22:38:19 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:38:19
+[19-Oct-2025 22:38:19 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:38:19
+[19-Oct-2025 22:38:19 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:38:19
+[19-Oct-2025 22:38:19 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:38:19
+[19-Oct-2025 22:38:19 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:38:19
+[19-Oct-2025 22:38:19 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:38:19 Europe/Amsterdam] DEBUG list_purchases fetched: 7 rows
+[19-Oct-2025 22:38:19 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1710,"description":"schaartje","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905645_49dc34185d.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"11.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 20:27:28","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:38:19 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:38:19
+[19-Oct-2025 22:38:19 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:38:19 Europe/Amsterdam] DEBUG list_purchases fetched: 7 rows
+[19-Oct-2025 22:38:19 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1710,"description":"schaartje","cost":"9.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760905645_49dc34185d.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"11.00","qr_id":"fdedbe81-4283-423f-b97f-faf13def5bcf","purchased_at":"2025-10-19 20:27:28","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:39:17 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:39:17
+[19-Oct-2025 22:39:19 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:39:19
+[19-Oct-2025 22:39:19 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:39:19
+[19-Oct-2025 22:39:19 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:39:19 Europe/Amsterdam] DEBUG list_purchases fetched: 8 rows
+[19-Oct-2025 22:39:19 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1711,"description":"Troep","cost":"25.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760906357_fe9ce40fbe.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"25.00","qr_id":null,"purchased_at":"2025-10-19 20:39:19","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:39:21 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:39:21
+[19-Oct-2025 22:39:21 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:39:21 Europe/Amsterdam] DEBUG list_purchases fetched: 8 rows
+[19-Oct-2025 22:39:21 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1711,"description":"Troep","cost":"25.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760906357_fe9ce40fbe.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"25.00","qr_id":null,"purchased_at":"2025-10-19 20:39:19","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:39:23 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:39:23
+[19-Oct-2025 22:39:23 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:39:23 Europe/Amsterdam] DEBUG list_purchases fetched: 8 rows
+[19-Oct-2025 22:39:23 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1711,"description":"Troep","cost":"25.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760906357_fe9ce40fbe.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"25.00","qr_id":null,"purchased_at":"2025-10-19 20:39:19","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:39:24 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:39:24
+[19-Oct-2025 22:39:24 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:39:24 Europe/Amsterdam] DEBUG list_purchases fetched: 8 rows
+[19-Oct-2025 22:39:24 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1711,"description":"Troep","cost":"25.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760906357_fe9ce40fbe.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"25.00","qr_id":null,"purchased_at":"2025-10-19 20:39:19","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:39:25 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:39:25
+[19-Oct-2025 22:39:25 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:39:25 Europe/Amsterdam] DEBUG list_purchases fetched: 8 rows
+[19-Oct-2025 22:39:25 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1711,"description":"Troep","cost":"25.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760906357_fe9ce40fbe.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"25.00","qr_id":null,"purchased_at":"2025-10-19 20:39:19","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:39:29 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:39:29
+[19-Oct-2025 22:39:29 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:39:29
+[19-Oct-2025 22:39:29 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:39:29 Europe/Amsterdam] DEBUG list_purchases fetched: 8 rows
+[19-Oct-2025 22:39:29 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1711,"description":"Troep","cost":"25.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760906357_fe9ce40fbe.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"25.00","qr_id":null,"purchased_at":"2025-10-19 20:39:19","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:39:30 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:39:30
+[19-Oct-2025 22:39:30 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:39:30
+[19-Oct-2025 22:39:30 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:39:30 Europe/Amsterdam] DEBUG list_purchases fetched: 8 rows
+[19-Oct-2025 22:39:30 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1711,"description":"Troep","cost":"25.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760906357_fe9ce40fbe.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"25.00","qr_id":null,"purchased_at":"2025-10-19 20:39:19","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:39:31 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:39:31
+[19-Oct-2025 22:39:31 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:39:31
+[19-Oct-2025 22:39:31 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:39:31 Europe/Amsterdam] DEBUG list_purchases fetched: 8 rows
+[19-Oct-2025 22:39:31 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1711,"description":"Troep","cost":"25.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760906357_fe9ce40fbe.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"25.00","qr_id":null,"purchased_at":"2025-10-19 20:39:19","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:39:32 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:39:32
+[19-Oct-2025 22:39:32 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:39:32 Europe/Amsterdam] DEBUG list_purchases fetched: 8 rows
+[19-Oct-2025 22:39:32 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1711,"description":"Troep","cost":"25.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760906357_fe9ce40fbe.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"25.00","qr_id":null,"purchased_at":"2025-10-19 20:39:19","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:39:45 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:39:45
+[19-Oct-2025 22:39:48 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:39:48
+[19-Oct-2025 22:39:48 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:39:48 Europe/Amsterdam] DEBUG list_purchases fetched: 8 rows
+[19-Oct-2025 22:39:48 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1711,"description":"Troep","cost":"25.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760906357_fe9ce40fbe.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"25.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 20:39:19","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:40:36 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:40:36
+[19-Oct-2025 22:40:36 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:40:36
+[19-Oct-2025 22:40:36 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:40:36 Europe/Amsterdam] DEBUG list_purchases fetched: 8 rows
+[19-Oct-2025 22:40:36 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1711,"description":"Troep","cost":"25.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760906357_fe9ce40fbe.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"25.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 20:39:19","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:40:38 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:40:38
+[19-Oct-2025 22:40:38 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:40:38 Europe/Amsterdam] DEBUG list_purchases fetched: 8 rows
+[19-Oct-2025 22:40:38 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1711,"description":"Troep","cost":"25.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760906357_fe9ce40fbe.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"25.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 20:39:19","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:41:21 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:41:21
+[19-Oct-2025 22:41:25 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:41:25
+[19-Oct-2025 22:41:25 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:41:25
+[19-Oct-2025 22:41:26 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:41:26
+[19-Oct-2025 22:41:26 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:41:26
+[19-Oct-2025 22:41:26 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:41:26
+[19-Oct-2025 22:41:26 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:41:26 Europe/Amsterdam] DEBUG list_purchases fetched: 8 rows
+[19-Oct-2025 22:41:26 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1711,"description":"Troep","cost":"25.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760906357_fe9ce40fbe.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"25.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 20:39:19","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:41:26 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:41:26
+[19-Oct-2025 22:41:26 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:41:26 Europe/Amsterdam] DEBUG list_purchases fetched: 8 rows
+[19-Oct-2025 22:41:26 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1711,"description":"Troep","cost":"25.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760906357_fe9ce40fbe.jpg","purchase_is_pin":0,"purchase_remarks":"0","target_price":"25.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 20:39:19","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:42:00 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:42:00
+[19-Oct-2025 22:42:04 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:42:04
+[19-Oct-2025 22:42:04 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:42:04
+[19-Oct-2025 22:42:04 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:42:04 Europe/Amsterdam] DEBUG list_purchases fetched: 9 rows
+[19-Oct-2025 22:42:04 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1712,"description":"Vla","cost":"25.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760906520_7edfbbe20c.jpg","purchase_is_pin":0,"purchase_remarks":null,"target_price":"35.00","qr_id":null,"purchased_at":"2025-10-19 20:42:03","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:42:12 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:42:12
+[19-Oct-2025 22:42:12 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:42:12 Europe/Amsterdam] DEBUG list_purchases fetched: 9 rows
+[19-Oct-2025 22:42:12 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1712,"description":"Vla","cost":"25.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760906520_7edfbbe20c.jpg","purchase_is_pin":0,"purchase_remarks":null,"target_price":"35.00","qr_id":null,"purchased_at":"2025-10-19 20:42:03","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
+[19-Oct-2025 22:42:21 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:42:21
+[19-Oct-2025 22:42:21 Europe/Amsterdam] 🔥 API started: 2025-10-19 22:42:21
+[19-Oct-2025 22:42:21 Europe/Amsterdam] DEBUG list_purchases called by user_id=1
+[19-Oct-2025 22:42:21 Europe/Amsterdam] DEBUG list_purchases fetched: 9 rows
+[19-Oct-2025 22:42:21 Europe/Amsterdam] DEBUG list_purchases sample: {"id":1712,"description":"Vla","cost":"25.00","image_url":"https:\/\/tangibility.nl\/flea_uploads\/1760906520_7edfbbe20c.jpg","purchase_is_pin":0,"purchase_remarks":null,"target_price":"35.00","qr_id":"53a37bb2-c2eb-487e-871b-35208a2b1c23","purchased_at":"2025-10-19 20:42:03","sold_at":null,"owner_user_id":1,"cashier_user_id":1,"deleted":0}
