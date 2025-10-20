@@ -123,32 +123,52 @@ const renderPurchases = (purchases, containerId) => {
         fileInput.type = "file";
         fileInput.accept = "image/*";
         fileInput.click();
+
         fileInput.onchange = async (e) => {
           const file = e.target.files[0];
           if (!file) return;
 
-          const formData = new FormData();
-          formData.append("image", file);
-          formData.append("action", "upload_image");
-          setButtonLoading(true, "Uploaden…");
+          // 🔄 spinner tonen in plaats van plus-icoon
+          addBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-lg text-slate-500"></i>`;
+          addBtn.classList.add("opacity-70", "cursor-wait");
+
           try {
+            const formData = new FormData();
+            formData.append("image", file);
+            formData.append("action", "upload_image");
+
             const res = await fetch(API_BASE, { method: "POST", body: formData });
             const data = await res.json();
+
             if (data.success && data.filename) {
-              p.image_url = UPLOADS_BASE + data.filename;
-              thumbSlot.innerHTML = ""; // + knop verwijderen
+              const filename = data.filename;
+
+              // 📤 update in database
+              await api("update_purchase", { id: p.id, image_url: filename });
+
+              // 💾 thumbnail plaatsen
+              p.image_url = `${UPLOADS_BASE}${filename}`;
+              thumbSlot.innerHTML = "";
               const newThumb = document.createElement("img");
               newThumb.src = p.image_url;
               newThumb.className = "w-12 h-12 object-cover rounded-xl border border-slate-200 cursor-pointer";
               thumbSlot.appendChild(newThumb);
             } else {
               alert("Upload fout: " + (data.error || "Onbekend"));
+              // herstel plus-icoon
+              addBtn.innerHTML = `<i class="fa-solid fa-plus text-lg"></i>`;
             }
+          } catch (err) {
+            console.error("Upload fout:", err);
+            alert("Fout bij upload of opslaan.");
+            addBtn.innerHTML = `<i class="fa-solid fa-plus text-lg"></i>`;
           } finally {
-            setButtonLoading(false);
+            addBtn.classList.remove("opacity-70", "cursor-wait");
           }
         };
       });
+
+
       thumbSlot.appendChild(addBtn);
     }
     li.appendChild(thumbSlot);

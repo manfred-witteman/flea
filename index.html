@@ -67,9 +67,11 @@
       <!-- Nieuwe verkoop -->
       <section id="view-home" class="p-4 pb-24">
         <div class="card bg-white dark:bg-slate-800 dark:text-slate-100 p-6 space-y-6 shadow-lg rounded-xl">
-          <div class="flex items-center gap-2 mb-4">
-            <i class="fa-solid fa-bolt text-indigo-600"></i>
-            <h2 class="text-2xl font-semibold">Nieuwe verkoop</h2>
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-bolt text-indigo-600"></i>
+              <h2 class="text-2xl font-semibold">Nieuwe verkoop</h2>
+            </div>  
           </div>
           <form id="sale-form" class="space-y-4">
             <div class="flex flex-col">
@@ -121,6 +123,12 @@
             <input type="file" id="image-upload" accept="image/*" capture="environment" class="hidden" />
             <img id="image-preview" class="mt-2 w-32 h-32 object-cover rounded-xl hidden" />
             <input type="hidden" name="image_url" />
+
+
+            <button type="button" id="btn-scan-qr"
+              class="fixed bottom-24 left-4 w-16 h-16 bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center justify-center shadow-xl cursor-pointer transition">
+              <i class="fa-solid fa-qrcode text-2xl"></i>
+            </button>
           </form>
         </div>
       </section>
@@ -192,12 +200,12 @@
               <i class="fa-solid fa-calendar-day mr-2"></i> Dag
             </label>
             <input type="date" id="breakdown-date-picker" class="hidden-input" />
-              <label for="breakdown-week-picker"
+            <label for="breakdown-week-picker"
               class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-lg rounded-xl px-4 py-3 text-left w-40 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer">
               <i class="fa-solid fa-calendar-week mr-2"></i> Week
             </label>
             <input type="week" id="breakdown-week-picker" class="hidden-input" />
-              <label for="breakdown-month-picker"
+            <label for="breakdown-month-picker"
               class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-lg rounded-xl px-4 py-3 text-left w-40 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer">
               <i class="fa-solid fa-calendar-alt mr-2"></i> Maand
             </label>
@@ -243,34 +251,34 @@
         </button>
       </nav>
 
-   <!-- QR modal -->
-<div id="qr-modal" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center z-50 p-4">
-  <div class="relative w-full max-w-screen-sm flex flex-col items-center">
+      <!-- QR modal -->
+      <div id="qr-modal" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center z-50 p-4">
+        <div class="relative w-full max-w-screen-sm flex flex-col items-center">
 
-    <!-- Bovenste tekstvlak -->
-    <div class="w-full bg-white rounded-t-xl p-4 text-center shadow-md mb-2">
-      <p id="qr-sale-desc" class="text-base font-medium text-slate-900"></p>
-      <p id="qr-sale-price" class="text-lg font-semibold text-slate-900 mt-1"></p>
-    </div>
+          <!-- Bovenste tekstvlak -->
+          <div class="w-full bg-white rounded-t-xl p-4 text-center shadow-md mb-2">
+            <p id="qr-sale-desc" class="text-base font-medium text-slate-900"></p>
+            <p id="qr-sale-price" class="text-lg font-semibold text-slate-900 mt-1"></p>
+          </div>
 
-    <!-- QR-code -->
-    <img id="qr-image"
-         src=""
-         alt="QR-code"
-         class="w-full max-w-full max-h-[80vh] object-contain rounded-b-xl border border-white bg-white p-2" />
+          <!-- QR-code -->
+          <img id="qr-image" src="" alt="QR-code"
+            class="w-full max-w-full max-h-[80vh] object-contain rounded-b-xl border border-white bg-white p-2" />
 
-   <div class="flex mt-4">
-  <button id="qr-ok" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-6 py-2">
-    Klaar
-  </button>
-</div>
-  </div>
-</div>
+          <div class="flex mt-4">
+            <button id="qr-ok" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-6 py-2">
+              Klaar
+            </button>
+          </div>
+        </div>
+      </div>
 
     </main>
   </div>
-
+  <input type="hidden" name="qr_id" id="qr-id" />
   <script src="assets/app.js"></script>
+  <!-- Load QR library -->
+<script src="assets/qr/html5-qrcode.min.js"></script>
 </body>
 
 </html>

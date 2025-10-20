@@ -3,6 +3,8 @@ const Html5Qrcode = window.Html5Qrcode;
 let html5QrCodeInstance = null;
 
 export function startQrScanIOS() {
+  const REQUIRED_PREFIX = "FMARKET:"; // alleen QR-codes die hiermee beginnen worden geaccepteerd
+
   return new Promise((resolve, reject) => {
     if (html5QrCodeInstance) {
       try {
@@ -12,7 +14,7 @@ export function startQrScanIOS() {
       html5QrCodeInstance = null;
     }
 
-    // Overlay maken
+    // Overlay
     let overlay = document.getElementById("qrModal");
     if (!overlay) {
       overlay = document.createElement("div");
@@ -72,24 +74,23 @@ export function startQrScanIOS() {
         box-shadow: 0 0 20px 6px red;
         animation: scanlineMove 2s linear infinite;
         opacity: 0.9;
-        z-index: 2147483647 !important; /* hoogste waarde */
+        z-index: 2147483647 !important;
         pointer-events: none;
       }
-	  #scanline::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent);
-  animation: glowPulse 1s linear infinite;
-  pointer-events: none;
-}
-
-@keyframes glowPulse {
-  0%, 100% { opacity: 0; }
-  50% { opacity: 1; }
-}	
+      #scanline::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent);
+        animation: glowPulse 1s linear infinite;
+        pointer-events: none;
+      }
+      @keyframes glowPulse {
+        0%, 100% { opacity: 0; }
+        50% { opacity: 1; }
+      }
       @keyframes scanlineMove {
         0%   { top: 0; opacity: 0.6; }
         50%  { top: calc(100% - 3px); opacity: 1; }
@@ -116,7 +117,6 @@ export function startQrScanIOS() {
       reject(new Error("Scan geannuleerd"));
     };
 
-    // Start QR scanning
     html5QrCodeInstance = new Html5Qrcode("reader");
     const config = { fps: 10, qrbox: { width: 300, height: 300 } };
 
@@ -125,14 +125,20 @@ export function startQrScanIOS() {
         { facingMode: "environment" },
         config,
         async (decodedText) => {
-          await stop();
-          resolve(decodedText);
+          // ✅ Validatie van QR-code
+          if (decodedText.startsWith(REQUIRED_PREFIX)) {
+            await stop();
+            resolve(decodedText);
+          } else {
+            // ❌ Ongeldige code → visueel signaal
+            scanline.style.background = "orange";
+            setTimeout(() => { scanline.style.background = "red"; }, 300);
+          }
         },
         () => {}
       )
       .then(() => {
-        console.log("🟢 Scanner gestart");
-        // Zorg dat de scanlijn altijd bovenaan blijft
+        // Scanlijn altijd bovenaan houden
         ensureScanlineOnTop = setInterval(() => {
           const lastChild = readerEl.lastElementChild;
           if (lastChild && lastChild.id !== "scanline") {

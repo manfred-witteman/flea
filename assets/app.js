@@ -2,6 +2,7 @@
 // Minimal Front-End SPA (location independent)
 // ======================
 const $ = (sel) => document.querySelector(sel);
+const qrInput = $("#qr-id");
 
 // ---------------------
 // Dynamic base paths
@@ -170,6 +171,46 @@ function renderTodaySales(data, showAll, currentUserId) {
     modalImg.src = dayImages[currentImageIndex];
   }
 
+  // QR-scan
+  $("#btn-scan-qr")?.addEventListener("click", async () => {
+    try {
+      const { startQrScanIOS } = await import("./qr/qrScanner.js");
+      const qrValue = await startQrScanIOS();
+      if (!qrValue) return; // scan geannuleerd
+      qrInput.value = qrValue;
+
+      // Nieuw: haal verkoopgegevens op bij deze QR
+      const data = await api("get_sale_by_qr", { qr_id: qrValue });
+      if (data?.sale) {
+        const form = document.getElementById("sale-form");
+        form.description.value = data.sale.description || "";
+        form.price.value = data.sale.target_price || "";
+        form.owner_user_id.value = data.sale.owner_user_id || currentUserId;
+        form.payment_method.checked = !!data.sale.is_pin;
+        updatePaymentLabel();
+
+        // Afbeelding tonen
+        if (data.sale.image_url) {
+          const fullPath = data.sale.image_url.startsWith("http")
+            ? data.sale.image_url
+            : UPLOADS_BASE + data.sale.image_url.replace(/^\/+/, "");
+          preview.src = fullPath;
+          preview.classList.remove("hidden");
+          imageUrlInput.value = data.sale.image_url;
+        } else {
+          preview.classList.add("hidden");
+          imageUrlInput.value = "";
+        }
+      } else {
+        alert("Geen verkoop gevonden voor deze QR-code.");
+      }
+
+      //alert("QR-code gescand en gegevens geladen!");
+    } catch (err) {
+      if (err.message !== "Scan geannuleerd") alert("Fout bij scannen: " + (err.message || err));
+    }
+  });
+
   // Swipe support
   let startX = 0;
   modal.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX; });
@@ -216,20 +257,20 @@ function renderTodaySales(data, showAll, currentUserId) {
     li.appendChild(spacer);
 
     // Betaalmethode icoon
-      const paymentBlock = document.createElement("div");
-      paymentBlock.className = "flex items-center gap-2";
+    const paymentBlock = document.createElement("div");
+    paymentBlock.className = "flex items-center gap-2";
 
-      if (sale.is_pin === 1) {
-        const paymentIconEl = document.createElement("i");
-        paymentIconEl.className = "fa-solid fa-credit-card text-green-600";
-        paymentIconEl.title = "Contant";
-        paymentBlock.appendChild(paymentIconEl);
-      }
+    if (sale.is_pin === 1) {
+      const paymentIconEl = document.createElement("i");
+      paymentIconEl.className = "fa-solid fa-credit-card text-green-600";
+      paymentIconEl.title = "Contant";
+      paymentBlock.appendChild(paymentIconEl);
+    }
 
-      // Voeg alleen toe als er een icoon is
-      if (paymentBlock.children.length > 0) {
-        li.appendChild(paymentBlock);
-      }
+    // Voeg alleen toe als er een icoon is
+    if (paymentBlock.children.length > 0) {
+      li.appendChild(paymentBlock);
+    }
     // Thumbnail + trash
     const rightBlock = document.createElement("div");
     rightBlock.className = "grid grid-cols-[48px,20px] items-center gap-2";
@@ -435,7 +476,7 @@ function initBreakdownFAB() {
   const weekInput = document.getElementById("breakdown-week-picker");
   const monthInput = document.getElementById("breakdown-month-picker");
 
-  
+
 
   fabBtn.addEventListener("click", () => {
     fabMenu.classList.toggle("hidden");
@@ -625,7 +666,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await refreshToday();
   });
 
-  
+
   paymentInput?.addEventListener("change", updatePaymentLabel);
 
   const dayLabel = document.getElementById("day-label");
@@ -668,71 +709,78 @@ document.addEventListener("DOMContentLoaded", async () => {
     imageUrlInput.value = "";
   });
 
-// Form submit
-$("#sale-form")?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const form = e.currentTarget;
+  // Form submit
+  $("#sale-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.currentTarget;
 
-  const payload = {
-    description: form.description.value.trim(),
-    price: parseMoney(form.price.value),
-    owner_user_id: parseInt(form.owner_user_id.value, 10),
-    cost: form.cost.value ? parseMoney(form.cost.value) : null,
-    image_url: uploadedImageUrl || null,  // <-- must match backend
-    is_pin: form.payment_method.checked ? 1 : 0
-  };
-  if (!payload.description || payload.price == null || isNaN(payload.owner_user_id)) {
-    alert("Controleer je invoer.");
-    return;
-  }
+    const payload = {
+      description: form.description.value.trim(),
+      price: parseMoney(form.price.value) || 0,
+      owner_user_id: parseInt(form.owner_user_id.value, 10) || currentUserId,
+      purchase_is_pin: form.payment_method.checked ? 1 : 0,
+      qr_id: qrInput.value || null,
+      purchased_at: new Date().toISOString().slice(0, 19).replace("T", " "),
+      image_url: imageUrlInput.value || null  // ✅ hier toevoegen
+    };
 
-  try {
-    setButtonLoading(true, "Opslaan…");
+    // Log payload voor debug
+    console.log("DEBUG payload:", payload);
 
-    // --------------------------
-    // PIN QR check
-    // --------------------------
-    if (payload.is_pin) {
-      const qrResult = await showQrModal(payload, form);
 
-      // Als er een QR was bevestigd → log of gebruik het indien nodig
-      if (qrResult) {
-        console.log("QR bevestigd door gebruiker:", qrResult.qr_filename);
-      } else {
-        console.log("Geen QR of modal geannuleerd, verder met opslaan");
-      }
+    if (!payload.description || payload.price == null || isNaN(payload.owner_user_id)) {
+      alert("Controleer je invoer.");
+      return;
     }
 
-    
+    try {
+      setButtonLoading(true, "Opslaan…");
 
-    // Voeg verkoop toe
-    await api("add_sale", payload);
+      // --------------------------
+      // PIN QR check
+      // --------------------------
+      if (payload.is_pin) {
+        const qrResult = await showQrModal(payload, form);
 
-    // Reset form & UI
-    form.reset();
-    updatePaymentLabel();
-    preview.src = "";
-    preview.classList.add("hidden");
-    uploadedImageUrl = null;
-    imageUrlInput.value = "";
-    if (currentUserId) form.owner_user_id.value = currentUserId;
+        // Als er een QR was bevestigd → log of gebruik het indien nodig
+        if (qrResult) {
+          console.log("QR bevestigd door gebruiker:", qrResult.qr_filename);
+        } else {
+          console.log("Geen QR of modal geannuleerd, verder met opslaan");
+        }
+      }
 
-    // Refresh data
-    await refreshToday();
-    await refreshBreakdown(currentDate);
-    setActiveTab("overzicht");
 
-  } catch (err) {
-    alert(err.message || "Fout bij opslaan.");
-  } finally {
-    setButtonLoading(false);
-  }
-});
 
-  
+      // Voeg verkoop toe
+      await api("add_sale", payload);
+
+      // Reset form & UI
+      form.reset();
+      qrInput.value = null;
+      updatePaymentLabel();
+      preview.src = "";
+      preview.classList.add("hidden");
+      uploadedImageUrl = null;
+      imageUrlInput.value = "";
+      if (currentUserId) form.owner_user_id.value = currentUserId;
+
+      // Refresh data
+      await refreshToday();
+      await refreshBreakdown(currentDate);
+      setActiveTab("overzicht");
+
+    } catch (err) {
+      alert(err.message || "Fout bij opslaan.");
+    } finally {
+      setButtonLoading(false);
+    }
+  });
+
+
   $("#filter-mine")?.addEventListener("change", refreshToday);
 
- 
+
 
   document.addEventListener("click", async (e) => {
     if (!e.target.closest("#btn-settle")) return;
@@ -759,81 +807,81 @@ $("#sale-form")?.addEventListener("submit", async (e) => {
   initBreakdownFAB();
 
   // 👇 voeg dit toe
-if (!document.querySelector(".tab[data-tab='motivation']")) {
-  initMotivationTab();
-}
-
-// ======================
-// Motivatie Tab via Chat API
-// ======================
-const MOTIVATION_INTERVAL = 90 * 60 * 1000; // 1,5 uur
-let currentMotivation = "";
-
-async function fetchMotivation() {
-  try {
-    const res = await fetch("/" + ROOT_PATH + "/chat/chat.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ 
-        action: "motivation",
-        user_id: currentUserId,          // ID van ingelogde gebruiker
-        user_name: $("#owner-select")?.selectedOptions[0]?.textContent // naam
-      })
-    });
-    const data = await res.json();
-
-    if (data?.message) {
-      currentMotivation = data.message;
-      updateMotivationTab();
-      showMotivationBadge();
-    } else {
-      console.warn("Geen motivatie ontvangen", data);
-    }
-  } catch (err) {
-    console.error("Fout bij motivatie ophalen:", err);
+  if (!document.querySelector(".tab[data-tab='motivation']")) {
+    initMotivationTab();
   }
-}
+
+  // ======================
+  // Motivatie Tab via Chat API
+  // ======================
+  const MOTIVATION_INTERVAL = 90 * 60 * 1000; // 1,5 uur
+  let currentMotivation = "";
+
+  async function fetchMotivation() {
+    try {
+      const res = await fetch("/" + ROOT_PATH + "/chat/chat.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "motivation",
+          user_id: currentUserId,          // ID van ingelogde gebruiker
+          user_name: $("#owner-select")?.selectedOptions[0]?.textContent // naam
+        })
+      });
+      const data = await res.json();
+
+      if (data?.message) {
+        currentMotivation = data.message;
+        updateMotivationTab();
+        showMotivationBadge();
+      } else {
+        console.warn("Geen motivatie ontvangen", data);
+      }
+    } catch (err) {
+      console.error("Fout bij motivatie ophalen:", err);
+    }
+  }
 
 
 
-// Badge tonen/verwijderen (zelfde als eerder)
-function showMotivationBadge() { /* ... */ }
-function clearMotivationBadge() { /* ... */ }
+  // Badge tonen/verwijderen (zelfde als eerder)
+  function showMotivationBadge() { /* ... */ }
+  function clearMotivationBadge() { /* ... */ }
 
-async function initMotivationTab() {
-  const tabsContainer = document.getElementById("tabs");
-  const logoutBtn = document.getElementById("btn-logout");
-  if (!tabsContainer || !logoutBtn) return;
+  async function initMotivationTab() {
+    const tabsContainer = document.getElementById("tabs");
+    const logoutBtn = document.getElementById("btn-logout");
+    if (!tabsContainer || !logoutBtn) return;
 
-  logoutBtn.remove();
+    logoutBtn.remove();
 
-  const motivationTab = document.createElement("button");
-  motivationTab.className = "tab flex flex-col items-center text-sm text-slate-700 dark:text-slate-300";
-  motivationTab.dataset.tab = "motivation";
-  motivationTab.innerHTML = `<i class="fa-solid fa-sun"></i><span>Boost</span>`;
-  tabsContainer.appendChild(motivationTab);
+    const motivationTab = document.createElement("button");
+    motivationTab.className = "tab flex flex-col items-center text-sm text-slate-700 dark:text-slate-300";
+    motivationTab.dataset.tab = "motivation";
+    motivationTab.innerHTML = `<i class="fa-solid fa-sun"></i><span>Boost</span>`;
+    tabsContainer.appendChild(motivationTab);
 
-  if (!document.getElementById("view-motivation")) {
-    const motivationView = document.createElement("section");
-    motivationView.id = "view-motivation";
-    motivationView.className = "hidden p-6 text-center flex flex-col justify-center items-center";
-    motivationView.innerHTML = `
+    if (!document.getElementById("view-motivation")) {
+      const motivationView = document.createElement("section");
+      motivationView.id = "view-motivation";
+      motivationView.className = "hidden p-6 text-center flex flex-col justify-center items-center";
+      motivationView.innerHTML = `
       <h2 class="text-2xl font-bold mb-4">Motivatie Boost</h2>
       <p id="motivation-text" class="text-4xl font-bold text-slate-700 italic max-w-[90%] mx-auto"></p>
     `;
-    document.getElementById("screen-app").appendChild(motivationView);
+      document.getElementById("screen-app").appendChild(motivationView);
+    }
+
+    motivationTab.addEventListener("click", () => {
+      setActiveTab("motivation");
+      document.getElementById("motivation-text").textContent = currentMotivation || "Even geen motivatie beschikbaar.";
+      clearMotivationBadge();
+    });
+
+    // 👇 eerste fetch en interval
+    await fetchMotivation();
+    setInterval(fetchMotivation, MOTIVATION_INTERVAL);
   }
-
-  motivationTab.addEventListener("click", () => {
-    setActiveTab("motivation");
-    document.getElementById("motivation-text").textContent = currentMotivation || "Even geen motivatie beschikbaar.";
-    clearMotivationBadge();
-  });
-
-  // 👇 eerste fetch en interval
-  await fetchMotivation();
-  setInterval(fetchMotivation, MOTIVATION_INTERVAL);
-}
 
 
 
