@@ -11,6 +11,8 @@ const ROOT_PATH = window.location.pathname.split("/").filter(Boolean)[0]; // 'fl
 const UPLOADS_BASE = "/flea_uploads/";
 const API_BASE = "/" + ROOT_PATH + "/api/api.php";
 let paymentInput, paymentIcon, paymentText;
+let currentMotivation = "";
+
 
 // ---------------------
 // API helper
@@ -171,45 +173,45 @@ function renderTodaySales(data, showAll, currentUserId) {
     modalImg.src = dayImages[currentImageIndex];
   }
 
-  // QR-scan
-  $("#btn-scan-qr")?.addEventListener("click", async () => {
-    try {
-      const { startQrScanIOS } = await import("./qr/qrScanner.js");
-      const qrValue = await startQrScanIOS();
-      if (!qrValue) return; // scan geannuleerd
-      qrInput.value = qrValue;
+  // // QR-scan
+  // $("#btn-scan-qr")?.addEventListener("click", async () => {
+  //   try {
+  //     const { startQrScanIOS } = await import("./qr/qrScanner.js");
+  //     const qrValue = await startQrScanIOS();
+  //     if (!qrValue) return; // scan geannuleerd
+  //     qrInput.value = qrValue;
 
-      // Nieuw: haal verkoopgegevens op bij deze QR
-      const data = await api("get_sale_by_qr", { qr_id: qrValue });
-      if (data?.sale) {
-        const form = document.getElementById("sale-form");
-        form.description.value = data.sale.description || "";
-        form.price.value = data.sale.target_price || "";
-        form.owner_user_id.value = data.sale.owner_user_id || currentUserId;
-        form.payment_method.checked = !!data.sale.is_pin;
-        updatePaymentLabel();
+  //     // Nieuw: haal verkoopgegevens op bij deze QR
+  //     const data = await api("get_sale_by_qr", { qr_id: qrValue });
+  //     if (data?.sale) {
+  //       const form = document.getElementById("sale-form");
+  //       form.description.value = data.sale.description || "";
+  //       form.price.value = data.sale.target_price || "";
+  //       form.owner_user_id.value = data.sale.owner_user_id || currentUserId;
+  //       form.payment_method.checked = !!data.sale.is_pin;
+  //       updatePaymentLabel();
 
-        // Afbeelding tonen
-        if (data.sale.image_url) {
-          const fullPath = data.sale.image_url.startsWith("http")
-            ? data.sale.image_url
-            : UPLOADS_BASE + data.sale.image_url.replace(/^\/+/, "");
-          preview.src = fullPath;
-          preview.classList.remove("hidden");
-          imageUrlInput.value = data.sale.image_url;
-        } else {
-          preview.classList.add("hidden");
-          imageUrlInput.value = "";
-        }
-      } else {
-        alert("Geen verkoop gevonden voor deze QR-code.");
-      }
+  //       // Afbeelding tonen
+  //       if (data.sale.image_url) {
+  //         const fullPath = data.sale.image_url.startsWith("http")
+  //           ? data.sale.image_url
+  //           : UPLOADS_BASE + data.sale.image_url.replace(/^\/+/, "");
+  //         preview.src = fullPath;
+  //         preview.classList.remove("hidden");
+  //         imageUrlInput.value = data.sale.image_url;
+  //       } else {
+  //         preview.classList.add("hidden");
+  //         imageUrlInput.value = "";
+  //       }
+  //     } else {
+  //       alert("Geen verkoop gevonden voor deze QR-code.");
+  //     }
 
-      //alert("QR-code gescand en gegevens geladen!");
-    } catch (err) {
-      if (err.message !== "Scan geannuleerd") alert("Fout bij scannen: " + (err.message || err));
-    }
-  });
+  //     //alert("QR-code gescand en gegevens geladen!");
+  //   } catch (err) {
+  //     if (err.message !== "Scan geannuleerd") alert("Fout bij scannen: " + (err.message || err));
+  //   }
+  // });
 
   // Swipe support
   let startX = 0;
@@ -709,6 +711,62 @@ document.addEventListener("DOMContentLoaded", async () => {
     imageUrlInput.value = "";
   });
 
+  // QR-scan
+
+  const qrBtn = document.getElementById("btn-scan-qr");
+const qrInput = document.getElementById("qr-id");
+
+if (qrBtn) {
+  qrBtn.addEventListener("click", async () => {
+    console.log("QR knop geklikt");
+    try {
+      const { startQrScanIOS } = await import("./qr/qrScanner.js");
+      const qrValue = await startQrScanIOS();
+      if (!qrValue) return; // scan geannuleerd
+      qrInput.value = qrValue;
+
+      const data = await api("get_sale_by_qr", { qr_id: qrValue });
+      console.log("Verkoopdata ontvangen:", data);
+
+      if (data?.sale) {
+        const form = document.getElementById("sale-form");
+        if (!form) return;
+
+        // Form invullen
+        form.description.value = data.sale.description || "";
+        form.price.value = data.sale.target_price || "";
+        form.owner_user_id.value = data.sale.owner_user_id || currentUserId;
+        form.payment_method.checked = !!data.sale.is_pin;
+        updatePaymentLabel();
+
+        // Afbeelding tonen
+        if (data.sale.image_url && data.sale.image_url.trim() !== "") {
+          const imageUrl = data.sale.image_url.trim();
+          const fullPath = imageUrl.startsWith("http")
+            ? imageUrl
+            : UPLOADS_BASE + imageUrl.replace(/^\/+/, "");
+          preview.src = fullPath;
+          preview.classList.remove("hidden");
+          imageUrlInput.value = data.sale.image_url;
+        } else {
+          preview.src = "";
+          preview.classList.add("hidden");
+          imageUrlInput.value = "";
+        }
+      } else {
+        alert("Geen verkoop gevonden voor deze QR-code.");
+      }
+
+    } catch (err) {
+      if (err.message !== "Scan geannuleerd") {
+        alert("Fout bij scannen: " + (err.message || err));
+      }
+    }
+  });
+}
+
+
+
   // Form submit
   $("#sale-form")?.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -815,8 +873,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Motivatie Tab via Chat API
   // ======================
   const MOTIVATION_INTERVAL = 90 * 60 * 1000; // 1,5 uur
-  let currentMotivation = "";
-
+  
   async function fetchMotivation() {
     try {
       const res = await fetch("/" + ROOT_PATH + "/chat/chat.php", {
